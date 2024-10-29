@@ -1,0 +1,20 @@
+@import "./normalize.global.scss";
+@import "./_mixins.scss";
+@import "./_fonts.scss";
+@import "./_reset.scss";
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  font-family:  "Montserrat", serif;
+}
+
+body {
+  background: #000;
+}
+
+img {
+  width: 100%;
+}
