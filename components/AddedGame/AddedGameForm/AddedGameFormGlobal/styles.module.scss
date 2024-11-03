@@ -1,0 +1,46 @@
+.container {
+  margin-bottom: 22px;
+}
+
+.input {
+  position: absolute;
+  z-index: -1;
+  opacity: 0;
+
+  &:checked + .global::before {
+    opacity: 1;
+  }
+}
+
+.global {
+  position: relative;
+  cursor: pointer;
+  display: inline-block;
+  padding-left: 24px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #26292F;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -2px;
+    left: 0;
+    border: 2px solid #3E68FE;
+    border-radius: 2px;
+    width: 14px;
+    height: 14px;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 1.5px;
+    left: 3.3px;
+    width: 9.5px;
+    height: 9.5px;
+    background: #26292F;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+}

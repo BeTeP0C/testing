@@ -2,8 +2,8 @@
   @font-face {
     font-family: "#{$font-family}";
     src:
-    url("../public/fonts/#{$url}.woff2") format("woff2"),
-    url("../public/fonts/#{$url}.woff") format("woff");
+    url("../public/fonts/#{$url}.ttf") format("truetype");
+    // url("../public/fonts/#{$url}.woff") format("woff");
     font-weight: #{$weight};
     font-display: swap;
     font-style: normal;

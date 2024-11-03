@@ -1,0 +1,14 @@
+.listRow {
+  display: flex;
+  flex-direction: column;
+}
+
+.row {
+  padding: 15px 20px;
+  border-radius: 10px;
+  background: rgba(#C5CCD9, 0.3);
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+}

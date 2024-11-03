@@ -1,0 +1,22 @@
+.item:not(:last-child) {
+  margin-bottom: 40px;
+}
+
+.link {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 10px;
+  background: transparent;
+  transition: background 0.3s ease;
+
+  &_active {
+    background: #3E68FE;
+
+    & path {
+      // fill: #ffffff;
+      stroke: #ffffff;
+    }
+  }
+}

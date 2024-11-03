@@ -1,0 +1,38 @@
+.content {
+  padding-top: 20px;
+}
+
+.heading {
+  margin-bottom: 20px;
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 100%;
+  color: rgba(#26292F, 0.8);
+}
+
+.list {
+  display: grid;
+  grid-template-columns: repeat(6, 160px);
+  gap: 11px;
+  margin-bottom: 11px;
+}
+
+.item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  // margin-bottom: 11px;
+  width: 160px;
+  height: 32px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 100%;
+  color: #ffffff;
+  background: rgba(#26292F, 0.6);
+  color: #ffffff;
+
+  &_active {
+    background: #3E68FE;
+  }
+}

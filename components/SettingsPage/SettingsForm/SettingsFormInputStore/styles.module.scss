@@ -1,0 +1,22 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.title {
+  margin-bottom: 10px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #26292F;
+}
+
+.input {
+  padding: 13px 10px;
+  border-radius: 5px;
+  border: 2px solid #3E68FE;
+  width: 100%;
+  font-weight: 400;
+  font-size: 14px;
+  color: #26292F;
+}

@@ -1,0 +1,45 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 200;
+  background: #ffffff;
+}
+
+.container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 34px 54px;
+}
+
+.heading {
+  padding-left: 96px;
+  font-weight: 600;
+  font-size: 24px;
+  color: #1F222D;
+}
+
+.status {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  border-radius: 5px;
+  width: 168px;
+  height: 33px;
+  font-weight: 400;
+  line-height: 18px;
+  background: transparent;
+  color: #ffffff;
+  transition: background 0.3s ease;
+
+  &_active {
+    background: #1B8F3C;
+  }
+
+  &_unactive {
+    background: red;
+  }
+}

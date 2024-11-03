@@ -1,0 +1,74 @@
+.row {
+  // max-height: 44px;
+  overflow: hidden;
+  transition: height 0.5s ease;
+
+  // &_active {
+  //   max-height: 1000px;
+  // }
+
+  &:not(:last-child) {
+    margin-bottom: 10px;
+  }
+
+  &_error .listCell {
+    background: rgba(#AC2E2E, 0.3);
+  }
+}
+
+.listCell {
+  position: relative;
+  display: flex;
+  padding: 15px 20px;
+  border-radius: 10px;
+  background: rgba(#C5CCD9, 0.3);
+}
+
+.cell {
+  font-weight: 500;
+  font-size: 14px;
+  line-height: 100%;
+  color: #26292F;
+
+  &:nth-child(1) {
+    width: 110px;
+  }
+
+  &:nth-child(2) {
+    width: 300px;
+  }
+
+  &:nth-child(3) {
+    width: 80px;
+  }
+
+  // &:nth-child(4) {
+  //   width: 200px;
+  // }
+
+  &:not(:last-child) {
+    margin-right: 80px;
+  }
+}
+
+.button_item {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}
+
+.item_error {
+  position: absolute;
+  top: 11.5px;
+  right: 22px;
+}
+
+.button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+}

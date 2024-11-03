@@ -1,0 +1,49 @@
+.container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  // overflow: hidden;
+}
+
+.heading {
+  margin-bottom: 40px;
+  text-align: center;
+  font-weight: 600;
+  font-size: 20px;
+  line-height: 100%;
+  color: #26292F;
+}
+
+.buttons {
+  display: flex;
+  justify-content: center;
+  // margin: 0 auto;
+}
+
+.first_block {
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  bottom: 0;
+  height: max-content;
+  transition: transform 0.3s ease;
+}
+
+.second_block {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: max-content;
+  bottom: 0;
+  transition: transform 0.3s ease;
+}
+
+.form {
+  position: relative;
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+}
