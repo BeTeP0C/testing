@@ -8,25 +8,25 @@ export const menu = [
   {
     id: 1,
     Icon: House,
-    href: "/",
+    page: "main",
     active: true,
   },
   {
     id: 2,
     Icon: Stats,
-    href: "/",
+    page: "",
     active: false,
   },
   {
     id: 3,
     Icon: Card,
-    href: "/",
+    page: "",
     active: false,
   },
   {
     id: 4,
     Icon: Settings,
-    href: "/",
+    page: "settings",
     active: false,
   }
 ]

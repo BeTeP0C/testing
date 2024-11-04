@@ -1,4 +1,5 @@
 import React, { useEffect, useState, createContext } from "react";
+import styles from "./styles.module.scss"
 import {Page} from "../Page";
 import { Header } from "../Header";
 import { Menu } from "../Menu";
@@ -12,6 +13,7 @@ import { MainInfo } from "../MainInfo";
 import { ActionsOverGame } from "../ActionsOverGame";
 import { observer } from "mobx-react-lite";
 import { MagazineStore } from "../../common/store";
+import { SettingsPage } from "../SettingsPage";
 
 // const magazineStore = new MagazineStore()
 export const StoreContext = createContext(null)
@@ -38,12 +40,23 @@ export const MainPage = observer(() => {
         <Menu />
         <Main>
           <Content>
-            <ButtonsStateProduct>
-              <ButtonAddProduct store={magazineStore}/>
-              {magazineStore.isOpenGameInfo.open ? <ButtonDeleteProduct store={magazineStore}/> : ""}
-            </ButtonsStateProduct>
+            {magazineStore.currentPage === "main" ? (
+              <>
+                <ButtonsStateProduct>
+                  <ButtonAddProduct store={magazineStore}/>
+                  {magazineStore.isOpenGameInfo.open ? <ButtonDeleteProduct store={magazineStore}/> : ""}
+                </ButtonsStateProduct>
 
-            {magazineStore.authorizate ?  <TableGames />: ""}
+                {magazineStore.authorizate ?  <TableGames />: ""}
+              </>
+            ) : ""}
+
+            {magazineStore.currentPage === "settings" ? (
+              <>
+                <h2 className={styles.heading}>Настройки</h2>
+                <SettingsPage />
+              </>
+            ) : ""}
 
             {/* <StoreContext.Provider value={magazineStore}>
 

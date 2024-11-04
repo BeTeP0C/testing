@@ -20,6 +20,7 @@ export class MagazineStore {
   @observable authorizate: boolean = false
   @observable isSteam = []
   @observable isOpen: boolean = false;
+  @observable currentPage: string = 'main'
 
   constructor() {
     makeAutoObservable(this);
@@ -53,6 +54,13 @@ export class MagazineStore {
     this.TOKEN = ""
     this.authorizate = false
    }
+  }
+
+  @action
+  changePage (page: string) {
+    runInAction(() => {
+      this.currentPage = page
+    })
   }
 
   @action
