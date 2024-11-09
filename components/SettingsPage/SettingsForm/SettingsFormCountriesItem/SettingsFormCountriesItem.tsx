@@ -3,6 +3,8 @@ import styles from "./styles.module.scss"
 
 type TSettingsFormCountriesItem = {
   title: string,
+  usename: string,
+  code: string,
   id: number,
   type?: string,
   funcs: {

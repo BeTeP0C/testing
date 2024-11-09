@@ -1,36 +1,5 @@
 import { MagazineStore } from "../common/store"
 
-// avitoItem
-// :
-// null
-// avitoItemId
-// :
-// null
-// funPayItem
-// :
-// null
-// funPayItemId
-// :
-// null
-// id
-// :
-// 1
-// lastUpdated
-// :
-// "2024-10-18T19:53:38.043164Z"
-// name
-// :
-// "COD 2"
-// steamItem
-// :
-// {steamId: 2630, name: 'Call of Duty® 2', packages: Array(2), lastUpdated: '2024-10-18T19:53:38.043164Z'}
-// steamItemId
-// :
-// 2630
-// steamItemPackageId
-// :
-// 177
-
 export type TGame = {
   avitoItem: null,
   avitoItemId: null,
@@ -82,3 +51,11 @@ export type TGameInfoPackage = {
   } [],
   restrictCountries: string []
 }
+
+export type TGameError = {
+  errorMessage: string,
+  visible: boolean,
+  activate: boolean
+}
+
+export type TGameFirstPageErrors = TGameError[]

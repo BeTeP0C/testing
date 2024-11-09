@@ -4,11 +4,13 @@ import { UpdateSet } from "../Informations/UpdateSet";
 import { ExchangeRate } from "../Informations/ExchangeRate/ExchangeRate";
 import { Profit } from "../Informations/Profit";
 
-export function MainInfo () {
+export function MainInfo (props: {funpayActivate: boolean}) {
+  const {funpayActivate} = props
+
   return (
     <div className={styles.main}>
       <ul className={styles.list}>
-        <UpdateSet />
+        {funpayActivate ? "" : <UpdateSet />}
         <ExchangeRate />
         {/* <Profit /> */}
       </ul>

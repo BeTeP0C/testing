@@ -13,7 +13,7 @@ export function MenuList () {
     <ul className={styles.list}>
       {menu.map((el) => {
         return (
-          <MenuItem key={el.id} Icon={el.Icon} page={el.page} active={el.active} />
+          <MenuItem key={el.id} Icon={el.Icon} page={el.page} active={el.active} type={el.type}/>
         )
       })}
     </ul>

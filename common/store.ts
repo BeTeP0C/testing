@@ -1,11 +1,13 @@
 import axios from "axios";
 import { action, autorun, makeAutoObservable, observable, runInAction } from "mobx";
 import { TGame } from "../types/tgames";
+import { TSettingsData } from "../types/settingsData";
+import { settingsCountries } from "./settingsCountries";
 import { calendar } from "./calendar";
-import { headers } from "next/headers";
-import { json } from "stream/consumers";
-import { set } from "lodash";
 
+// nwifyiudu4djeeu1cgcorripz4axevsx
+// nwifyiudu4djeeu1cgcorripz4axevsx
+// 2ea7r0yp6s5eznao043lkwsu3as6jxvm
 export class MagazineStore {
   @observable games: TGame[] = [];
   @observable isLoadingGames: boolean = false;
@@ -16,14 +18,39 @@ export class MagazineStore {
   @observable isOpenActionsGame: boolean = false
   @observable isOpenAddForm: boolean = false
   @observable isOpenEditForm: boolean = false
-  @observable TOKEN: string =  ""
-  @observable authorizate: boolean = false
   @observable isSteam = []
   @observable isOpen: boolean = false;
+  @observable authorizate: boolean = false
+
+  @observable settingsCountriesChoice = settingsCountries
+  @observable TOKEN: string =  ""
   @observable currentPage: string = 'main'
+  // @observable funpayActivate: boolean = false
+  @observable settingsData: TSettingsData = {
+    funpayActivate: false,
+    titleStore: "Название магазина",
+    funpayKey: "",
+    countries: []
+  }
 
   constructor() {
     makeAutoObservable(this);
+  }
+
+  @action
+  handleSaveSettings (title: string, key: string, countriesSelect: any[]) {
+    runInAction (async () => {
+      const status = this.settingsData.funpayKey === key ? true : await this.checkFunpayKey(key) === 200
+      this.settingsData = {
+        funpayActivate: status ? true : false,
+        titleStore: title,
+        funpayKey: status ? key : "",
+        countries: countriesSelect
+      }
+    })
+    // this.settingsCountriesChoice = {
+    //   ...this.settingsCountriesChoice
+    // }
   }
 
   @action transformDate (date: string) {
@@ -90,12 +117,41 @@ export class MagazineStore {
         this.authorizate = false
       }
     }
+
+    this.connectToSteam()
   }
 
   @action
-  async postGame (appId: number, packageId: number, title: string) {
+  async postGame (appId: number, packageId: number, title: string, markup: number, regions: {region: string, shortDescr: string, fullDescr: string}[]) {
     try {
-      const resp = await axios.post(`http://147.45.74.68:35801/api/v2/items/items?steamId=${appId}&steamMainPackageId=${packageId}&customItemName=${title}`, null, {
+      const resp1 = await axios.post(`http://147.45.74.68:35801/api/v2/items/items?steamId=${appId}&steamMainPackageId=${packageId}&customItemName=${title}`, null, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
+
+
+      const resp2 = await axios.post(`http://147.45.74.68:35801/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+        "internalName": "string",
+        "genre": "string",
+        "shortDescriptionRu": "",
+        "longDescriptionRu": "",
+        "shortDescriptionEn": "",
+        "longDescriptionEn": "",
+        "overpaymentPercent": markup,
+        "items": regions.map(el => {
+          return {
+            "isOwnDescription": true,
+            "isActive": true,
+            "isDeactivatedAfterSale": true,
+            "country": el.region,
+            "shortDescriptionRu": el.shortDescr,
+            "longDescriptionRu": el.fullDescr,
+            "shortDescriptionEn": "string",
+            "longDescriptionEn": "string"
+          }
+        })
+      }, {
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
         }
@@ -108,7 +164,39 @@ export class MagazineStore {
 
       this.getGames()
 
+
+      console.log(resp1.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @action
+  async checkFunpayKey (key: string) {
+    try {
+      const resp = await axios.post(`http://147.45.74.68:35801/api/v2/funpay?goldenKey=${key}`, null, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
+
       console.log(resp.data)
+      return resp.status
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @action
+  async connectToSteam () {
+    try {
+      const resp1 = await axios.post("http://147.45.74.68:35801/api/v2/steam", null, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        },
+      })
+
+      console.log(resp1.data)
     } catch (error) {
       console.log(error)
     }
@@ -117,15 +205,30 @@ export class MagazineStore {
   @action
   async getSteamGame (appId: string | null) {
     try {
-      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/items/steam/${appId}`, {
+      const strCountryCodes = this.settingsData.countries.map(el => {
+        return `&countryCodes=${el.usename}`
+      }).join("")
+      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/steam/app?appIds=${appId}${strCountryCodes}`, {
+        // params: {
+        //   appIds: appId,
+        //   countryCodes: this.settingsData.countries.map(el => el.usename),
+        // },
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
-        }
+        },
       })
-      console.log(resp.data)
 
-      return await resp.data
+      if (resp.status === 200) {
+        console.log(resp.data.apps[0])
+        return resp.data.apps[0]
+      } else {
+        this.connectToSteam()
+      }
+
+      // return await resp.data
     } catch (error) {
+      console.log(error)
+      this.connectToSteam()
       return {
         lastUpdated: "",
         name: "",

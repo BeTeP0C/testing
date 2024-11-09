@@ -6,10 +6,14 @@ import { SettingsFormCountriesSelect } from "../SettingsFormCountriesSelect";
 type TSettingsFormInputCountries= {
   countriesChoice: {
     title: string,
+    usename: string,
+    code: string,
     id: number
   } [],
   countriesSelect: {
     title: string,
+    usename: string,
+    code: string,
     id: number
   } [],
   funcs: {

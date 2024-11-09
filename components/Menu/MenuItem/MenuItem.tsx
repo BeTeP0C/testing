@@ -8,10 +8,10 @@ type TMenuItemProps = {
   page: string,
   active: boolean,
   Icon:  ({ width, height }: IconProps) => React.JSX.Element,
-  // changePage: (page: string) => void
+  type: string
 }
 
-export const MenuItem = observer(({Icon, page, active}: TMenuItemProps) => {
+export const MenuItem = observer(({Icon, page, active, type}: TMenuItemProps) => {
   const store = useContext(StoreContext)
 
   return (
@@ -20,7 +20,7 @@ export const MenuItem = observer(({Icon, page, active}: TMenuItemProps) => {
         <Icon />
       </a> */}
 
-      <button onClick={() => {store.changePage(page)}} className={styles.link + " " + `${page === store.currentPage ? styles.link_active : ""}`}>
+      <button onClick={() => {store.changePage(page)}} className={styles.link + " " + `${page === store.currentPage ? styles.link_active : ""} ${type === "fill" && page === store.currentPage ? styles.link_active_fill : type === "stroke" && page === store.currentPage ? styles.link_active_stroke : ""}`}>
         <Icon />
       </button>
     </li>

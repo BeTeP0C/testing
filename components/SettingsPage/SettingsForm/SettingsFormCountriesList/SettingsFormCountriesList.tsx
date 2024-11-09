@@ -4,6 +4,8 @@ import { SettingsFormCountriesItem } from "../SettingsFormCountriesItem";
 
 type TSettingsFormCountriesList = {
   title: string,
+  usename: string,
+  code: string,
   id: number
 }
 
@@ -20,7 +22,7 @@ export function SettingsFormCountriesList (props: {countries:  TSettingsFormCoun
     <ul className={styles.list}>
       {countries.map(el => {
         return (
-          <SettingsFormCountriesItem key={el.id} title={el.title} id={el.id} type={type} funcs={funcs}/>
+          <SettingsFormCountriesItem key={el.id} usename={el.usename} code={el.code} title={el.title} id={el.id} type={type} funcs={funcs}/>
         )
       })}
     </ul>

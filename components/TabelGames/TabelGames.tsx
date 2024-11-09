@@ -10,17 +10,12 @@ export const TableGames = observer(() => {
   const magazineStore: MagazineStore = useContext(StoreContext)
 
   useEffect (() => {
-    // let  isFlag = true
-    // setTimeout(() => {
-
-    // }, 1000)
-    // if (isFlag) {
 
     magazineStore.getGames()
     console.log(magazineStore.isLoadingGames)
-    if (magazineStore.authorizate) {
+    // if (magazineStore.authorizate) {
 
-    }
+    // }
   }, [])
 
   return (

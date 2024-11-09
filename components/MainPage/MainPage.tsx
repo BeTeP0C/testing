@@ -23,20 +23,23 @@ export const MainPage = observer(() => {
   useEffect(() => {
     let mounted: boolean = true;
     magazineStore.postAuth()
-    if (mounted) {
-
-    }
+    // magazineStore.connectToSteam()
+    // console.log(magazineStore.currentPage)
 
     return () => {mounted = false}
   }, [magazineStore.authorizate])
-  // useEffect (() => {
 
-  // }, [magazineStore.authorizate])
+  // useEffect(() => {
+
+  // }, [])
+  // // useEffect (() => {
+
+  // // }, [magazineStore.authorizate])
 
   return (
     <Page>
       <StoreContext.Provider value={magazineStore}>
-        <Header />
+        <Header titleStore={magazineStore.settingsData.titleStore} funpayActivate={magazineStore.settingsData.funpayActivate}/>
         <Menu />
         <Main>
           <Content>
@@ -61,7 +64,7 @@ export const MainPage = observer(() => {
             {/* <StoreContext.Provider value={magazineStore}>
 
             </StoreContext.Provider> */}
-            <MainInfo />
+            <MainInfo funpayActivate={magazineStore.settingsData.funpayActivate}/>
           </Content>
         </Main>
 

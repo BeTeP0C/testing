@@ -14,9 +14,13 @@
   &_active {
     background: #3E68FE;
 
-    & path {
-      // fill: #ffffff;
+    &_fill path {
+      fill: #ffffff;
+    }
+
+    &_stroke path {
       stroke: #ffffff;
     }
+
   }
 }

@@ -5,6 +5,8 @@ import { SettingsFormCountriesList } from "../SettingsFormCountriesList";
 type TSettingsFormCountriesChoice = {
   countries: {
     title: string,
+    usename: string,
+    code: string,
     id: number
   } [],
   funcs: {

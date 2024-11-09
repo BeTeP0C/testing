@@ -29,7 +29,11 @@
   font-weight: 400;
   font-size: 12px;
   color: #ffffff;
-  background: #1B8F3C;
+  background: #AC2E2E;
+
+  &_active {
+    background: #1B8F3C;
+  }
 }
 
 .input {
