@@ -40,13 +40,16 @@ export const AddedGameInputId = observer(({setAppId, title, idError}: TAddedGame
 
       <div className={styles.right}>
         {store.isConnectSteam ?
-        store.isLoadingGame ? <span>Ищем игру...</span>
-        : store.isSearchGame ?
-        <>
-          {title ? <img className={styles.img} src={img.src} alt="" /> : ""}
-          <h3 className={styles.heading}>{title}</h3>
-        </> : <span>Игра не найдена</span>
-        : <span>Подключение к Steam...</span>}
+          store.settingsData.countries.length === 0 ?
+          <span>Добавьте в настройках страны</span> :
+            store.isLoadingGame ?
+            <span>Ищем игру...</span> :
+              store.isSearchGame ?
+              <>
+                {title ? <img className={styles.img} src={img.src} alt="" /> : ""}
+                <h3 className={styles.heading}>{title}</h3>
+              </> : <span>Игра не найдена</span>
+              : <span>Подключение к Steam...</span>}
       </div>
     </div>
   )
