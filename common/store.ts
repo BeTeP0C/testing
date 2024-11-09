@@ -20,6 +20,9 @@ export class MagazineStore {
   @observable isOpenEditForm: boolean = false
   @observable isSteam = []
   @observable isOpen: boolean = false;
+  @observable isConnectSteam: boolean = false
+  @observable isLoadingGame: boolean = false
+  @observable isSearchGame: boolean = true
   @observable authorizate: boolean = false
 
   @observable settingsCountriesChoice = settingsCountries
@@ -189,6 +192,7 @@ export class MagazineStore {
 
   @action
   async connectToSteam () {
+    this.isConnectSteam = false
     try {
       const resp1 = await axios.post("http://147.45.74.68:35801/api/v2/steam", null, {
         headers: {
@@ -200,10 +204,14 @@ export class MagazineStore {
     } catch (error) {
       console.log(error)
     }
+
+    this.isConnectSteam = true
   }
 
   @action
   async getSteamGame (appId: string | null) {
+    this.isLoadingGame = true
+    this.isSearchGame = false
     try {
       const strCountryCodes = this.settingsData.countries.map(el => {
         return `&countryCodes=${el.usename}`
@@ -220,14 +228,31 @@ export class MagazineStore {
 
       if (resp.status === 200) {
         console.log(resp.data.apps[0])
-        return resp.data.apps[0]
-      } else {
-        this.connectToSteam()
+        if (!resp.data.apps[0]) {
+          this.isSearchGame = false
+          // return {
+          //   lastUpdated: "",
+          //   name: "",
+          //   packages: [],
+          //   steamId: null
+          // }
+        } else {
+          this.isSearchGame = true
+          this.isLoadingGame = false
+          return resp.data.apps[0]
+        }
+
       }
+      //  else {
+      //   // this.isSearchGame = false
+      //   this.connectToSteam()
+      // }
 
       // return await resp.data
     } catch (error) {
       console.log(error)
+      // this.isSearchGame = false
+      this.isLoadingGame = false
       this.connectToSteam()
       return {
         lastUpdated: "",
@@ -236,6 +261,8 @@ export class MagazineStore {
         steamId: null
       }
     }
+
+    this.isLoadingGame = false
   }
 
   @action

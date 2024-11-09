@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useContext } from "react";
 import styles from "./styles.module.scss"
+import { observer } from "mobx-react-lite";
 import { AddedGameEditionList } from "../AddedGameEditionList";
+import { StoreContext } from "../../../../MainPage";
 
 type TAddedGameEditionChoice = {
   packages: {
@@ -14,11 +16,12 @@ type TAddedGameEditionChoice = {
   }
 }
 
-export function AddedGameEditionChoice ({packages, funcs}: TAddedGameEditionChoice) {
+export const AddedGameEditionChoice = observer(({packages, funcs}: TAddedGameEditionChoice) => {
+  const store = useContext(StoreContext)
 
   return (
     <div className={styles.container}>
-      <AddedGameEditionList editions={packages} funcs={funcs}/>
+      {store.isSearchGame ? <AddedGameEditionList editions={packages} funcs={funcs}/> : ""}
     </div>
   )
-}
+})

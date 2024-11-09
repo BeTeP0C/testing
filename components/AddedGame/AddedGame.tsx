@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss"
+import { observer } from "mobx-react-lite";
 import { AddedGameSteps } from "./AddedGameSteps";
 import { AddedGameForm } from "./AddedGameForm";
 import { AddedGameInputTitle } from "./AddedGameInputTitle";
@@ -21,7 +22,7 @@ import { AddedGameFormButtonCreate } from "./AddedGameForm/AddedGameFormButtonCr
 import { TEditionSteamGame } from "../../types/editionSteamGame";
 import { TEditionTransformSteamGame } from "../../types/editionTransformSteamGame";
 
-export function AddedGame () {
+export const AddedGame = observer(() => {
   const store: MagazineStore = useContext(StoreContext)
   const [packagesSelect, setPackagesSelect] = useState([])
   const [packagesChoice, setPackagesChoice] = useState([])
@@ -152,7 +153,11 @@ export function AddedGame () {
 
   useEffect(() => {
     (async () => {
-      appId ? setSteamGame(transformSteamGame(await store.getSteamGame(appId))) : false
+
+      if (appId) {
+        const steamGame = await store.getSteamGame(appId)
+        store.isSearchGame ? setSteamGame(transformSteamGame(steamGame)) : false
+      }
     })()
   }, [appId])
 
@@ -196,4 +201,4 @@ export function AddedGame () {
 
     </div>
   )
-}
+})
