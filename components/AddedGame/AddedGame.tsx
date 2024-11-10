@@ -192,7 +192,7 @@ export const AddedGame = observer(() => {
 
             <div className={styles.buttons}>
               <AddedGameFormButtonBack setIsNextStep={setIsNextStep}/>
-              {/* <AddedGameFormButtonCreate func={store.postGame} appId={Number(appId)} packageId={Number(packagesSelect[0]?.id)} title={title}/> */}
+              <AddedGameFormButtonCreate func={store.postGame} appId={Number(appId)} packageId={Number(packagesSelect[0]?.id)} title={title}/>
             </div>
           </div>
         </div>

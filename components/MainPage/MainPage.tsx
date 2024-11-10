@@ -22,7 +22,7 @@ export const MainPage = observer(() => {
   const [magazineStore, setMagazineStore] = useState(new MagazineStore())
   useEffect(() => {
     let mounted: boolean = true;
-    magazineStore.postAuth()
+    magazineStore.startLoadingPage()
     // magazineStore.connectToSteam()
     // console.log(magazineStore.currentPage)
 

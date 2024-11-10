@@ -18,13 +18,14 @@ export const AddedGameInputId = observer(({setAppId, title, idError}: TAddedGame
   const store: MagazineStore = useContext(StoreContext)
 
   const changeAppId = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (store.isConnectSteam) {
-      const value = e.currentTarget.value
-      clearTimeout(inputRef.current)
 
-      inputRef.current = setTimeout(() => {
-        setAppId(value)
-      }, 500)
+  }
+
+  const checkNumberInInput = (e: React.FormEvent<HTMLInputElement>) => {
+    const value = e.currentTarget.value
+
+    if (!/^\d+$/.test(value)) {
+      e.currentTarget.value = value.slice(0,-1)
     }
   }
 
@@ -35,7 +36,13 @@ export const AddedGameInputId = observer(({setAppId, title, idError}: TAddedGame
           App ID
           {idError.activate ? <span className={styles.error}>{idError.errorMessage}</span> : ""}
         </label>
-        <input onChange={(e) => changeAppId(e)} className={styles.input} type="number" name="id"/>
+        <input
+          onChange={(e) => changeAppId(e)}
+          onInput={(e) => checkNumberInInput(e)}
+          className={styles.input}
+          type="text"
+          name="id"
+        />
       </div>
 
       <div className={styles.right}>

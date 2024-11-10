@@ -17,7 +17,7 @@ import { StoreContext } from "../MainPage";
 export const SettingsPage = observer(() => {
   const store = useContext(StoreContext)
   const [countriesSelect, setCountriesSelect] = useState(store.settingsData.countries)
-  const [countriesChoice, setCountriesChoice] = useState(settingsCountries)
+  const [countriesChoice, setCountriesChoice] = useState(store.settingsCountriesChoice)
   const [titleStore, setTitleStore] = useState(store.settingsData.titleStore)
   const [funpayKey, setFunpayKey] = useState(store.settingsData.funpayKey)
 
@@ -30,6 +30,8 @@ export const SettingsPage = observer(() => {
     setCountriesChoice([...countriesChoice, countriesSelect.find(el => el.id === id)])
     setCountriesSelect(countriesSelect.filter(el => el.id !== id))
   }
+
+
 
   return (
     <div className={styles.container}>

@@ -13,6 +13,7 @@ export const AddedGameFormButtonCreate  = observer((props: {
     const store = useContext(StoreContext)
 
     return (
-      <button onClick={async () =>  store.postGame(appId,packageId,title)} className={styles.button}>Создать</button>
+      // <button onClick={async () =>  store.postGame(appId,packageId,title)} className={styles.button}>Создать</button>
+      <button onClick={() => func(appId, packageId, title) } className={styles.button}>Создать</button>
     )
 })

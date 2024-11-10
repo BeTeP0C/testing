@@ -1,5 +1,7 @@
 import axios from "axios";
+import jwt from "jsonwebtoken"
 import { action, autorun, makeAutoObservable, observable, runInAction } from "mobx";
+import { countryData } from "./transformCountriesForSettings";
 import { TGame } from "../types/tgames";
 import { TSettingsData } from "../types/settingsData";
 import { settingsCountries } from "./settingsCountries";
@@ -8,6 +10,8 @@ import { calendar } from "./calendar";
 // nwifyiudu4djeeu1cgcorripz4axevsx
 // nwifyiudu4djeeu1cgcorripz4axevsx
 // 2ea7r0yp6s5eznao043lkwsu3as6jxvm
+// 2ea7r0yp6s5eznao043lkwsu3as6jxvm
+// fyf9d0phfe9j5z3wekc8femp8dbcru7v
 export class MagazineStore {
   @observable games: TGame[] = [];
   @observable isLoadingGames: boolean = false;
@@ -24,17 +28,16 @@ export class MagazineStore {
   @observable isLoadingGame: boolean = false
   @observable isSearchGame: boolean = true
   @observable authorizate: boolean = false
-
-  @observable settingsCountriesChoice = settingsCountries
   @observable TOKEN: string =  ""
   @observable currentPage: string = 'main'
-  // @observable funpayActivate: boolean = false
   @observable settingsData: TSettingsData = {
     funpayActivate: false,
     titleStore: "Название магазина",
     funpayKey: "",
     countries: []
   }
+
+  @observable settingsCountriesChoice = settingsCountries
 
   constructor() {
     makeAutoObservable(this);
@@ -43,13 +46,33 @@ export class MagazineStore {
   @action
   handleSaveSettings (title: string, key: string, countriesSelect: any[]) {
     runInAction (async () => {
-      const status = this.settingsData.funpayKey === key ? true : await this.checkFunpayKey(key) === 200
+      const status = this.settingsData.funpayKey === key && this.settingsData.funpayKey !== "" ? true : await this.checkFunpayKey(key) === 200
       this.settingsData = {
         funpayActivate: status ? true : false,
         titleStore: title,
         funpayKey: status ? key : "",
         countries: countriesSelect
       }
+
+      this.changeSettingsCountriesChoice()
+
+      try {
+        const resp = await axios.patch(`http://147.45.74.68:35801/api/v2/profile/admin`, {
+          username: "admin",
+          email: title,
+          countries: countriesSelect.map(el => el.usename),
+          funPayGoldenKey: status ? key : ""
+        }, {
+          headers: {
+            "Authorization": `Bearer ${this.TOKEN}`
+          }
+        })
+
+        console.log(resp.data)
+      } catch (error) {
+        console.log(error)
+      }
+
     })
     // this.settingsCountriesChoice = {
     //   ...this.settingsCountriesChoice
@@ -94,6 +117,42 @@ export class MagazineStore {
   }
 
   @action
+  changeSettingsCountriesChoice () {
+    runInAction(() => {
+      this.settingsCountriesChoice = settingsCountries.map(el => {
+        let flag = true
+
+        for (let country of this.settingsData.countries) {
+          if (country.id === el.id) {
+            flag = false
+            break
+          }
+        }
+
+        if (flag) {
+          console.log(el.title)
+          return el
+        }
+      }).filter(Boolean)
+    })
+  }
+
+  @action
+  async startLoadingPage () {
+    await this.postAuth()
+    this.checkFunpayKeyActive()
+    await this.getSettingsData()
+
+    this.changeSettingsCountriesChoice()
+
+    await this.checkSteamConnect()
+
+    if (!this.isConnectSteam) {
+      this.connectToSteam()
+    }
+  }
+
+  @action
   async postAuth () {
     try {
       if (this.TOKEN === "") {
@@ -120,12 +179,73 @@ export class MagazineStore {
         this.authorizate = false
       }
     }
-
-    this.connectToSteam()
+    // this.connectToSteam()
   }
 
   @action
-  async postGame (appId: number, packageId: number, title: string, markup: number, regions: {region: string, shortDescr: string, fullDescr: string}[]) {
+  async checkSteamConnect () {
+    try {
+      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/status`, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
+
+      if (resp.data.steam === "alive") {
+        this.isConnectSteam = true
+      } else if (resp.data.steam) {
+        this.isConnectSteam = false
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @action
+  async checkFunpayKeyActive () {
+    try {
+      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/status`, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
+
+      if (resp.data.funPay === "alive") {
+        this.settingsData = {...this.settingsData, funpayActivate: true}
+      } else if (resp.data.funPay) {
+        this.settingsData = {...this.settingsData, funpayActivate: false}
+      }
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  @action
+  async getSettingsData () {
+    try {
+      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/profile/admin`, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
+      console.log(resp.data.countries)
+
+      this.settingsData = {...this.settingsData,
+        titleStore: resp.data.email,
+        funpayKey: resp.data.funPayGoldenKey,
+        countries: resp.data.countries.map((el: string) => countryData[el]).filter(Boolean)
+      }
+
+      console.log(resp.data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+
+  @action
+  // async postGame (appId: number, packageId: number, title: string, markup: number, regions: {region: string, shortDescr: string, fullDescr: string}[]) {
+  async postGame (appId: number, packageId: number, title: string) {
     try {
       const resp1 = await axios.post(`http://147.45.74.68:35801/api/v2/items/items?steamId=${appId}&steamMainPackageId=${packageId}&customItemName=${title}`, null, {
         headers: {
@@ -134,31 +254,31 @@ export class MagazineStore {
       })
 
 
-      const resp2 = await axios.post(`http://147.45.74.68:35801/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
-        "internalName": "string",
-        "genre": "string",
-        "shortDescriptionRu": "",
-        "longDescriptionRu": "",
-        "shortDescriptionEn": "",
-        "longDescriptionEn": "",
-        "overpaymentPercent": markup,
-        "items": regions.map(el => {
-          return {
-            "isOwnDescription": true,
-            "isActive": true,
-            "isDeactivatedAfterSale": true,
-            "country": el.region,
-            "shortDescriptionRu": el.shortDescr,
-            "longDescriptionRu": el.fullDescr,
-            "shortDescriptionEn": "string",
-            "longDescriptionEn": "string"
-          }
-        })
-      }, {
-        headers: {
-          "Authorization": `Bearer ${this.TOKEN}`
-        }
-      })
+      // const resp2 = await axios.post(`http://147.45.74.68:35801/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+      //   "internalName": "string",
+      //   "genre": "string",
+      //   "shortDescriptionRu": "",
+      //   "longDescriptionRu": "",
+      //   "shortDescriptionEn": "",
+      //   "longDescriptionEn": "",
+      //   "overpaymentPercent": markup,
+      //   "items": regions.map(el => {
+      //     return {
+      //       "isOwnDescription": true,
+      //       "isActive": true,
+      //       "isDeactivatedAfterSale": true,
+      //       "country": el.region,
+      //       "shortDescriptionRu": el.shortDescr,
+      //       "longDescriptionRu": el.fullDescr,
+      //       "shortDescriptionEn": "string",
+      //       "longDescriptionEn": "string"
+      //     }
+      //   })
+      // }, {
+      //   headers: {
+      //     "Authorization": `Bearer ${this.TOKEN}`
+      //   }
+      // })
 
       runInAction(() => {
         this.isOpenAddForm = false

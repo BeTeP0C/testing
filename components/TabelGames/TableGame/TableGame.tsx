@@ -37,7 +37,7 @@ export const TableGame = observer((props: {game: TGame}) => {
       <ul className={styles.listCell}>
         <li className={styles.cell}>{dateCreate}</li>
         <li className={styles.cell}>{game.steamItem.name}</li>
-        <li className={styles.cell}>{game.id}</li>
+        <li className={styles.cell}>{game.steamItemId}</li>
         <li className={styles.cell}>{game.lastUpdated}</li>
 
         {/* <li className={styles.item_error}>
