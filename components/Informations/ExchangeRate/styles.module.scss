@@ -115,3 +115,14 @@
 .valut {
   height: max-content
 }
+
+.update {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+
+  &_heading {
+    padding-bottom: 35px;
+  }
+}

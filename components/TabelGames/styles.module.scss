@@ -2,13 +2,13 @@
   position: relative;
   padding: 21px 42px;
   border-radius: 30px;
-  box-shadow: 0 4px 4px 0 rgba(#000000, 0.15);
+  // box-shadow: 0 4px 4px 0 rgba(#000000, 0.15);
   min-height: 300px;
   background: #ffffff;
 }
 
 .body {
-  max-height: 800px;
+  max-height: 77.78vh;
   overflow-y: auto;
 
   &::-webkit-scrollbar {

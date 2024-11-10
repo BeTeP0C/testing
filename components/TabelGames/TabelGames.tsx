@@ -10,12 +10,7 @@ export const TableGames = observer(() => {
   const magazineStore: MagazineStore = useContext(StoreContext)
 
   useEffect (() => {
-
     magazineStore.getGames()
-    console.log(magazineStore.isLoadingGames)
-    // if (magazineStore.authorizate) {
-
-    // }
   }, [])
 
   return (
@@ -23,7 +18,9 @@ export const TableGames = observer(() => {
       <ul className={styles.table}>
           <li className={styles.header}>
             <ul className={styles.listHeading}>
-              <li className={styles.heading}>Дата создания</li>
+              <li className={styles.heading}>
+                <button onClick={() => magazineStore.handleSortGameForDate()} className={styles.button}>Дата создания</button>
+              </li>
               <li className={styles.heading}>Название игры</li>
               <li className={styles.heading}>App ID</li>
               <li className={styles.heading}>Обновление</li>

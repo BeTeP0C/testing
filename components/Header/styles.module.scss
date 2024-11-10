@@ -21,6 +21,11 @@
   color: #1F222D;
 }
 
+.info {
+  display: flex;
+  // flex-direction: column;
+}
+
 .status {
   display: inline-flex;
   justify-content: center;
@@ -28,16 +33,37 @@
   padding: 10px;
   border-radius: 5px;
   min-width: 168px;
-  max-width: 180px;
+  max-width: 220px;
   height: 33px;
   font-weight: 400;
   line-height: 18px;
   background: transparent;
   color: #ffffff;
+  transition: background 0.3s ease;
+}
+
+.funpay {
+  color: #ffffff;
   background: #AC2E2E;
   transition: background 0.3s ease;
 
   &_active {
+    background: #1B8F3C;
+  }
+}
+
+.steam {
+  margin-right: 10px;
+
+  &_loading {
+    background: #f5d103;
+  }
+
+  &_unconnect {
+    background: #AC2E2E;
+  }
+
+  &_connect {
     background: #1B8F3C;
   }
 }

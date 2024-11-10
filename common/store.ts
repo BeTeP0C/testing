@@ -7,11 +7,6 @@ import { TSettingsData } from "../types/settingsData";
 import { settingsCountries } from "./settingsCountries";
 import { calendar } from "./calendar";
 
-// nwifyiudu4djeeu1cgcorripz4axevsx
-// nwifyiudu4djeeu1cgcorripz4axevsx
-// 2ea7r0yp6s5eznao043lkwsu3as6jxvm
-// 2ea7r0yp6s5eznao043lkwsu3as6jxvm
-// fyf9d0phfe9j5z3wekc8femp8dbcru7v
 export class MagazineStore {
   @observable games: TGame[] = [];
   @observable isLoadingGames: boolean = false;
@@ -24,6 +19,7 @@ export class MagazineStore {
   @observable isOpenEditForm: boolean = false
   @observable isSteam = []
   @observable isOpen: boolean = false;
+  @observable isLoadingConnectSteam: boolean = false
   @observable isConnectSteam: boolean = false
   @observable isLoadingGame: boolean = false
   @observable isSearchGame: boolean = true
@@ -74,9 +70,6 @@ export class MagazineStore {
       }
 
     })
-    // this.settingsCountriesChoice = {
-    //   ...this.settingsCountriesChoice
-    // }
   }
 
   @action transformDate (date: string) {
@@ -89,24 +82,24 @@ export class MagazineStore {
   @action
   async getGames () {
     this.isLoadingGames = true
-   try {
-    const resp = await axios.get("http://147.45.74.68:35801/api/v2/items", {
-      headers: {
-        "Authorization": `Bearer ${this.TOKEN}`
-      }
-    })
+    try {
+      const resp = await axios.get("http://147.45.74.68:35801/api/v2/items", {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
 
-    console.log(resp.data, "1", this.isLoadingGames)
-    runInAction(async () => {
-      this.games = await resp.data
-      this.games = this.games.map((game) => ({...game, lastUpdated: this.transformDate(game.lastUpdated)}))
-      this.isLoadingGames = false
-    })
-   } catch (error) {
-    console.log(this.TOKEN)
-    this.TOKEN = ""
-    this.authorizate = false
-   }
+      console.log(resp.data, "1", this.isLoadingGames)
+      runInAction(async () => {
+        this.games = await resp.data
+        this.games = this.games.map((game) => ({...game, lastUpdated: this.transformDate(game.lastUpdated)}))
+        this.isLoadingGames = false
+      })
+    } catch (error) {
+      console.log(this.TOKEN)
+      this.TOKEN = ""
+      this.authorizate = false
+    }
   }
 
   @action
@@ -152,6 +145,37 @@ export class MagazineStore {
     }
   }
 
+
+
+  @action
+  getMonthFromString(month: string): number {
+    const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
+    return months.indexOf(month);
+  }
+
+  parseDate(dateString: string): Date {
+    // Разделяем строку на части
+    const parts = dateString.split(' ');
+    const day = parseInt(parts[0].replace(' ноб.', ''), 10);
+    const month = this.getMonthFromString(parts[1]);
+    const year = parseInt(parts[2], 10);
+
+    // Создаем Date объект
+    return new Date(year, month, day);
+  }
+
+
+  handleSortGameForDate () {
+    this.games = this.games.sort((a, b) => {
+      // Парсим даты из строк
+      const dateA = new Date(this.parseDate(a.lastUpdated));
+      const dateB = new Date(this.parseDate(b.lastUpdated));
+
+      // Сравниваем даты
+      return dateB.getTime() - dateA.getTime(); // Сортировка по убыванию
+    });
+  }
+
   @action
   async postAuth () {
     try {
@@ -184,6 +208,7 @@ export class MagazineStore {
 
   @action
   async checkSteamConnect () {
+    this.isLoadingConnectSteam = true
     try {
       const resp = await axios.get(`http://147.45.74.68:35801/api/v2/status`, {
         headers: {
@@ -199,6 +224,8 @@ export class MagazineStore {
     } catch (error) {
       console.log(error)
     }
+
+    this.isLoadingConnectSteam = false
   }
 
   @action

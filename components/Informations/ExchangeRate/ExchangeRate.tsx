@@ -18,7 +18,7 @@ export function ExchangeRate () {
               <th className={styles.heading}>Изменение</th>
             </tr>
           </thead>
-          <tbody className={styles.body}>
+          {/* <tbody className={styles.body}>
             <tr className={styles.row}>
               <td className={styles.cell}>
                 <span className={styles.centering}>
@@ -75,8 +75,12 @@ export function ExchangeRate () {
                 -2,14
               </td>
             </tr>
-          </tbody>
+          </tbody> */}
         </table>
+      </div>
+
+      <div className={styles.update}>
+        <h3 className={styles.update_heading}>В разработке...</h3>
       </div>
 
       <span className={styles.bg}></span>

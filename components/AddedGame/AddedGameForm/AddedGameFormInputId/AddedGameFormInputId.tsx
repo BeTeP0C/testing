@@ -15,10 +15,16 @@ type TAddedGameInputId = {
 
 export const AddedGameInputId = observer(({setAppId, title, idError}: TAddedGameInputId) => {
   const inputRef = useRef(null)
+  const timeoutRef = useRef(null)
   const store: MagazineStore = useContext(StoreContext)
 
   const changeAppId = (e: React.ChangeEvent<HTMLInputElement>) => {
+    clearTimeout(timeoutRef.current)
 
+    timeoutRef.current = setTimeout(() => {
+      setAppId(inputRef.current.value)
+      clearTimeout(timeoutRef.current)
+    }, 500)
   }
 
   const checkNumberInInput = (e: React.FormEvent<HTMLInputElement>) => {
@@ -37,6 +43,7 @@ export const AddedGameInputId = observer(({setAppId, title, idError}: TAddedGame
           {idError.activate ? <span className={styles.error}>{idError.errorMessage}</span> : ""}
         </label>
         <input
+          ref={inputRef}
           onChange={(e) => changeAppId(e)}
           onInput={(e) => checkNumberInInput(e)}
           className={styles.input}
@@ -46,7 +53,8 @@ export const AddedGameInputId = observer(({setAppId, title, idError}: TAddedGame
       </div>
 
       <div className={styles.right}>
-        {store.isConnectSteam ?
+        {store.isLoadingConnectSteam ? <span>Подключение к Steam...</span> :
+          store.isConnectSteam ?
           store.settingsData.countries.length === 0 ?
           <span>Добавьте в настройках страны</span> :
             store.isLoadingGame ?
@@ -56,7 +64,22 @@ export const AddedGameInputId = observer(({setAppId, title, idError}: TAddedGame
                 {title ? <img className={styles.img} src={img.src} alt="" /> : ""}
                 <h3 className={styles.heading}>{title}</h3>
               </> : <span>Игра не найдена</span>
-              : <span>Подключение к Steam...</span>}
+              : ""
+
+
+        }
+
+        {/* {store.isConnectSteam ?
+          store.settingsData.countries.length === 0 ?
+          <span>Добавьте в настройках страны</span> :
+            store.isLoadingGame ?
+            <span>Ищем игру...</span> :
+              store.isSearchGame ?
+              <>
+                {title ? <img className={styles.img} src={img.src} alt="" /> : ""}
+                <h3 className={styles.heading}>{title}</h3>
+              </> : <span>Игра не найдена</span>
+              : <span>Подключение к Steam...</span>} */}
       </div>
     </div>
   )

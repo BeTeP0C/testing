@@ -75,23 +75,7 @@ export const AddedGame = observer(() => {
       }
     })
 
-    setFirstPageErrors(newErrors
-      // {
-      //   errorMessage: "Поле обязательно для заполнения",
-      //   visible: title !== "" ? false : true,
-      //   activate: false
-      // },
-      // {
-      //   errorMessage: "Поле обязательно для заполнения",
-      //   visible: appId ? false : true,
-      //   activate: false
-      // },
-      // {
-      //   errorMessage: "Выберите хотя бы одно издание",
-      //   visible: packagesSelect.length !== 0 ? false : true,
-      //   activate: false
-      // }
-    )
+    setFirstPageErrors(newErrors)
   }, [title, appId, packagesSelect])
 
   const transformSteamGame =  (game: TEditionSteamGame): TEditionTransformSteamGame => {
@@ -147,6 +131,7 @@ export const AddedGame = observer(() => {
   }
 
   useEffect(() => {
+    setPackagesSelect([])
     setPackagesChoice(steamGame.packages)
     console.log(steamGame)
   }, [steamGame])
