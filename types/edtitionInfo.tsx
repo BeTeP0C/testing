@@ -9,5 +9,6 @@ export type TEditionsOptions = {
     fullDescr: string,
     active: boolean
   } [],
-  active: boolean
+  active: boolean,
+  posted: boolean,
 }

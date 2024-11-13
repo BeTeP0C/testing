@@ -1,14 +1,16 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles.module.scss"
 import {v4 as uuidv4} from "uuid"
 import { TEditionsOptions } from "../../../../types/edtitionInfo";
 
 export function AddedGameFormTitleEdition (props: {editionOptions: TEditionsOptions[] | any[], setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>}) {
   const {editionOptions, setEditionOptions} = props
+  const [showList, setShowList] = useState(false)
+  const [editionSelect, setEditionSelect]: [string, React.Dispatch<string>] = useState(editionOptions.length !== 0 ? editionOptions.find(el => el.active).title : "Нет изданий")
 
-  const changeSelectTitle = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const changeSelectTitle = (e: React.MouseEvent<HTMLLIElement, MouseEvent>) => {
     setEditionOptions(editionOptions.map(el => {
-      if (el.title === e.currentTarget.value) {
+      if (el.title === e.currentTarget.textContent) {
         return {...el, active: true, regions: el.regions.map(region => {
           return {...region, active: false}
         })}
@@ -18,30 +20,48 @@ export function AddedGameFormTitleEdition (props: {editionOptions: TEditionsOpti
         })}
       }
     }))
+
+    setShowList(false)
   }
 
-  // useEffect (() => {
-  //   setEditionOptions(editionOptions.map(el => {
-  //     if (el.title === editionOptions[0].title) {
-  //       return {...el, active: true}
-  //     } else {
-  //       return {...el, active: false}
-  //     }
-  //   }))
-  // }, [editionOptions])
+  const handleShowList = () => {
+    setShowList(!showList)
+  }
+
+  useEffect(() => {
+    setEditionSelect(editionOptions.length !== 0 ? editionOptions.find(el => el.active).title : "Нет изданий")
+  }, [editionOptions])
 
   return (
     <div className={styles.container}>
-      <label htmlFor="editionTitle" className={styles.heading}>Издание</label>
+      <h3 className={styles.heading}>Издание</h3>
 
-      <select onChange={e => changeSelectTitle(e)} className={styles.title} name="" id="editionTitle">
-        {editionOptions.length !== 0 ?
-          editionOptions.map((el: TEditionsOptions) => (
-            <option key={el.id} value={el.title}>{el.title}</option>
-          )) : (
-            <option value="">Нет изданий</option>
-          )}
-      </select>
+      <div className={styles.select_block}>
+        <span onClick={() => handleShowList()} className={styles.edition_select}>{editionSelect}</span>
+
+        <span className={`${styles.icon} ${showList ? styles.icon_open : ""}`}></span>
+
+        <ul className={`${styles.list} ${showList ? styles.list_show : ""}`}>
+          {editionOptions.length !== 0 ?
+            editionOptions.map((el: TEditionsOptions) => {
+              if (el.posted) {
+                return (
+                  <li onClick={(e) => changeSelectTitle(e)} className={`${styles.item} ${styles.item_posted}`}>
+                    {el.title}
+                    <span className={styles.posted}></span>
+                  </li>
+                )
+              } else {
+                if (editionSelect !== el.title) {
+                  return <li onClick={(e) => changeSelectTitle(e)} className={styles.item}>{el.title}</li>
+                }
+
+                return ""
+              }
+            })
+          : ""}
+        </ul>
+      </div>
     </div>
   )
 }

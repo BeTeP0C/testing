@@ -43,7 +43,7 @@ export const Header = observer(() => {
                     store.isConnectSteam ? "Подключен" : "Не подключен"
                   }
                 </span>
-                <span data-testid="status" className={`${styles.status} ${store.settingsData.funpayActivate ? styles.funpay_active : ""}`}>
+                <span data-testid="status" className={`${styles.status} ${styles.funpay} ${store.settingsData.funpayActivate ? styles.funpay_active : ""}`}>
                   {"FunPay: "}
                   {
                     store.settingsData.funpayActivate ? "Активен" : "Не активен"

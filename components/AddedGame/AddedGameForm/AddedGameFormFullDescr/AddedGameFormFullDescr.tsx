@@ -2,10 +2,17 @@ import React, { useRef, useState } from "react";
 import styles from "./styles.module.scss"
 import { TEditionsOptions } from "../../../../types/edtitionInfo";
 
-export function AddedGameFormFullDescr (props: {editionsOptions: TEditionsOptions[], setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>}) {
-  const {editionsOptions, setEditionOptions} = props
+type TAddedGameFormFullDescr = {
+  editionsOptions: TEditionsOptions[],
+  setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>,
+  isGlobal: boolean,
+}
+
+export function AddedGameFormFullDescr (props: TAddedGameFormFullDescr) {
+  const {editionsOptions, setEditionOptions, isGlobal} = props
   const inputRef = useRef(null)
   const [amountSymbol, setAmountSymbol] = useState(0)
+  const [isShow, setIsShow] = useState(false)
 
   const saveInput = (e: React.FocusEvent<HTMLTextAreaElement, Element>) => {
     setEditionOptions(editionsOptions.map(el => {
@@ -24,6 +31,10 @@ export function AddedGameFormFullDescr (props: {editionsOptions: TEditionsOption
     }))
   }
 
+  const handleShowPrompt = () => {
+    setIsShow(!isShow)
+  }
+
   const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (amountSymbol <= 500) {
       setAmountSymbol(e.currentTarget.value.length)
@@ -39,18 +50,27 @@ export function AddedGameFormFullDescr (props: {editionsOptions: TEditionsOption
           return (
             <>
               {el.active ? (
-                <textarea
-                  ref={inputRef}
-                  onChange={(e) => handleChangeInput(e)}
-                  onBlur={(e) => saveInput(e)}
-                  maxLength={500}
-                  className={styles.input}
-                  name="full"
-                  placeholder="Введите полное описание товара..."
-                  defaultValue={el.fullDescr}
-                ></textarea>
+                <>
+                  <textarea
+                    ref={inputRef}
+                    onChange={(e) => handleChangeInput(e)}
+                    onBlur={(e) => saveInput(e)}
+                    maxLength={500}
+                    className={styles.input}
+                    name="full"
+                    placeholder="Введите полное описание товара..."
+                    defaultValue={el.fullDescr}
+                    disabled={isGlobal}
+                  ></textarea>
+                  <span className={styles.counter}>{amountSymbol}/500</span>
+                  {isGlobal ? <button className={styles.button} onClick={() => handleShowPrompt()}></button> : ""}
+                  {isShow && isGlobal ? <span className={`${styles.prompt}`}>
+                    Ввод запрещен <br />
+                    Отключите глобальный шаблон
+                    <span className={`${styles.tail}`}></span>
+                  </span> : ""}
+                </>
               ): ""}
-              <span className={styles.counter}>{amountSymbol}/500</span>
             </>
           )
         })}

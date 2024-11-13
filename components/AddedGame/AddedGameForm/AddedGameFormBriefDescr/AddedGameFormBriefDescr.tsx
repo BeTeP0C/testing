@@ -2,11 +2,18 @@ import React, { useRef, useState } from "react";
 import styles from "./styles.module.scss"
 import { TEditionsOptions } from "../../../../types/edtitionInfo";
 
-export function AddedGameFormBriefDescr (props: {editionsOptions: TEditionsOptions[], setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>}) {
-  const {editionsOptions, setEditionOptions} = props
+type TAddedGameFormBriefDescr = {
+  editionsOptions: TEditionsOptions[],
+  setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>,
+  isGlobal: boolean
+}
+
+export function AddedGameFormBriefDescr (props: TAddedGameFormBriefDescr) {
+  const {editionsOptions, setEditionOptions, isGlobal} = props
   const inputRef = useRef(null)
 
   const [amountSymbol, setAmountSymbol] = useState(0)
+  const [isShow, setIsShow] = useState(false)
 
   const saveInput = (e: React.FocusEvent<HTMLInputElement, Element> ) => {
     setEditionOptions(editionsOptions.map(el => {
@@ -31,6 +38,10 @@ export function AddedGameFormBriefDescr (props: {editionsOptions: TEditionsOptio
     }
   }
 
+  const handleShowPrompt = () => {
+    setIsShow(!isShow)
+  }
+
   return (
     <div className={styles.container}>
       <label className={styles.title} htmlFor="brief">Краткое описание</label>
@@ -40,19 +51,28 @@ export function AddedGameFormBriefDescr (props: {editionsOptions: TEditionsOptio
           return (
             <>
               {el.active ? (
-                <input
-                ref={inputRef}
-                onChange={(e) => handleChangeInput(e)}
-                onBlur={(e) => saveInput(e)}
-                maxLength={100}
-                className={styles.input}
-                type="text"
-                name="brief"
-                placeholder="Введите краткое описание товара..."
-                defaultValue={el.briefDescr}
-                />
+                <>
+                  <input
+                    ref={inputRef}
+                    onChange={(e) => handleChangeInput(e)}
+                    onBlur={(e) => saveInput(e)}
+                    maxLength={100}
+                    className={styles.input}
+                    type="text"
+                    name="brief"
+                    placeholder="Введите краткое описание товара..."
+                    defaultValue={el.briefDescr}
+                  />
+
+                  <span className={styles.counter}>{amountSymbol}/100</span>
+                  {isGlobal ? <button className={styles.button} onClick={() => handleShowPrompt()}></button> : ""}
+                  {isShow ? <span className={`${styles.prompt} ${isShow ? styles.prompt_show : ""}`}>
+                    Ввод запрещен <br />
+                    Отключите глобальный шаблон
+                    <span className={`${styles.tail}`}></span>
+                  </span> : ""}
+                </>
               ): ""}
-              <span className={styles.counter}>{amountSymbol}/100</span>
             </>
           )
         })}

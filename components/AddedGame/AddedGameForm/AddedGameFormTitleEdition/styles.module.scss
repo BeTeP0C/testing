@@ -11,7 +11,8 @@
   color: #26292F;
 }
 
-.title {
+.select_block {
+  position: relative;
   padding: 11px 10px;
   border: 2px solid #3E68FE;
   border-radius: 5px;
@@ -19,3 +20,89 @@
   background: transparent;
 }
 
+.icon {
+  position: absolute;
+  top: calc(50% + 2px);
+  transform: translateY(-50%);
+  right: 10px;
+  width: 15px;
+  height: 9px;
+
+  &::after, &::before {
+    content: "";
+    position: absolute;
+    top: 3px;
+    width: 10px;
+    height: 2px;
+    transition: transform 0.3s ease;
+    background: #26292F;
+  }
+
+  &::after {
+    left: -1px;
+    transform: rotate(45deg);
+  }
+
+  &::before {
+    right: 0;
+    transform: rotate(-45deg);
+  }
+
+  &_open {
+    &::after {
+      transform: rotate(-45deg);
+    }
+
+    &::before {
+      transform: rotate(45deg);
+    }
+  }
+
+  z-index: -1;
+}
+
+.edition_select {
+  display: block;
+  font-weight: 400;
+  font-size: 14px;
+  color: #26292F;
+  cursor: pointer;
+}
+
+.list {
+  position: absolute;
+  right: -2px;
+  top: calc(100% - 1px);
+  left: -2px;
+  border: 2px solid #3E68FE;
+  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 5px;
+  background: #ffffff;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+
+  &_show {
+    opacity: 1;
+    visibility: visible;
+  }
+  z-index: 1000;
+}
+
+.item {
+  padding: 20px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #26292F;
+  cursor: pointer;
+  background: transparent;
+  transition: background 0.3s ease;
+
+  &:not(:last-child) {
+    border-bottom: 2px solid #3E68FE;
+  }
+
+  &:hover {
+    background: rgba(#808080, 0.2);
+  }
+}

@@ -13,20 +13,6 @@ export const menu = [
     type: "stroke"
   },
   {
-    id: 2,
-    Icon: Stats,
-    page: "",
-    active: false,
-    type: "fill"
-  },
-  {
-    id: 3,
-    Icon: Card,
-    page: "",
-    active: false,
-    type: "fill"
-  },
-  {
     id: 4,
     Icon: Settings,
     page: "settings",

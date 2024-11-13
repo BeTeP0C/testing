@@ -167,17 +167,13 @@ export const AddedGame = observer(() => {
             <AddedGameFormRegion editionsOptions={editionsOptions} setEditionOptions={setEditionOptions}/>
             <AddedGameFormGlobal setIsGlobal={setIsGlobal}/>
             <AddedGameFormMarkup editionsOptions={editionsOptions} setEditionOptions={setEditionOptions}/>
-            {!isGlobal ? (
-              <>
-                <AddedGameFormBriefDescr editionsOptions={editionsOptions} setEditionOptions={setEditionOptions}/>
-                <AddedGameFormFullDescr editionsOptions={editionsOptions} setEditionOptions={setEditionOptions}/>
-              </>
-            ): ""}
+            <AddedGameFormBriefDescr isGlobal={isGlobal} editionsOptions={editionsOptions} setEditionOptions={setEditionOptions}/>
+            <AddedGameFormFullDescr isGlobal={isGlobal} editionsOptions={editionsOptions} setEditionOptions={setEditionOptions}/>
             <AddedGameFormPrices />
 
             <div className={styles.buttons}>
               <AddedGameFormButtonBack setIsNextStep={setIsNextStep}/>
-              <AddedGameFormButtonCreate func={store.postGame} appId={Number(appId)} packageId={Number(packagesSelect[0]?.id)} title={title}/>
+              <AddedGameFormButtonCreate appId={Number(appId)} packageId={Number(packagesSelect[0]?.id)} title={title} isGlobal={isGlobal} titleGame={steamGame.name} editionsOptions={editionsOptions}/>
             </div>
           </div>
         </div>

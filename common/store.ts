@@ -6,6 +6,7 @@ import { TGame } from "../types/tgames";
 import { TSettingsData } from "../types/settingsData";
 import { settingsCountries } from "./settingsCountries";
 import { calendar } from "./calendar";
+import { TEditionsOptions } from "../types/edtitionInfo";
 
 export class MagazineStore {
   @observable games: TGame[] = [];
@@ -53,7 +54,7 @@ export class MagazineStore {
       this.changeSettingsCountriesChoice()
 
       try {
-        const resp = await axios.patch(`http://147.45.74.68:35801/api/v2/profile/admin`, {
+        const resp = await axios.patch(`http://147.45.74.68:35805/api/v2/profile/admin`, {
           username: "admin",
           email: title,
           countries: countriesSelect.map(el => el.usename),
@@ -72,27 +73,29 @@ export class MagazineStore {
     })
   }
 
-  @action transformDate (date: string) {
-    const [year, mounth, day] = date.split("T")[0].split("-")
-    const [hour, min] = date.split("T")[1].split(".")[0].split(":")
-
-    return `${day} ${calendar[Number(mounth)- 1]}. ${year} ${hour}:${min}`
-  }
-
   @action
   async getGames () {
     this.isLoadingGames = true
     try {
-      const resp = await axios.get("http://147.45.74.68:35801/api/v2/items", {
+      const resp = await axios.get("http://147.45.74.68:35805/api/v2/items", {
         headers: {
-          "Authorization": `Bearer ${this.TOKEN}`
+          "Authorization": `Bearer ${this.TOKEN}`,
         }
       })
 
-      console.log(resp.data, "1", this.isLoadingGames)
+      // const resp = await axios.delete("http://147.45.74.68:35805/api/v2/items/7",)
+
+      // const resp = fetch("http://147.45.74.68:35805/api/v2/items", {
+      //   headers: {
+      //     "Authorization": `Bearer ${this.TOKEN}`,
+      //   }
+      // }).then(resp => resp.json()).then(data => console.log(data)).catch(error => console.log(error))
+
+      console.log(resp.data)
       runInAction(async () => {
         this.games = await resp.data
         this.games = this.games.map((game) => ({...game, lastUpdated: this.transformDate(game.lastUpdated)}))
+        this.sortGameForDate("bottom")
         this.isLoadingGames = false
       })
     } catch (error) {
@@ -145,34 +148,36 @@ export class MagazineStore {
     }
   }
 
+  @action transformDate (date: string) {
+    const [year, mounth, day] = date.split("T")[0].split("-")
+    const [hour, min] = date.split("T")[1].split(".")[0].split(":")
 
+    return `${day} ${calendar[Number(mounth)- 1]}. ${year} ${hour}:${min}`
+  }
 
-  @action
   getMonthFromString(month: string): number {
-    const months = ['янв', 'фев', 'мар', 'апр', 'май', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'];
-    return months.indexOf(month);
+    return calendar.indexOf(month);
   }
 
   parseDate(dateString: string): Date {
-    // Разделяем строку на части
     const parts = dateString.split(' ');
-    const day = parseInt(parts[0].replace(' ноб.', ''), 10);
-    const month = this.getMonthFromString(parts[1]);
+    const day = parseInt(parts[0], 10);
+    const month = this.getMonthFromString(parts[1].split(".")[0]);
     const year = parseInt(parts[2], 10);
 
-    // Создаем Date объект
     return new Date(year, month, day);
   }
 
-
-  handleSortGameForDate () {
+  sortGameForDate (type: string) {
     this.games = this.games.sort((a, b) => {
-      // Парсим даты из строк
       const dateA = new Date(this.parseDate(a.lastUpdated));
       const dateB = new Date(this.parseDate(b.lastUpdated));
 
-      // Сравниваем даты
-      return dateB.getTime() - dateA.getTime(); // Сортировка по убыванию
+      if (type === "bottom") {
+        return dateB.getTime() - dateA.getTime()
+      } else if (type === "top") {
+        return dateA.getTime() - dateB.getTime()
+      }
     });
   }
 
@@ -181,7 +186,7 @@ export class MagazineStore {
     try {
       if (this.TOKEN === "") {
         console.log(this.TOKEN, 2)
-        const resp = await axios.post("http://147.45.74.68:35801/api/auth", {
+        const resp = await axios.post("http://147.45.74.68:35805/api/auth", {
           username: "admin",
           password: "passadmin"
         })
@@ -203,14 +208,13 @@ export class MagazineStore {
         this.authorizate = false
       }
     }
-    // this.connectToSteam()
   }
 
   @action
   async checkSteamConnect () {
     this.isLoadingConnectSteam = true
     try {
-      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/status`, {
+      const resp = await axios.get(`http://147.45.74.68:35805/api/v2/status`, {
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
         }
@@ -231,7 +235,7 @@ export class MagazineStore {
   @action
   async checkFunpayKeyActive () {
     try {
-      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/status`, {
+      const resp = await axios.get(`http://147.45.74.68:35805/api/v2/status`, {
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
         }
@@ -250,7 +254,7 @@ export class MagazineStore {
   @action
   async getSettingsData () {
     try {
-      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/profile/admin`, {
+      const resp = await axios.get(`http://147.45.74.68:35805/api/v2/profile/admin`, {
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
         }
@@ -271,34 +275,79 @@ export class MagazineStore {
 
 
   @action
-  // async postGame (appId: number, packageId: number, title: string, markup: number, regions: {region: string, shortDescr: string, fullDescr: string}[]) {
-  async postGame (appId: number, packageId: number, title: string) {
+  async postGame (
+    appId: number,
+    packageId: number,
+    title: string,
+    titleGame: string,
+    // titlePackage: string,
+    // markup: number,
+    isGlobal: boolean,
+    // regions: {
+    //   region: string,
+    //   shortDescr: string,
+    //   fullDescr: string
+    // }[],
+    editionSelect: TEditionsOptions
+  ) {
+  // async postGame (appId: number, packageId: number, title: string) {
     try {
-      const resp1 = await axios.post(`http://147.45.74.68:35801/api/v2/items/items?steamId=${appId}&steamMainPackageId=${packageId}&customItemName=${title}`, null, {
-        headers: {
-          "Authorization": `Bearer ${this.TOKEN}`
-        }
-      })
+      // const resp1 = await axios.post(`http://147.45.74.68:35805/api/v2/items/items?steamId=${appId}&steamMainPackageId=${packageId}&customItemName=${title}`, null, {
+      //   headers: {
+      //     "Authorization": `Bearer ${this.TOKEN}`
+      //   }
+      // })
+      // console.log(resp1.data)
 
-
-      // const resp2 = await axios.post(`http://147.45.74.68:35801/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
-      //   "internalName": "string",
-      //   "genre": "string",
-      //   "shortDescriptionRu": "",
-      //   "longDescriptionRu": "",
-      //   "shortDescriptionEn": "",
-      //   "longDescriptionEn": "",
-      //   "overpaymentPercent": markup,
-      //   "items": regions.map(el => {
+      // const data = {
+      //   internalName: `${titleGame}.${editionSelect.title}`,
+      //   genre: "",
+      //   shortDescriptionRu: "",
+      //   longDescriptionRu: "",
+      //   shortDescriptionEn: "",
+      //   longDescriptionEn: "",
+      //   overpaymentPercent: editionSelect.regions[0].markup,
+      //   items: editionSelect.regions.map(el => {
       //     return {
-      //       "isOwnDescription": true,
-      //       "isActive": true,
-      //       "isDeactivatedAfterSale": true,
-      //       "country": el.region,
-      //       "shortDescriptionRu": el.shortDescr,
-      //       "longDescriptionRu": el.fullDescr,
-      //       "shortDescriptionEn": "string",
-      //       "longDescriptionEn": "string"
+      //       isOwnDescription: isGlobal,
+      //       isActive: true,
+      //       isDeactivatedAfterSale: true,
+      //       country: el.region,
+      //       shortDescriptionRu: el.briefDescr,
+      //       longDescriptionRu: el.fullDescr,
+      //       shortDescriptionEn: "",
+      //       longDescriptionEn: ""
+      //     }
+      //   })
+      // }
+
+      // const resp2 = await fetch(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+      //   method: "POST",
+      //   headers: {
+      //     "Authorization": `Bearer ${this.TOKEN}`,
+      //     "Content-Type": "application/json"
+      //   },
+      //   body: JSON.stringify(data)
+      // }).then(resp => resp.json()).then(datas => console.log(datas))
+
+      // const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+      //   internalName: `${titleGame}.${editionSelect.title}`,
+      //   genre: "",
+      //   shortDescriptionRu: "",
+      //   longDescriptionRu: "",
+      //   shortDescriptionEn: "",
+      //   longDescriptionEn: "",
+      //   overpaymentPercent: editionSelect.regions[0].markup,
+      //   items: editionSelect.regions.map(el => {
+      //     return {
+      //       isOwnDescription: isGlobal,
+      //       isActive: true,
+      //       isDeactivatedAfterSale: true,
+      //       country: el.region,
+      //       shortDescriptionRu: el.briefDescr,
+      //       longDescriptionRu: el.fullDescr,
+      //       shortDescriptionEn: "",
+      //       longDescriptionEn: ""
       //     }
       //   })
       // }, {
@@ -306,6 +355,72 @@ export class MagazineStore {
       //     "Authorization": `Bearer ${this.TOKEN}`
       //   }
       // })
+
+      // const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=17`, {
+      //   "internalName": `Factorio`,
+      //   "genre": "Экшен",
+      //   "shortDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы",
+      //   "longDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
+      //   "shortDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo",
+      //   "longDescriptionEn": "fjdsfko kdsfopkds ofk dsmf `mdsfopm dsopfm odspmfopmdsfo",
+      //   "overpaymentPercent": 20,
+      //   "items": [
+      //     {
+      //       "isOwnDescription": false,
+      //       "isActive": true,
+      //       "isDeactivatedAfterSale": true,
+      //       "country": "Россия",
+      //       "shortDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
+      //       "longDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
+      //       "shortDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo",
+      //       "longDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo"
+      //     },
+      //     {
+      //       "isOwnDescription": false,
+      //       "isActive": true,
+      //       "isDeactivatedAfterSale": true,
+      //       "country": "Казахстан",
+      //       "shortDescriptionRu": "project zomboid project zomboidм project zomboid project zomboid",
+      //       "longDescriptionRu": "project zomboid project zomboidм project zomboid project zomboid",
+      //       "shortDescriptionEn": "project zomboid project zomboidм project zomboid project zomboid",
+      //       "longDescriptionEn": "project zomboid project zomboidм project zomboid project zomboid"
+      //     }
+      //   ]
+
+      // }, {
+      //   headers: {
+      //     "Authorization": `Bearer ${this.TOKEN}`
+      //   }
+      // })
+
+      // const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+      //   "internalName": `${titleGame}.${editionSelect.title}`,
+      //   "genre": "",
+      //   "shortDescriptionRu": "",
+      //   "longDescriptionRu": "",
+      //   "shortDescriptionEn": "",
+      //   "longDescriptionEn": "",
+      //   "overpaymentPercent": editionSelect.regions[0].markup,
+      //   "items": editionSelect.regions.map(el => {
+      //     return {
+      //       "isOwnDescription": isGlobal,
+      //       "isActive": true,
+      //       "isDeactivatedAfterSale": true,
+      //       "country": el.region,
+      //       "shortDescriptionRu": el.briefDescr,
+      //       "longDescriptionRu": el.fullDescr,
+      //       "shortDescriptionEn": "",
+      //       "longDescriptionEn": ""
+      //     }
+      //   })
+      // }, {
+      //   headers: {
+      //     "Authorization": `Bearer ${this.TOKEN}`
+      //   }
+      // })
+
+      // console.log(resp2.data)
+
 
       runInAction(() => {
         this.isOpenAddForm = false
@@ -315,7 +430,7 @@ export class MagazineStore {
       this.getGames()
 
 
-      console.log(resp1.data)
+      // console.log(resp1.data)
     } catch (error) {
       console.log(error)
     }
@@ -324,7 +439,7 @@ export class MagazineStore {
   @action
   async checkFunpayKey (key: string) {
     try {
-      const resp = await axios.post(`http://147.45.74.68:35801/api/v2/funpay?goldenKey=${key}`, null, {
+      const resp = await axios.post(`http://147.45.74.68:35805/api/v2/funpay?goldenKey=${key}`, null, {
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
         }
@@ -341,7 +456,7 @@ export class MagazineStore {
   async connectToSteam () {
     this.isConnectSteam = false
     try {
-      const resp1 = await axios.post("http://147.45.74.68:35801/api/v2/steam", null, {
+      const resp1 = await axios.post("http://147.45.74.68:35805/api/v2/steam", null, {
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
         },
@@ -363,26 +478,15 @@ export class MagazineStore {
       const strCountryCodes = this.settingsData.countries.map(el => {
         return `&countryCodes=${el.usename}`
       }).join("")
-      const resp = await axios.get(`http://147.45.74.68:35801/api/v2/steam/app?appIds=${appId}${strCountryCodes}`, {
-        // params: {
-        //   appIds: appId,
-        //   countryCodes: this.settingsData.countries.map(el => el.usename),
-        // },
+      const resp = await axios.get(`http://147.45.74.68:35805/api/v2/steam/app?appIds=${appId}${strCountryCodes}`, {
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
         },
       })
 
       if (resp.status === 200) {
-        console.log(resp.data.apps[0])
         if (!resp.data.apps[0]) {
           this.isSearchGame = false
-          // return {
-          //   lastUpdated: "",
-          //   name: "",
-          //   packages: [],
-          //   steamId: null
-          // }
         } else {
           this.isSearchGame = true
           this.isLoadingGame = false
@@ -390,15 +494,8 @@ export class MagazineStore {
         }
 
       }
-      //  else {
-      //   // this.isSearchGame = false
-      //   this.connectToSteam()
-      // }
-
-      // return await resp.data
     } catch (error) {
       console.log(error)
-      // this.isSearchGame = false
       this.isLoadingGame = false
       this.connectToSteam()
       return {
