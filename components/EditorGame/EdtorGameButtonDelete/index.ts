@@ -1,1 +1,1 @@
-export * from "./EditorGameButtonDelete"
+export * from "./EditorGameButtonDelete";

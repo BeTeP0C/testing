@@ -1,1 +1,1 @@
-export * from "./styles.module.scss"
+export * from "./styles.module.scss";

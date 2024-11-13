@@ -1,1 +1,1 @@
-export * from "./AddedGameFormBriefDescr"
+export * from "./AddedGameFormBriefDescr";

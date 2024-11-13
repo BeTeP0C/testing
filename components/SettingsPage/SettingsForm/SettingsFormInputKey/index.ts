@@ -1,1 +1,1 @@
-export * from "./SettingsFormInputKey"
+export * from "./SettingsFormInputKey";

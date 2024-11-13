@@ -1,1 +1,1 @@
-export * from "./AddedGameFormButton"
+export * from "./AddedGameFormButton";

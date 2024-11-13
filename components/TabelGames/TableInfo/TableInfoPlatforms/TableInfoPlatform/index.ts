@@ -1,1 +1,1 @@
-export * from "./TableInfoPlatform"
+export * from "./TableInfoPlatform";

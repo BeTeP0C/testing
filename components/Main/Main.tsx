@@ -1,12 +1,10 @@
 import React from "react";
-import styles from "./styles.module.scss"
+import styles from "./styles.module.scss";
 
 type TMainProps = {
-  children: React.ReactNode
-}
+  children: React.ReactNode;
+};
 
-export function Main ({children}: TMainProps) {
-  return (
-    <main className={styles.main}>{children}</main>
-  )
+export function Main({ children }: TMainProps) {
+  return <main className={styles.main}>{children}</main>;
 }

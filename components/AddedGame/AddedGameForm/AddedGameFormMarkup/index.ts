@@ -1,1 +1,1 @@
-export * from "./AddedGameFormMarkup"
+export * from "./AddedGameFormMarkup";

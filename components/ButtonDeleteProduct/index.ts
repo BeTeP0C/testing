@@ -1,1 +1,1 @@
-export * from "./ButtonDeleteProduct"
+export * from "./ButtonDeleteProduct";

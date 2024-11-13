@@ -1,18 +1,20 @@
 import React, { memo } from "react";
-import styles from "./styles.module.scss"
+import styles from "./styles.module.scss";
 import { TableInfoPackage } from "./TableInfoPackage";
 import { TableInfoStores } from "./TableInfoStores";
-import { TGameInfo} from "../../../types/tgames";
-import { TGameInfoStore } from "../../../types/tgames";
-import { TGameInfoPackage } from "../../../types/tgames";
+import {
+  TGameInfo,
+  TGameInfoStore,
+  TGameInfoPackage,
+} from "../../../types/tgames";
 
-export const TableInfo = memo((props: {packages: TGameInfoPackage []}) => {
-  const {packages} = props
+export const TableInfo = memo((props: { packages: TGameInfoPackage[] }) => {
+  const { packages } = props;
 
   return (
     <div className={styles.content}>
-      <TableInfoPackage packages={packages}/>
+      <TableInfoPackage packages={packages} />
       {/* <TableInfoStores stores={stores}/> */}
     </div>
-  )
-})
+  );
+});

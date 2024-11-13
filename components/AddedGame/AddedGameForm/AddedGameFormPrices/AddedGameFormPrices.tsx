@@ -1,7 +1,7 @@
 import React from "react";
-import styles from "./styles.module.scss"
+import styles from "./styles.module.scss";
 
-export function AddedGameFormPrices () {
+export function AddedGameFormPrices() {
   return (
     <div className={styles.container}>
       <div className={styles.not_markup}>
@@ -13,5 +13,5 @@ export function AddedGameFormPrices () {
         <span className={styles.price}>1204 рую.</span>
       </div>
     </div>
-  )
+  );
 }

@@ -1,1 +1,1 @@
-export * from "./TableInfoStores"
+export * from "./TableInfoStores";

@@ -1,1 +1,1 @@
-export * from "./TableInfoHug"
+export * from "./TableInfoHug";

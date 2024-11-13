@@ -1,8 +1,8 @@
-import {render} from "@testing-library/react"
-import { Menu } from "./Menu"
+import { render } from "@testing-library/react";
+import { Menu } from "./Menu";
 
 describe("Test Menu", () => {
-  test ("Render Menu", () => {
-    render(<Menu />)
-  })
-})
+  test("Render Menu", () => {
+    render(<Menu />);
+  });
+});

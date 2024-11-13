@@ -1,14 +1,14 @@
-import React from "react"
-import styles from "./styles.module.scss"
-import main_styles from '../informations.module.scss'
-import { Ukraine } from "../../Icons/CoutryFlags/Ukraine"
-import { Belarus } from "../../Icons/CoutryFlags/Belarus"
-import { Kazahstan } from "../../Icons/CoutryFlags/Kazahstan"
-import { USA } from "../../Icons/CoutryFlags/USA"
+import React from "react";
+import styles from "./styles.module.scss";
+import main_styles from "../informations.module.scss";
+import { Ukraine } from "../../Icons/CoutryFlags/Ukraine";
+import { Belarus } from "../../Icons/CoutryFlags/Belarus";
+import { Kazahstan } from "../../Icons/CoutryFlags/Kazahstan";
+import { USA } from "../../Icons/CoutryFlags/USA";
 
-export function ExchangeRate () {
+export function ExchangeRate() {
   return (
-    <li className={main_styles.info + " " + styles.info}>
+    <li className={`${main_styles.info} ${styles.info}`}>
       <div className={styles.content}>
         <table className={styles.table}>
           <thead className={styles.header}>
@@ -83,7 +83,7 @@ export function ExchangeRate () {
         <h3 className={styles.update_heading}>В разработке...</h3>
       </div>
 
-      <span className={styles.bg}></span>
+      <span className={styles.bg} />
     </li>
-  )
+  );
 }

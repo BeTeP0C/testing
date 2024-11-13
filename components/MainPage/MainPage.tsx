@@ -1,6 +1,7 @@
 import React, { useEffect, useState, createContext } from "react";
-import styles from "./styles.module.scss"
-import {Page} from "../Page";
+import { observer } from "mobx-react-lite";
+import styles from "./styles.module.scss";
+import { Page } from "../Page";
 import { Header } from "../Header";
 import { Menu } from "../Menu";
 import { Main } from "../Main";
@@ -11,20 +12,20 @@ import { ButtonDeleteProduct } from "../ButtonDeleteProduct";
 import { TableGames } from "../TabelGames";
 import { MainInfo } from "../MainInfo";
 import { ActionsOverGame } from "../ActionsOverGame";
-import { observer } from "mobx-react-lite";
 import { MagazineStore } from "../../common/store";
 import { SettingsPage } from "../SettingsPage";
 
-export const StoreContext = createContext(null)
+export const StoreContext = createContext(null);
 
 export const MainPage = observer(() => {
-  const [magazineStore, setMagazineStore] = useState(new MagazineStore())
+  const [magazineStore, setMagazineStore] = useState(new MagazineStore());
   useEffect(() => {
     let mounted: boolean = true;
-    magazineStore.startLoadingPage()
-    return () => {mounted = false}
-  }, [magazineStore.authorizate])
-
+    magazineStore.startLoadingPage();
+    return () => {
+      mounted = false;
+    };
+  }, [magazineStore.authorizate]);
 
   return (
     <Page>
@@ -36,27 +37,37 @@ export const MainPage = observer(() => {
             {magazineStore.currentPage === "main" ? (
               <>
                 <ButtonsStateProduct>
-                  <ButtonAddProduct store={magazineStore}/>
-                  {magazineStore.isOpenGameInfo.open ? <ButtonDeleteProduct store={magazineStore}/> : ""}
+                  <ButtonAddProduct store={magazineStore} />
+                  {magazineStore.isOpenGameInfo.open ? (
+                    <ButtonDeleteProduct store={magazineStore} />
+                  ) : (
+                    ""
+                  )}
                 </ButtonsStateProduct>
 
-                {magazineStore.authorizate ?  <TableGames />: ""}
+                {magazineStore.authorizate ? <TableGames /> : ""}
               </>
-            ) : ""}
+            ) : (
+              ""
+            )}
 
             {magazineStore.currentPage === "settings" ? (
               <>
                 <h2 className={styles.heading}>Настройки</h2>
                 <SettingsPage />
               </>
-            ) : ""}
+            ) : (
+              ""
+            )}
 
-            <MainInfo funpayActivate={magazineStore.settingsData.funpayActivate}/>
+            <MainInfo
+              funpayActivate={magazineStore.settingsData.funpayActivate}
+            />
           </Content>
         </Main>
 
-        <ActionsOverGame store={magazineStore}/>
+        <ActionsOverGame store={magazineStore} />
       </StoreContext.Provider>
     </Page>
-  )
-})
+  );
+});

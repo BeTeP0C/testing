@@ -1,1 +1,1 @@
-export * from "./AddedGameFormInputId"
+export * from "./AddedGameFormInputId";

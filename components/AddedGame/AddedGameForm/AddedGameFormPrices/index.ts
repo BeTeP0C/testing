@@ -1,1 +1,1 @@
-export * from "./AddedGameFormPrices"
+export * from "./AddedGameFormPrices";

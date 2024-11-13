@@ -1,1 +1,1 @@
-export * from './AddedGameInputTitle'
+export * from "./AddedGameInputTitle";

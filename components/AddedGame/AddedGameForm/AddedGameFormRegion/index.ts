@@ -1,1 +1,1 @@
-export * from "./AddedGameFormRegion"
+export * from "./AddedGameFormRegion";

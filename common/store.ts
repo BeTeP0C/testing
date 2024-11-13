@@ -301,133 +301,79 @@ export class MagazineStore {
 
       // const data = {
       //   internalName: `${titleGame}.${editionSelect.title}`,
-      //   genre: "",
-      //   shortDescriptionRu: "",
-      //   longDescriptionRu: "",
-      //   shortDescriptionEn: "",
-      //   longDescriptionEn: "",
+      //   genre: "Экшен",
+      //   shortDescriptionRu: editionSelect.regions[0].briefDescr,
+      //   longDescriptionRu: editionSelect.regions[0].fullDescr,
+      //   shortDescriptionEn: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
+      //   longDescriptionEn: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
       //   overpaymentPercent: editionSelect.regions[0].markup,
       //   items: editionSelect.regions.map(el => {
       //     return {
-      //       isOwnDescription: isGlobal,
+      //       isOwnDescription: true,
       //       isActive: true,
       //       isDeactivatedAfterSale: true,
-      //       country: el.region,
+      //       country: "Россия",
       //       shortDescriptionRu: el.briefDescr,
       //       longDescriptionRu: el.fullDescr,
-      //       shortDescriptionEn: "",
-      //       longDescriptionEn: ""
+      //       shortDescriptionEn: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
+      //       longDescriptionEn: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
       //     }
       //   })
       // }
 
-      // const resp2 = await fetch(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
-      //   method: "POST",
-      //   headers: {
-      //     "Authorization": `Bearer ${this.TOKEN}`,
-      //     "Content-Type": "application/json"
-      //   },
-      //   body: JSON.stringify(data)
-      // }).then(resp => resp.json()).then(datas => console.log(datas))
+      // console.log(data)
 
-      // const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
-      //   internalName: `${titleGame}.${editionSelect.title}`,
-      //   genre: "",
-      //   shortDescriptionRu: "",
-      //   longDescriptionRu: "",
-      //   shortDescriptionEn: "",
-      //   longDescriptionEn: "",
-      //   overpaymentPercent: editionSelect.regions[0].markup,
-      //   items: editionSelect.regions.map(el => {
-      //     return {
-      //       isOwnDescription: isGlobal,
-      //       isActive: true,
-      //       isDeactivatedAfterSale: true,
-      //       country: el.region,
-      //       shortDescriptionRu: el.briefDescr,
-      //       longDescriptionRu: el.fullDescr,
-      //       shortDescriptionEn: "",
-      //       longDescriptionEn: ""
-      //     }
-      //   })
-      // }, {
+      // // const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+      //   const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=13`, data, {
       //   headers: {
       //     "Authorization": `Bearer ${this.TOKEN}`
       //   }
       // })
 
-      // const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=17`, {
-      //   "internalName": `Factorio`,
-      //   "genre": "Экшен",
-      //   "shortDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы",
-      //   "longDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
-      //   "shortDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo",
-      //   "longDescriptionEn": "fjdsfko kdsfopkds ofk dsmf `mdsfopm dsopfm odspmfopmdsfo",
-      //   "overpaymentPercent": 20,
-      //   "items": [
-      //     {
-      //       "isOwnDescription": false,
-      //       "isActive": true,
-      //       "isDeactivatedAfterSale": true,
-      //       "country": "Россия",
-      //       "shortDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
-      //       "longDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
-      //       "shortDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo",
-      //       "longDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo"
-      //     },
-      //     {
-      //       "isOwnDescription": false,
-      //       "isActive": true,
-      //       "isDeactivatedAfterSale": true,
-      //       "country": "Казахстан",
-      //       "shortDescriptionRu": "project zomboid project zomboidм project zomboid project zomboid",
-      //       "longDescriptionRu": "project zomboid project zomboidм project zomboid project zomboid",
-      //       "shortDescriptionEn": "project zomboid project zomboidм project zomboid project zomboid",
-      //       "longDescriptionEn": "project zomboid project zomboidм project zomboid project zomboid"
-      //     }
-      //   ]
+      const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=13`, {
+        "internalName": `Terraria`,
+        "genre": "Экшен",
+        "shortDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы",
+        "longDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
+        "shortDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo",
+        "longDescriptionEn": "fjdsfko kdsfopkds ofk dsmf `mdsfopm dsopfm odspmfopmdsfo",
+        "overpaymentPercent": 20,
+        "items": [
+          {
+            "isOwnDescription": false,
+            "isActive": true,
+            "isDeactivatedAfterSale": true,
+            "country": "Россия",
+            "shortDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
+            "longDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
+            "shortDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo",
+            "longDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo"
+          },
+          {
+            "isOwnDescription": false,
+            "isActive": true,
+            "isDeactivatedAfterSale": true,
+            "country": "Казахстан",
+            "shortDescriptionRu": "project zomboid project zomboidм project zomboid project zomboid",
+            "longDescriptionRu": "project zomboid project zomboidм project zomboid project zomboid",
+            "shortDescriptionEn": "project zomboid project zomboidм project zomboid project zomboid",
+            "longDescriptionEn": "project zomboid project zomboidм project zomboid project zomboid"
+          }
+        ]
 
-      // }, {
-      //   headers: {
-      //     "Authorization": `Bearer ${this.TOKEN}`
-      //   }
-      // })
-
-      // const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
-      //   "internalName": `${titleGame}.${editionSelect.title}`,
-      //   "genre": "",
-      //   "shortDescriptionRu": "",
-      //   "longDescriptionRu": "",
-      //   "shortDescriptionEn": "",
-      //   "longDescriptionEn": "",
-      //   "overpaymentPercent": editionSelect.regions[0].markup,
-      //   "items": editionSelect.regions.map(el => {
-      //     return {
-      //       "isOwnDescription": isGlobal,
-      //       "isActive": true,
-      //       "isDeactivatedAfterSale": true,
-      //       "country": el.region,
-      //       "shortDescriptionRu": el.briefDescr,
-      //       "longDescriptionRu": el.fullDescr,
-      //       "shortDescriptionEn": "",
-      //       "longDescriptionEn": ""
-      //     }
-      //   })
-      // }, {
-      //   headers: {
-      //     "Authorization": `Bearer ${this.TOKEN}`
-      //   }
-      // })
-
-      // console.log(resp2.data)
-
-
-      runInAction(() => {
-        this.isOpenAddForm = false
-        this.isOpenActionsGame = false
+      }, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
       })
 
-      this.getGames()
+
+      // runInAction(() => {
+      //   this.isOpenAddForm = false
+      //   this.isOpenActionsGame = false
+      // })
+
+      // this.getGames()
 
 
       // console.log(resp1.data)

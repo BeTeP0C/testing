@@ -1,1 +1,1 @@
-export * from "./SettingsFormCountriesList"
+export * from "./SettingsFormCountriesList";

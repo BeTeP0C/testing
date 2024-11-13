@@ -1,1 +1,1 @@
-export * from "./AddedGameEditionCountries"
+export * from "./AddedGameEditionCountries";

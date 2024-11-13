@@ -1,1 +1,1 @@
-export * from "./ActionsOverGame"
+export * from "./ActionsOverGame";

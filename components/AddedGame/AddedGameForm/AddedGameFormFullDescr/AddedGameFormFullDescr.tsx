@@ -1,80 +1,104 @@
 import React, { useRef, useState } from "react";
-import styles from "./styles.module.scss"
+import styles from "./styles.module.scss";
 import { TEditionsOptions } from "../../../../types/edtitionInfo";
 
 type TAddedGameFormFullDescr = {
-  editionsOptions: TEditionsOptions[],
-  setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>,
-  isGlobal: boolean,
-}
+  editionsOptions: TEditionsOptions[];
+  setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
+  isGlobal: boolean;
+};
 
-export function AddedGameFormFullDescr (props: TAddedGameFormFullDescr) {
-  const {editionsOptions, setEditionOptions, isGlobal} = props
-  const inputRef = useRef(null)
-  const [amountSymbol, setAmountSymbol] = useState(0)
-  const [isShow, setIsShow] = useState(false)
+export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
+  const { editionsOptions, setEditionOptions, isGlobal } = props;
+  const inputRef = useRef(null);
+  const [amountSymbol, setAmountSymbol] = useState(0);
+  const [isShow, setIsShow] = useState(false);
 
   const saveInput = (e: React.FocusEvent<HTMLTextAreaElement, Element>) => {
-    setEditionOptions(editionsOptions.map(el => {
-      if (el.active) {
-        return {...el, regions: el.regions.map(region => {
-
-          if (region.region === editionsOptions.find(el => el.active)?.regions.find(el => el.active)?.region) {
-            return {...region, fullDescr: inputRef.current.value}
-          } else {
-            return {...region}
-          }
-        })}
-      } else {
-        return {...el}
-      }
-    }))
-  }
+    setEditionOptions(
+      editionsOptions.map((el) => {
+        if (el.active) {
+          return {
+            ...el,
+            regions: el.regions.map((region) => {
+              if (
+                region.region ===
+                editionsOptions
+                  .find((el) => el.active)
+                  ?.regions.find((el) => el.active)?.region
+              ) {
+                return { ...region, fullDescr: inputRef.current.value };
+              }
+              return { ...region };
+            }),
+          };
+        }
+        return { ...el };
+      }),
+    );
+  };
 
   const handleShowPrompt = () => {
-    setIsShow(!isShow)
-  }
+    setIsShow(!isShow);
+  };
 
   const handleChangeInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (amountSymbol <= 500) {
-      setAmountSymbol(e.currentTarget.value.length)
+      setAmountSymbol(e.currentTarget.value.length);
     }
-  }
+  };
 
   return (
     <div className={styles.container}>
-      <label className={styles.title} htmlFor="full">Полное описание</label>
+      <label className={styles.title} htmlFor="full">
+        Полное описание
+      </label>
 
       <div className={styles.content}>
-      {editionsOptions.find(el => el.active)?.regions.map(el => {
-          return (
-            <>
-              {el.active ? (
-                <>
-                  <textarea
-                    ref={inputRef}
-                    onChange={(e) => handleChangeInput(e)}
-                    onBlur={(e) => saveInput(e)}
-                    maxLength={500}
-                    className={styles.input}
-                    name="full"
-                    placeholder="Введите полное описание товара..."
-                    defaultValue={el.fullDescr}
-                    disabled={isGlobal}
-                  ></textarea>
-                  <span className={styles.counter}>{amountSymbol}/500</span>
-                  {isGlobal ? <button className={styles.button} onClick={() => handleShowPrompt()}></button> : ""}
-                  {isShow && isGlobal ? <span className={`${styles.prompt}`}>
-                    Ввод запрещен <br />
-                    Отключите глобальный шаблон
-                    <span className={`${styles.tail}`}></span>
-                  </span> : ""}
-                </>
-              ): ""}
-            </>
-          )
-        })}
+        {editionsOptions
+          .find((el) => el.active)
+          ?.regions.map((el) => {
+            return (
+              <>
+                {el.active ? (
+                  <>
+                    <textarea
+                      ref={inputRef}
+                      onChange={(e) => handleChangeInput(e)}
+                      onBlur={(e) => saveInput(e)}
+                      maxLength={500}
+                      className={styles.input}
+                      name="full"
+                      placeholder="Введите полное описание товара..."
+                      defaultValue={el.fullDescr}
+                      disabled={isGlobal}
+                    />
+                    <span className={styles.counter}>{amountSymbol}/500</span>
+                    {isGlobal ? (
+                      <button
+                        className={styles.button}
+                        onClick={() => handleShowPrompt()}
+                      />
+                    ) : (
+                      ""
+                    )}
+                    {isShow && isGlobal ? (
+                      <span className={`${styles.prompt}`}>
+                        Ввод запрещен <br />
+                        Отключите глобальный шаблон
+                        <span className={`${styles.tail}`} />
+                      </span>
+                    ) : (
+                      ""
+                    )}
+                  </>
+                ) : (
+                  ""
+                )}
+              </>
+            );
+          })}
       </div>
     </div>
-  )
+  );
 }

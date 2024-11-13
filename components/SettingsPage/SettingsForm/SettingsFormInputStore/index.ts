@@ -1,1 +1,1 @@
-export * from "./SettingsFormInputStore"
+export * from "./SettingsFormInputStore";

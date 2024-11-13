@@ -1,1 +1,1 @@
-export * from "./UpdateSet"
+export * from "./UpdateSet";

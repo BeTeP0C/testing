@@ -1,1 +1,1 @@
-export * from "./SettingsFormButton"
+export * from "./SettingsFormButton";

@@ -1,1 +1,1 @@
-export * from "./TableListRow"
+export * from "./TableListRow";
