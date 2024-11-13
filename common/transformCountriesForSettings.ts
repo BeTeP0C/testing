@@ -1,5 +1,3 @@
-
-
 export const countryData = {
   "ru": {
     title: "Россия",

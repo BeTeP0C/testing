@@ -1,7 +1,4 @@
-import { IconProps } from "../types/icons"
 import { House } from "../components/Icons/House"
-import { Stats } from "../components/Icons/Stats"
-import { Card } from "../components/Icons/Card"
 import { Settings } from "../components/Icons/Settings"
 
 export const menu = [

@@ -1,6 +1,5 @@
 import React from "react";
 import styles from "./styles.module.scss";
-import { Kazahstan } from "../../Icons/CoutryFlags/Kazahstan";
 
 export function EditorGameInputCountry() {
   return (
@@ -9,11 +8,8 @@ export function EditorGameInputCountry() {
         Регион
       </label>
 
-      <select className={styles.select} name="country">
-        <option value="Казахстан">
-          {/* <Kazahstan /> */}
-          Казахстан (KZ)
-        </option>
+      <select className={styles.select} name="country" id="country">
+        <option value="Казахстан">Казахстан (KZ)</option>
       </select>
     </div>
   );

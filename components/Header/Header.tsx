@@ -37,21 +37,27 @@ export const Header = observer(() => {
                 className={`
                     ${styles.status}
                     ${styles.steam}
-                    ${
-                      store.isLoadingConnectSteam
-                        ? styles.steam_loading
-                        : store.isConnectSteam
-                          ? styles.steam_connect
-                          : styles.steam_unconnect
-                    }
+                    ${(() => {
+                      if (store.isLoadingConnectSteam) {
+                        return styles.steam_loading;
+                      }
+                      if (store.isConnectSteam) {
+                        return styles.steam_connect;
+                      }
+                      return styles.steam_unconnect;
+                    })()}
                   `}
               >
                 {"Steam: "}
-                {store.isLoadingConnectSteam
-                  ? "Подключение..."
-                  : store.isConnectSteam
-                    ? "Подключен"
-                    : "Не подключен"}
+                {(() => {
+                  if (store.isLoadingConnectSteam) {
+                    return "Подключение...";
+                  }
+                  if (store.isConnectSteam) {
+                    return "Подключен";
+                  }
+                  return "Не подключен";
+                })()}
               </span>
               <span
                 data-testid="status"

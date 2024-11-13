@@ -25,7 +25,6 @@ export function AddedGameFormButton(props: TAddedGameFormButton) {
     setErrors,
   } = props;
   const toNext = () => {
-    console.log(errors);
     let flag = false;
     const newErrors = errors.map((el) => {
       if (el.visible) {
@@ -33,7 +32,6 @@ export function AddedGameFormButton(props: TAddedGameFormButton) {
 
         return { ...el, activate: true };
       }
-      console.log("ну и");
       return { ...el, activate: false };
     });
 
@@ -66,7 +64,7 @@ export function AddedGameFormButton(props: TAddedGameFormButton) {
 
   return (
     <div className={styles.container}>
-      <button onClick={() => toNext()} className={styles.button}>
+      <button onClick={() => toNext()} className={styles.button} type="button">
         Далее
       </button>
     </div>

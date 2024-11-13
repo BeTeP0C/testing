@@ -12,19 +12,22 @@ export function AddedGameEditionCountry(props: { country: string }) {
   return (
     <li className={styles.item}>
       <span className={styles.icon}>
-        {country === "ru" ? (
-          <Russia width={10} height={12} />
-        ) : country === "uk" ? (
-          <Ukraine width={10} height={12} />
-        ) : country === "kz" ? (
-          <Kazahstan width={10} height={12} />
-        ) : country === "by" ? (
-          <Belarus width={10} height={12} />
-        ) : country === "us" ? (
-          <USA width={10} height={12} />
-        ) : (
-          ""
-        )}
+        {(() => {
+          switch (country) {
+            case "ru":
+              return <Russia width={10} height={12} />;
+            case "uk":
+              return <Ukraine width={10} height={12} />;
+            case "kz":
+              return <Kazahstan width={10} height={12} />;
+            case "by":
+              return <Belarus width={10} height={12} />;
+            case "us":
+              return <USA width={10} height={12} />;
+            default:
+              return "";
+          }
+        })()}
       </span>
 
       {country}

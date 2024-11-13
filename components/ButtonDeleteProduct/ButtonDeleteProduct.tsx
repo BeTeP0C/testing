@@ -7,6 +7,7 @@ export function ButtonDeleteProduct(props: { store: MagazineStore }) {
 
   return (
     <button
+      type="button"
       className={styles.button}
       onClick={() => store.handleDeleteGame(store.isOpenGameInfo.id)}
     >

@@ -7,12 +7,7 @@ import { SettingsFormInputStore } from "./SettingsForm/SettingsFormInputStore";
 import { SettingsFormInputKey } from "./SettingsForm/SettingsFormInputKey";
 import { SettingsFormInputCountries } from "./SettingsForm/SettingsFormInputCountries";
 import { SettingsFormButton } from "./SettingsForm/SettingsFormButton";
-import { settingsCountries } from "../../common/settingsCountries";
-import { MagazineStore } from "../../common/store";
 import { StoreContext } from "../MainPage";
-
-// const magazineStore = new MagazineStore()
-// export const StoreContext = createContext(null)
 
 export const SettingsPage = observer(() => {
   const store = useContext(StoreContext);

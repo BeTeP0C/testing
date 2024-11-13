@@ -1,6 +1,5 @@
 import React, { useContext, useRef } from "react";
 import { observer } from "mobx-react-lite";
-import { Span } from "next/dist/trace";
 import styles from "./styles.module.scss";
 import img from "../../../../public/assassin's_creed_valhala.png";
 import { MagazineStore } from "../../../../common/store";
@@ -58,40 +57,33 @@ export const AddedGameInputId = observer(
         </div>
 
         <div className={styles.right}>
-          {store.isLoadingConnectSteam ? (
-            <span>Подключение к Steam...</span>
-          ) : store.isConnectSteam ? (
-            store.settingsData.countries.length === 0 ? (
-              <span>Добавьте в настройках страны</span>
-            ) : store.isLoadingGame ? (
-              <span>Ищем игру...</span>
-            ) : store.isSearchGame ? (
-              <>
-                {title ? (
-                  <img className={styles.img} src={img.src} alt="" />
-                ) : (
-                  ""
-                )}
-                <h3 className={styles.heading}>{title}</h3>
-              </>
-            ) : (
-              <span>Игра не найдена</span>
-            )
-          ) : (
-            ""
-          )}
-
-          {/* {store.isConnectSteam ?
-          store.settingsData.countries.length === 0 ?
-          <span>Добавьте в настройках страны</span> :
-            store.isLoadingGame ?
-            <span>Ищем игру...</span> :
-              store.isSearchGame ?
-              <>
-                {title ? <img className={styles.img} src={img.src} alt="" /> : ""}
-                <h3 className={styles.heading}>{title}</h3>
-              </> : <span>Игра не найдена</span>
-              : <span>Подключение к Steam...</span>} */}
+          {(() => {
+            if (store.isLoadingConnectSteam) {
+              return <span>Подключение к Steam...</span>;
+            }
+            if (store.isConnectSteam) {
+              if (store.settingsData.countries.length === 0) {
+                return <span>Добавьте в настройках страны</span>;
+              }
+              if (store.isLoadingGame) {
+                return <span>Ищем игру...</span>;
+              }
+              if (store.isSearchGame) {
+                return (
+                  <>
+                    {title ? (
+                      <img className={styles.img} src={img.src} alt="" />
+                    ) : (
+                      ""
+                    )}
+                    <h3 className={styles.heading}>{title}</h3>
+                  </>
+                );
+              }
+              return <span>Игра не найдена</span>;
+            }
+            return "";
+          })()}
         </div>
       </div>
     );

@@ -83,15 +83,6 @@ export class MagazineStore {
         }
       })
 
-      // const resp = await axios.delete("http://147.45.74.68:35805/api/v2/items/7",)
-
-      // const resp = fetch("http://147.45.74.68:35805/api/v2/items", {
-      //   headers: {
-      //     "Authorization": `Bearer ${this.TOKEN}`,
-      //   }
-      // }).then(resp => resp.json()).then(data => console.log(data)).catch(error => console.log(error))
-
-      console.log(resp.data)
       runInAction(async () => {
         this.games = await resp.data
         this.games = this.games.map((game) => ({...game, lastUpdated: this.transformDate(game.lastUpdated)}))
@@ -99,7 +90,6 @@ export class MagazineStore {
         this.isLoadingGames = false
       })
     } catch (error) {
-      console.log(this.TOKEN)
       this.TOKEN = ""
       this.authorizate = false
     }
@@ -126,7 +116,6 @@ export class MagazineStore {
         }
 
         if (flag) {
-          console.log(el.title)
           return el
         }
       }).filter(Boolean)
@@ -196,8 +185,6 @@ export class MagazineStore {
           this.TOKEN = await resp.data.accessToken
           this.authorizate = true
         }
-
-        console.log(this.TOKEN, "1")
       }
 
     } catch (error) {
@@ -226,7 +213,7 @@ export class MagazineStore {
         this.isConnectSteam = false
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
 
     this.isLoadingConnectSteam = false
@@ -247,7 +234,7 @@ export class MagazineStore {
         this.settingsData = {...this.settingsData, funpayActivate: false}
       }
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -259,7 +246,6 @@ export class MagazineStore {
           "Authorization": `Bearer ${this.TOKEN}`
         }
       })
-      console.log(resp.data.countries)
 
       this.settingsData = {...this.settingsData,
         titleStore: resp.data.email,
@@ -267,12 +253,10 @@ export class MagazineStore {
         countries: resp.data.countries.map((el: string) => countryData[el]).filter(Boolean)
       }
 
-      console.log(resp.data)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
-
 
   @action
   async postGame (
@@ -280,103 +264,15 @@ export class MagazineStore {
     packageId: number,
     title: string,
     titleGame: string,
-    // titlePackage: string,
-    // markup: number,
     isGlobal: boolean,
-    // regions: {
-    //   region: string,
-    //   shortDescr: string,
-    //   fullDescr: string
-    // }[],
     editionSelect: TEditionsOptions
   ) {
-  // async postGame (appId: number, packageId: number, title: string) {
     try {
-      // const resp1 = await axios.post(`http://147.45.74.68:35805/api/v2/items/items?steamId=${appId}&steamMainPackageId=${packageId}&customItemName=${title}`, null, {
-      //   headers: {
-      //     "Authorization": `Bearer ${this.TOKEN}`
-      //   }
-      // })
-      // console.log(resp1.data)
-
-      // const data = {
-      //   internalName: `${titleGame}.${editionSelect.title}`,
-      //   genre: "Экшен",
-      //   shortDescriptionRu: editionSelect.regions[0].briefDescr,
-      //   longDescriptionRu: editionSelect.regions[0].fullDescr,
-      //   shortDescriptionEn: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
-      //   longDescriptionEn: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
-      //   overpaymentPercent: editionSelect.regions[0].markup,
-      //   items: editionSelect.regions.map(el => {
-      //     return {
-      //       isOwnDescription: true,
-      //       isActive: true,
-      //       isDeactivatedAfterSale: true,
-      //       country: "Россия",
-      //       shortDescriptionRu: el.briefDescr,
-      //       longDescriptionRu: el.fullDescr,
-      //       shortDescriptionEn: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
-      //       longDescriptionEn: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip",
-      //     }
-      //   })
-      // }
-
-      // console.log(data)
-
-      // // const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
-      //   const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=13`, data, {
-      //   headers: {
-      //     "Authorization": `Bearer ${this.TOKEN}`
-      //   }
-      // })
-
-      const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=13`, {
-        "internalName": `Terraria`,
-        "genre": "Экшен",
-        "shortDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы",
-        "longDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
-        "shortDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo",
-        "longDescriptionEn": "fjdsfko kdsfopkds ofk dsmf `mdsfopm dsopfm odspmfopmdsfo",
-        "overpaymentPercent": 20,
-        "items": [
-          {
-            "isOwnDescription": false,
-            "isActive": true,
-            "isDeactivatedAfterSale": true,
-            "country": "Россия",
-            "shortDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
-            "longDescriptionRu": "аоывша щзыащлвыа лывщалыв лалвы ащывлаз",
-            "shortDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo",
-            "longDescriptionEn": "fjdsfko kdsfopkds ofk dsmf mdsfopm dsopfm odspmfopmdsfo"
-          },
-          {
-            "isOwnDescription": false,
-            "isActive": true,
-            "isDeactivatedAfterSale": true,
-            "country": "Казахстан",
-            "shortDescriptionRu": "project zomboid project zomboidм project zomboid project zomboid",
-            "longDescriptionRu": "project zomboid project zomboidм project zomboid project zomboid",
-            "shortDescriptionEn": "project zomboid project zomboidм project zomboid project zomboid",
-            "longDescriptionEn": "project zomboid project zomboidм project zomboid project zomboid"
-          }
-        ]
-
-      }, {
-        headers: {
-          "Authorization": `Bearer ${this.TOKEN}`
-        }
+      runInAction(() => {
+        this.isOpenAddForm = false
+        this.isOpenActionsGame = false
       })
 
-
-      // runInAction(() => {
-      //   this.isOpenAddForm = false
-      //   this.isOpenActionsGame = false
-      // })
-
-      // this.getGames()
-
-
-      // console.log(resp1.data)
     } catch (error) {
       console.log(error)
     }
@@ -391,10 +287,9 @@ export class MagazineStore {
         }
       })
 
-      console.log(resp.data)
       return resp.status
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
   }
 
@@ -407,10 +302,8 @@ export class MagazineStore {
           "Authorization": `Bearer ${this.TOKEN}`
         },
       })
-
-      console.log(resp1.data)
     } catch (error) {
-      console.log(error)
+      console.error(error)
     }
 
     this.isConnectSteam = true

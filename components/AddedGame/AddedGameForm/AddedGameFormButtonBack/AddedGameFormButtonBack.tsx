@@ -11,7 +11,7 @@ export function AddedGameFormButtonBack(props: {
   };
 
   return (
-    <button onClick={() => toBack()} className={styles.button}>
+    <button onClick={() => toBack()} className={styles.button} type="button">
       Назад
     </button>
   );

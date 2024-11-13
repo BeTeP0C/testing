@@ -24,8 +24,8 @@ export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
               if (
                 region.region ===
                 editionsOptions
-                  .find((el) => el.active)
-                  ?.regions.find((el) => el.active)?.region
+                  .find((item) => item.active)
+                  ?.regions.find((item) => item.active)?.region
               ) {
                 return { ...region, fullDescr: inputRef.current.value };
               }
@@ -69,6 +69,7 @@ export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
                       maxLength={500}
                       className={styles.input}
                       name="full"
+                      id="full"
                       placeholder="Введите полное описание товара..."
                       defaultValue={el.fullDescr}
                       disabled={isGlobal}
@@ -76,6 +77,7 @@ export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
                     <span className={styles.counter}>{amountSymbol}/500</span>
                     {isGlobal ? (
                       <button
+                        type="button"
                         className={styles.button}
                         onClick={() => handleShowPrompt()}
                       />

@@ -13,17 +13,20 @@ export function TableInfoHug(props: { hug: TGameInfoHug }) {
     <li className={styles.row}>
       <ul className={styles.cells}>
         <li className={`${styles.cell} ${styles.centering}`}>
-          {hug.currency === "RU" ? (
-            <Russia />
-          ) : hug.currency === "BY" ? (
-            <Belarus />
-          ) : hug.currency === "UA" ? (
-            <Ukraine />
-          ) : hug.currency === "KZ" ? (
-            <Kazahstan />
-          ) : (
-            ""
-          )}
+          {(() => {
+            switch (hug.currency) {
+              case "RU":
+                return <Russia />;
+              case "BY":
+                return <Belarus />;
+              case "UA":
+                return <Ukraine />;
+              case "KZ":
+                return <Kazahstan />;
+              default:
+                return "";
+            }
+          })()}
 
           {hug.currency}
         </li>

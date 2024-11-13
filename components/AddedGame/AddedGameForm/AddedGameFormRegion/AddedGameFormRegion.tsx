@@ -17,7 +17,6 @@ export function AddedGameFormRegion(props: {
   const changeRegion = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditionOptions(
       editionsOptions.map((el) => {
-        console.log(el);
         if (el.active) {
           return {
             ...el,
@@ -56,19 +55,22 @@ export function AddedGameFormRegion(props: {
                 className={styles.region}
                 htmlFor={`region-${region.region}`}
               >
-                {region.region === "ru" ? (
-                  <Russia />
-                ) : region.region === "kz" ? (
-                  <Kazahstan />
-                ) : region.region === "ua" ? (
-                  <Ukraine />
-                ) : region.region === "by" ? (
-                  <Belarus />
-                ) : region.region === "us" ? (
-                  <USA />
-                ) : (
-                  ""
-                )}
+                {(() => {
+                  switch (region.region) {
+                    case "ru":
+                      return <Russia />;
+                    case "kz":
+                      return <Kazahstan />;
+                    case "ua":
+                      return <Ukraine />;
+                    case "by":
+                      return <Belarus />;
+                    case "us":
+                      return <USA />;
+                    default:
+                      return "";
+                  }
+                })()}
 
                 {region.region}
               </label>

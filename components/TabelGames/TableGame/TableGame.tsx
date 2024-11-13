@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useRef } from "react";
 import { CSSTransition } from "react-transition-group";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
-import { TableError } from "../../Icons/TableError";
 import { TableInfo } from "../TableInfo";
 import { TGame } from "../../../types/tgames";
 import { MagazineStore } from "../../../common/store";
@@ -16,6 +15,8 @@ export const TableGame = observer((props: { game: TGame }) => {
       if (!el.includes(":")) {
         return el;
       }
+
+      return null;
     })
     .join(" ");
   const dropRef = useRef(null);
@@ -33,7 +34,6 @@ export const TableGame = observer((props: { game: TGame }) => {
     }
   }, [magazineStore.isOpenGameInfo, game.id]);
 
-  // ${game.error ? styles.row_error : ""}
   return (
     <li
       className={`
@@ -48,12 +48,9 @@ export const TableGame = observer((props: { game: TGame }) => {
         <li className={styles.cell}>{game.steamItemId}</li>
         <li className={styles.cell}>{game.lastUpdated}</li>
 
-        {/* <li className={styles.item_error}>
-          {game.error ? <TableError /> : ""}
-        </li> */}
-
         <li className={styles.button_item}>
           <button
+            type="button"
             className={styles.button}
             onClick={(e) => {
               magazineStore.handleClickGame(game.id);

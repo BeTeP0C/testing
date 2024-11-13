@@ -1,14 +1,9 @@
-import React, { useContext } from "react";
-import { v4 as uuidv4 } from "uuid";
-import { observer } from "mobx-react-lite";
+import React from "react";
 import styles from "./styles.module.scss";
 import { Logo } from "../Icons";
 import { MenuList } from "./MenuList";
-import { StoreContext } from "../MainPage";
 
 export function Menu() {
-  const store = useContext(StoreContext);
-
   return (
     <div className={styles.menu}>
       <div className={styles.container}>

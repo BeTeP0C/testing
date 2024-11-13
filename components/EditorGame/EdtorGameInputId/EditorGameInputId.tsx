@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styles from "./styles.module.scss";
 
 type TEditorGameInputId = {
@@ -29,6 +29,7 @@ export function EditorGameInputId({ id, func }: TEditorGameInputId) {
         className={styles.input}
         type="text"
         name="id"
+        id="id"
         value={isId}
       />
     </div>

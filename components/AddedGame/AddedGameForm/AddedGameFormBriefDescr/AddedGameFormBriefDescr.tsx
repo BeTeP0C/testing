@@ -25,8 +25,8 @@ export function AddedGameFormBriefDescr(props: TAddedGameFormBriefDescr) {
               if (
                 region.region ===
                 editionsOptions
-                  .find((el) => el.active)
-                  ?.regions.find((el) => el.active)?.region
+                  .find((item) => item.active)
+                  ?.regions.find((item) => item.active)?.region
               ) {
                 return { ...region, briefDescr: inputRef.current.value };
               }
@@ -71,6 +71,7 @@ export function AddedGameFormBriefDescr(props: TAddedGameFormBriefDescr) {
                       className={styles.input}
                       type="text"
                       name="brief"
+                      id="brief"
                       placeholder="Введите краткое описание товара..."
                       defaultValue={el.briefDescr}
                     />
@@ -80,6 +81,7 @@ export function AddedGameFormBriefDescr(props: TAddedGameFormBriefDescr) {
                       <button
                         className={styles.button}
                         onClick={() => handleShowPrompt()}
+                        type="button"
                       />
                     ) : (
                       ""

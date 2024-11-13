@@ -26,16 +26,29 @@ export function AddedGameEditionItem({
     >
       <h4 className={styles.heading}>{title}</h4>
       <AddedGameEditionCountries countries={coutries} />
-      {type === "select" ? (
-        <button
-          onClick={() => funcs.deletePack(id)}
-          className={styles.delete}
-        />
-      ) : type === "choice" ? (
-        <button onClick={() => funcs.addPack(id)} className={styles.select} />
-      ) : (
-        ""
-      )}
+
+      {(() => {
+        switch (type) {
+          case "select":
+            return (
+              <button
+                onClick={() => funcs.deletePack(id)}
+                className={styles.delete}
+                type="button"
+              />
+            );
+          case "choice":
+            return (
+              <button
+                onClick={() => funcs.addPack(id)}
+                className={styles.select}
+                type="button"
+              />
+            );
+          default:
+            return "";
+        }
+      })()}
     </li>
   );
 }

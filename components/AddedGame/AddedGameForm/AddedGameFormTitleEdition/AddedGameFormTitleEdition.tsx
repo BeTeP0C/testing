@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { v4 as uuidv4 } from "uuid";
 import styles from "./styles.module.scss";
 import { TEditionsOptions } from "../../../../types/edtitionInfo";
 
@@ -61,6 +60,8 @@ export function AddedGameFormTitleEdition(props: {
 
       <div className={styles.select_block}>
         <span
+          role="button"
+          tabIndex={0}
           onClick={() => handleShowList()}
           className={styles.edition_select}
         >
@@ -77,6 +78,8 @@ export function AddedGameFormTitleEdition(props: {
                 if (el.posted) {
                   return (
                     <li
+                      role="button"
+                      tabIndex={0}
                       onClick={(e) => changeSelectTitle(e)}
                       className={`${styles.item} ${styles.item_posted}`}
                     >
@@ -88,6 +91,8 @@ export function AddedGameFormTitleEdition(props: {
                 if (editionSelect !== el.title) {
                   return (
                     <li
+                      role="button"
+                      tabIndex={0}
                       onClick={(e) => changeSelectTitle(e)}
                       className={styles.item}
                     >

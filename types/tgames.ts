@@ -1,5 +1,3 @@
-import { MagazineStore } from "../common/store"
-
 export type TGame = {
   avitoItem: null,
   avitoItemId: null,

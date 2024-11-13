@@ -15,6 +15,7 @@ export const SettingsFormButton = observer((props: TSettingsFormButton) => {
 
   return (
     <button
+      type="button"
       onClick={() =>
         store.handleSaveSettings(titleStore, funpayKey, countriesSelect)
       }

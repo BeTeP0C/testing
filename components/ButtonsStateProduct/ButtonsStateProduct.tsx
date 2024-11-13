@@ -17,9 +17,7 @@ export const ButtonsStateProduct = observer(
       <div
         className={magazineStore.isOpenGameInfo.open ? styles.container : ""}
       >
-        {/* <ButtonAddProduct /> */}
         {children}
-        {/* {magazineStore.isOpenGameInfo.open ? <ButtonDeleteProduct /> : ""} */}
       </div>
     );
   },

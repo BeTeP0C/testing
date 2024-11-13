@@ -23,6 +23,7 @@ export function TableInfoPlatform({ title, hugs }: TGameInfoStore) {
     <li className={styles.platform} ref={dropRef}>
       <h4 className={styles.title}>
         <button
+          type="button"
           onClick={handleClickPlatform}
           className={`${styles.button} ${isActive ? styles.button_active : ""}`}
         >

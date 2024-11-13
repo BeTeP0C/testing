@@ -27,8 +27,6 @@ export function SettingsFormCountriesList(props: {
         return (
           <SettingsFormCountriesItem
             key={el.id}
-            usename={el.usename}
-            code={el.code}
             title={el.title}
             id={el.id}
             type={type}

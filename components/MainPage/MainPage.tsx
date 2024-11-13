@@ -37,7 +37,7 @@ export const MainPage = observer(() => {
             {magazineStore.currentPage === "main" ? (
               <>
                 <ButtonsStateProduct>
-                  <ButtonAddProduct store={magazineStore} />
+                  <ButtonAddProduct />
                   {magazineStore.isOpenGameInfo.open ? (
                     <ButtonDeleteProduct store={magazineStore} />
                   ) : (

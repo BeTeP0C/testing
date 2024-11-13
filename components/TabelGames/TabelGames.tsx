@@ -27,6 +27,7 @@ export const TableGames = observer(() => {
           <ul className={styles.listHeading}>
             <li className={styles.heading}>
               <button
+                type="button"
                 onClick={() => handleSortDate()}
                 className={`${styles.button}`}
               >

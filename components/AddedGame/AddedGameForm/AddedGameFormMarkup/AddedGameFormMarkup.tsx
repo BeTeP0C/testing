@@ -19,8 +19,8 @@ export function AddedGameFormMarkup(props: {
               if (
                 region.region ===
                 editionsOptions
-                  .find((el) => el.active)
-                  ?.regions.find((el) => el.active)?.region
+                  .find((item) => item.active)
+                  ?.regions.find((item) => item.active)?.region
               ) {
                 return { ...region, markup: Number(inputRef.current.value) };
               }
@@ -47,11 +47,11 @@ export function AddedGameFormMarkup(props: {
                   </label>
                   <input
                     ref={inputRef}
-                    // onChange={e => changeInput(e)}
                     onBlur={(e) => saveInput(e)}
                     className={styles.input}
                     type="number"
                     name="markup"
+                    id="markup"
                     placeholder="Введите целое число процентов"
                     defaultValue={el.markup}
                   />

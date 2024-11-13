@@ -8,6 +8,7 @@ export function EditorGameButtonSave(props: { value: number }) {
 
   return (
     <button
+      type="button"
       className={styles.button}
       onClick={() => store.handleSaveGame(store.isOpenGameInfo.id, value)}
     >

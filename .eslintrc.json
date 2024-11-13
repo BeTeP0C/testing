@@ -24,7 +24,7 @@
       "prettier/prettier": "warn",
       "react/react-in-jsx-scope": "off",
       "react/jsx-filename-extension": ["error", { "extensions": [".tsx"] }],
-  
+
       // Custom rules "off"
       "import/no-unresolved": "off",
       "import/extensions": "off",
@@ -34,12 +34,16 @@
       "@typescript-eslint/no-explicit-any": "off",
       "no-unused-expressions": "off",
       "jsx-a11y/control-has-associated-label": "off",
+      "jsx-a11y/label-has-associated-control": "off",
+      "jsx-a11y/no-noninteractive-element-to-interactive-role": "off",
+      "jsx-a11y/click-events-have-key-events": "off",
+
       "react/jsx-no-useless-fragment": "off",
       "no-unused-vars": "off",
       "import/prefer-default-export": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "react/require-default-props": "off",
-  
+
       // Custom rules "warn"
       "react/jsx-curly-brace-presence": "warn",
       "no-undef": "warn"
@@ -51,4 +55,3 @@
       "components/UI"
     ]
   }
-  

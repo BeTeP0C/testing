@@ -66,13 +66,26 @@ export const AddedGame = observer(() => {
         return { ...el, visible: !appId };
       }
       if (index === 2) {
-        console.log(packagesSelect.length, "fsfds");
         return { ...el, visible: packagesSelect.length === 0 };
       }
+
+      return null;
     });
 
     setFirstPageErrors(newErrors);
   }, [title, appId, packagesSelect]);
+
+  const filterUniqueByField = (arr: any[], field: string) => {
+    const uniqueIds = new Set();
+    return arr?.filter((item) => {
+      const itemId = item[field];
+      if (!uniqueIds.has(itemId)) {
+        uniqueIds.add(itemId);
+        return true;
+      }
+      return false;
+    });
+  };
 
   const transformSteamGame = (
     game: TEditionSteamGame,
@@ -127,31 +140,16 @@ export const AddedGame = observer(() => {
     }
   }, [isNextStep]);
 
-  const filterUniqueByField = (arr: any[], field: string) => {
-    const uniqueIds = new Set();
-    return arr?.filter((item) => {
-      const itemId = item[field];
-      if (!uniqueIds.has(itemId)) {
-        uniqueIds.add(itemId);
-        return true;
-      }
-      return false;
-    });
-  };
-
   useEffect(() => {
     setPackagesSelect([]);
     setPackagesChoice(steamGame.packages);
-    console.log(steamGame);
   }, [steamGame]);
 
   useEffect(() => {
     (async () => {
       if (appId) {
-        const steamGame = await store.getSteamGame(appId);
-        store.isSearchGame
-          ? setSteamGame(transformSteamGame(steamGame))
-          : false;
+        const game = await store.getSteamGame(appId);
+        store.isSearchGame ? setSteamGame(transformSteamGame(game)) : false;
       }
     })();
   }, [appId]);

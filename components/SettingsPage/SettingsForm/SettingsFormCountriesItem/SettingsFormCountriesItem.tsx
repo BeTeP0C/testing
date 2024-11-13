@@ -3,8 +3,6 @@ import styles from "./styles.module.scss";
 
 type TSettingsFormCountriesItem = {
   title: string;
-  usename: string;
-  code: string;
   id: number;
   type?: string;
   funcs: {
@@ -24,13 +22,28 @@ export function SettingsFormCountriesItem({
       className={`${styles.item} ${type === "select" ? styles.item_select : ""}`}
     >
       <span className={styles.title}>{title}</span>
-      {type === "select" ? (
-        <button onClick={() => funcs.deletePack(id)} className={styles.close} />
-      ) : type === "choice" ? (
-        <button onClick={() => funcs.addPack(id)} className={styles.add} />
-      ) : (
-        ""
-      )}
+      {(() => {
+        switch (type) {
+          case "select":
+            return (
+              <button
+                type="button"
+                onClick={() => funcs.deletePack(id)}
+                className={styles.close}
+              />
+            );
+          case "choice":
+            return (
+              <button
+                type="button"
+                onClick={() => funcs.addPack(id)}
+                className={styles.add}
+              />
+            );
+          default:
+            return "";
+        }
+      })()}
     </li>
   );
 }
