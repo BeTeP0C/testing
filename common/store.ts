@@ -7,6 +7,7 @@ import { TSettingsData } from "../types/settingsData";
 import { settingsCountries } from "./settingsCountries";
 import { calendar } from "./calendar";
 import { TEditionsOptions } from "../types/edtitionInfo";
+import { error } from "console";
 
 export class MagazineStore {
   @observable games: TGame[] = [];
@@ -37,7 +38,19 @@ export class MagazineStore {
   @observable settingsCountriesChoice = settingsCountries
 
   constructor() {
+    this.restoreTokenFromLocalStorage()
     makeAutoObservable(this);
+  }
+
+  @action
+  restoreTokenFromLocalStorage () {
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("token")
+
+      if (token) {
+        this.TOKEN = token
+      }
+    }
   }
 
   @action
@@ -123,17 +136,39 @@ export class MagazineStore {
   }
 
   @action
+  async checkAuth () {
+    try {
+      const resp = await axios.get("http://147.45.74.68:35805/api/v2/profile/admin", {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
+
+      return resp.status
+    } catch(error) {
+      console.error(error)
+    }
+  }
+
+  @action
   async startLoadingPage () {
-    await this.postAuth()
-    this.checkFunpayKeyActive()
-    await this.getSettingsData()
+    const statusAuth = await this.checkAuth()
 
-    this.changeSettingsCountriesChoice()
+    if (statusAuth === 200) {
+      this.authorizate = true
+      this.checkFunpayKeyActive()
+      await this.getSettingsData()
 
-    await this.checkSteamConnect()
+      this.changeSettingsCountriesChoice()
 
-    if (!this.isConnectSteam) {
-      this.connectToSteam()
+      await this.checkSteamConnect()
+
+      if (!this.isConnectSteam) {
+        this.connectToSteam()
+      }
+    } else if (statusAuth === 401) {
+      console.log("Авторизация")
+      this.authorizate = false
     }
   }
 
@@ -171,28 +206,40 @@ export class MagazineStore {
   }
 
   @action
-  async postAuth () {
-    try {
-      if (this.TOKEN === "") {
-        console.log(this.TOKEN, 2)
-        const resp = await axios.post("http://147.45.74.68:35805/api/auth", {
-          username: "admin",
-          password: "passadmin"
-        })
+  logout () {
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("token")
+      this.TOKEN = null
+      this.authorizate = false
+    }
+  }
 
+  @action
+  async postAuth (login: string, password: string) {
+    try {
+      const resp = await axios.post("http://147.45.74.68:35805/api/auth", {
+        username: login,
+        password: password
+      })
+
+      if (resp.status === 200) {
         if (typeof window !== "undefined") {
-          localStorage.setItem("token", JSON.stringify(await resp.data.accessToken))
-          this.TOKEN = await resp.data.accessToken
+          localStorage.setItem("token", resp.data.accessToken)
+          this.TOKEN = resp.data.accessToken
           this.authorizate = true
         }
+
+        return resp.status
+      } else if (resp.status === 401) {
+        return resp.status
       }
 
     } catch (error) {
-      console.error('Ошибка при получении данных:', error);
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token")
-        this.TOKEN = null
-        this.authorizate = false
+      this.logout()
+      if (error.status === 401) {
+        return error.status
+      } else {
+        console.error('Ошибка при получении данных:', error);
       }
     }
   }

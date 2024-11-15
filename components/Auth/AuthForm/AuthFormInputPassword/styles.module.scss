@@ -1,0 +1,27 @@
+.content {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.title {
+  margin-bottom: 10px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #26292F
+}
+
+.input {
+  width: 100%;
+  border-radius: 5px;
+  border: 2px solid #3E68FE;
+  padding: 13px 10px;
+  background: transparent;
+  font-weight: 400;
+  font-size: 14px;
+  color: #26292F;
+
+  &::placeholder {
+    color: rgba(#26292F, 0.5);
+  }
+}

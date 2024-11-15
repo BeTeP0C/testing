@@ -1,4 +1,5 @@
 import React, { useEffect, useState, createContext } from "react";
+import { useRouter } from "next/router";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 import { Page } from "../Page";
@@ -19,12 +20,16 @@ export const StoreContext = createContext(null);
 
 export const MainPage = observer(() => {
   const [magazineStore, setMagazineStore] = useState(new MagazineStore());
+  const [redirectToHome, setRedirectToHome] = useState(false);
+  const router = useRouter();
   useEffect(() => {
-    let mounted: boolean = true;
-    magazineStore.startLoadingPage();
-    return () => {
-      mounted = false;
-    };
+    (async () => {
+      await magazineStore.startLoadingPage();
+
+      if (!magazineStore.authorizate) {
+        router.push("/auth");
+      }
+    })();
   }, [magazineStore.authorizate]);
 
   return (
