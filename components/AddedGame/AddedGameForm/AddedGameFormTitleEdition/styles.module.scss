@@ -90,6 +90,7 @@
 }
 
 .item {
+  position: relative;
   padding: 20px;
   font-weight: 400;
   font-size: 14px;
@@ -104,5 +105,40 @@
 
   &:hover {
     background: rgba(#808080, 0.2);
+  }
+
+  &_posted {
+    pointer-events: none;
+  }
+}
+
+.posted {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  padding-right: 28px;
+  font-weight: 400;
+  font-size: 14px;
+  color: #3E68FE;
+
+  &::after, &::before {
+    content: "";
+    position: absolute;
+    top: 6px;
+    height: 2px;
+    background: #3E68FE;
+  }
+
+  &::after {
+    top: 7.5px;
+    right: 10.5px;
+    width: 9px;
+    transform: rotate(45deg);
+  }
+
+  &::before {
+    right: 0;
+    width: 15px;
+    transform: rotate(-45deg);
   }
 }

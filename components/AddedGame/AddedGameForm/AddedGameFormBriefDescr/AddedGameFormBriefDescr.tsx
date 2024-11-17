@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
 import { TEditionsOptions } from "../../../../types/edtitionInfo";
 
@@ -48,6 +48,16 @@ export function AddedGameFormBriefDescr(props: TAddedGameFormBriefDescr) {
   const handleShowPrompt = () => {
     setIsShow(!isShow);
   };
+
+  useEffect(() => {
+    editionsOptions
+      .find((el) => el.active)
+      ?.regions.map((el) => {
+        if (el.active) {
+          setAmountSymbol(el.briefDescr.length)
+        }
+      })
+  }, editionsOptions)
 
   return (
     <div className={styles.container}>

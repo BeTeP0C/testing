@@ -1,21 +1,23 @@
 import axios from "axios";
-import jwt from "jsonwebtoken"
-import { action, autorun, makeAutoObservable, observable, runInAction } from "mobx";
+import { action, autorun, makeAutoObservable, observable, runInAction, toJS } from "mobx";
 import { countryData } from "./transformCountriesForSettings";
 import { TGame } from "../types/tgames";
 import { TSettingsData } from "../types/settingsData";
 import { settingsCountries } from "./settingsCountries";
 import { calendar } from "./calendar";
 import { TEditionsOptions } from "../types/edtitionInfo";
-import { error } from "console";
+import { countriesToUsename } from "./countriesToUsename";
 
 export class MagazineStore {
   @observable games: TGame[] = [];
   @observable isLoadingGames: boolean = false;
   @observable isOpenGameInfo = {
     open: false,
+    openStore: false,
+    funpayId: null,
     id: null
   };
+
   @observable isOpenActionsGame: boolean = false
   @observable isOpenAddForm: boolean = false
   @observable isOpenEditForm: boolean = false
@@ -36,6 +38,11 @@ export class MagazineStore {
   }
 
   @observable settingsCountriesChoice = settingsCountries
+
+  @action
+  handleOpenInfoStore () {
+    this.isOpenGameInfo = {...this.isOpenGameInfo, openStore: !this.isOpenGameInfo.openStore}
+  }
 
   constructor() {
     this.restoreTokenFromLocalStorage()
@@ -98,7 +105,21 @@ export class MagazineStore {
 
       runInAction(async () => {
         this.games = await resp.data
-        this.games = this.games.map((game) => ({...game, lastUpdated: this.transformDate(game.lastUpdated)}))
+        const reductGames: TGame[] = []
+        this.games.forEach(el => {
+          if (!reductGames.some(game => game.steamItemId === el.steamItemId)) {
+            reductGames.push({...el, funPayItems: el.funPayItem ? [...[{...el.funPayItem, packageId: el.steamItemPackageId, active: false}]] : []})
+          } else {
+            reductGames.map(game => {
+              if (game.steamItemId === el.steamItemId) {
+                return {...game, funPayItems: [...game.funPayItems, ...[el.funPayItem ? [...[{...el.funPayItem, packageId: el.steamItemPackageId, active: false}]] : []]]}
+              }
+            })
+          }
+        })
+        this.games = reductGames.map((game) => ({...game, lastUpdated: this.transformDate(game.lastUpdated)}))
+        console.log(resp.data)
+        console.log(toJS(this.games))
         this.sortGameForDate("bottom")
         this.isLoadingGames = false
       })
@@ -312,14 +333,66 @@ export class MagazineStore {
     title: string,
     titleGame: string,
     isGlobal: boolean,
-    editionSelect: TEditionsOptions
+    editionSelect: TEditionsOptions,
+    editionOptions: TEditionsOptions[]
   ) {
     try {
-      runInAction(() => {
-        this.isOpenAddForm = false
-        this.isOpenActionsGame = false
+      const resp1 = await axios.post(`http://147.45.74.68:35805/api/v2/items/items?steamId=${appId}&steamMainPackageId=${packageId}&customItemName=${title}`, null, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
       })
 
+      if (resp1.status === 200) {
+        const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+          internalName: editionSelect.title,
+          genre: "Экшен",
+          shortDescriptionRu: "Steam ключ, дешево!",
+          longDescriptionRu: `Быстрая и надежная доставка ключа активации для игры ${titleGame} в Steam. Получите ключ мгновенно после оплаты и начните играть!`,
+          shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
+          longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`,
+          overpaymentPercent: 20,
+          items: editionSelect.regions.map(el => {
+            return {
+              isOwnDescription: true,
+              isActive: true,
+              isDeactivatedAfterSale: true,
+              country: countriesToUsename[el.region],
+              shortDescriptionRu: el.briefDescr,
+              longDescriptionRu: el.fullDescr,
+              shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
+              longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`
+            }
+          })
+
+        }, {
+          headers: {
+            "Authorization": `Bearer ${this.TOKEN}`
+          }
+        })
+
+        if (resp2.status === 200) {
+          console.log(editionOptions)
+          if (editionOptions.length === editionOptions.filter(el => el.posted).length - 1) {
+            console.log("dasdasfhasdfhsdjk")
+            runInAction(() => {
+              this.isOpenAddForm = false
+              this.isOpenActionsGame = false
+            })
+
+            return ""
+          } else {
+            return {
+              ...editionSelect,
+              posted: true,
+              active: false,
+              regions: editionSelect.regions.map((region) => {
+                return { ...region, active: false };
+              }),
+            }
+          }
+        }
+      }
     } catch (error) {
       console.log(error)
     }
@@ -402,6 +475,8 @@ export class MagazineStore {
         this.isOpenGameInfo = {
           id: null,
           open: false,
+          funpayId: null,
+          openStore: false,
         }
 
         this.isOpenActionsGame = false
@@ -419,7 +494,7 @@ export class MagazineStore {
   }
 
   @action
-  handleClickGame(gameId: number) {
+  handleClickGame(gameId: number, funpayId: number) {
     runInAction(() => {
       if (this.isOpenAddForm) {
         this.isOpenAddForm = false
@@ -428,31 +503,51 @@ export class MagazineStore {
         setTimeout(() => {
           this.isOpenGameInfo = {
             id: gameId === this.isOpenGameInfo.id ? null : gameId,
+            funpayId: funpayId === this.isOpenGameInfo.funpayId ? null : funpayId,
             open: this.isOpenGameInfo.id === null ? true :
-                  this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true
+                  this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true,
+            openStore: false
           }
-          this.isOpenActionsGame = this.isOpenGameInfo.open
+          // this.isOpenActionsGame = this.isOpenGameInfo.open
         }, 500)
       } else {
         this.isOpenGameInfo = {
           id: gameId === this.isOpenGameInfo.id ? null : gameId,
+          funpayId: funpayId === this.isOpenGameInfo.funpayId ? null : funpayId,
           open: this.isOpenGameInfo.id === null ? true :
-                this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true
+                this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true,
+          openStore: false
         }
 
 
-        this.isOpenActionsGame = this.isOpenGameInfo.open
+        // this.isOpenActionsGame = this.isOpenGameInfo.open
       }
     })
   }
 
   @action
-  handleDeleteGame(gameId: number) {
+  async handleDeleteGame(gameId: number, funpayId: number) {
+    if (funpayId) {
+      const resp1 = await axios.delete(`http://147.45.74.68:35805/api/v2/items/funpay/${funpayId}`, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
+    }
+
+    const resp2 = await axios.delete(`http://147.45.74.68:35805/api/v2/items/${gameId}`, {
+      headers: {
+        "Authorization": `Bearer ${this.TOKEN}`
+      }
+    })
+
     runInAction(() => {
       this.games = this.games.filter(el => el.id !== gameId);
       this.isOpenGameInfo = {
+        funpayId: null,
         open: false,
-        id: null
+        id: null,
+        openStore: false
       }
 
       this.isOpenActionsGame = false
@@ -465,8 +560,10 @@ export class MagazineStore {
     runInAction(() => {
       this.games = this.games.map(el => el.id === gameId ? {...el, id: value} : el);
       this.isOpenGameInfo = {
+        funpayId: null,
         open: false,
-        id: null
+        id: null,
+        openStore: false
       }
 
       this.isOpenActionsGame = false

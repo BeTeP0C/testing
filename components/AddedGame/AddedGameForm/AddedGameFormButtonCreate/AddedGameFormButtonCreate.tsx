@@ -11,27 +11,82 @@ type TAddedGameFormButtonCreate = {
   isGlobal: boolean;
   titleGame: string;
   editionsOptions: TEditionsOptions[];
+  setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>,
+  setEditionSelect: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
 export const AddedGameFormButtonCreate = observer(
   (props: TAddedGameFormButtonCreate) => {
-    const { appId, packageId, title, isGlobal, titleGame, editionsOptions } =
-      props;
+    const { appId, packageId, title, isGlobal, titleGame, editionsOptions, setEditionSelect, setEditionOptions} = props;
     const editionSelect = editionsOptions.find((el) => el.active);
     const store = useContext(StoreContext);
+
+    const handlePostGame = async () => {
+      const newEditionSelect = await store.postGame(
+        appId,
+        packageId,
+        title,
+        titleGame,
+        isGlobal,
+        editionSelect,
+        editionsOptions
+      )
+
+      if (newEditionSelect !== '') {
+        let nextEl: number | null = null
+
+        const arr1 = editionsOptions.map((el, index) => {
+          if (el.id === newEditionSelect.id) {
+            return {
+              ...newEditionSelect,
+              regions: el.regions.map((region) => {
+                return { ...region, active: false };
+              }),
+            }
+          }
+
+          return {
+            ...el,
+            regions: el.regions.map((region) => {
+              return { ...region, active: false };
+            }),
+          }
+        })
+
+        const arr2 = arr1.map((el, index) => {
+          if (el.posted) {
+            nextEl+=1
+            return {
+              ...el,
+              active: false,
+            }
+          }
+
+          if (nextEl === index) {
+            return {...el, active: true}
+          }
+
+          return {...el}
+        })
+
+        setEditionSelect(arr2.sort((a,b) => {
+
+          if (Number(a.posted) > Number(b.posted)) {
+            return 1
+          } else {
+            return -1
+          }
+        }))
+      } else {
+        setEditionOptions([])
+      }
+    }
 
     return (
       <button
         type="button"
         onClick={() =>
-          store.postGame(
-            appId,
-            packageId,
-            title,
-            titleGame,
-            isGlobal,
-            editionSelect,
-          )
+          handlePostGame()
         }
         className={styles.button}
       >

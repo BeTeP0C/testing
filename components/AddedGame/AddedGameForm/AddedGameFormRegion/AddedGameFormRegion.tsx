@@ -49,7 +49,7 @@ export function AddedGameFormRegion(props: {
                 name="region"
                 id={`region-${region.region}`}
                 value={region.region}
-                checked={!!region.active}
+                checked={region.active}
               />
               <label
                 className={styles.region}

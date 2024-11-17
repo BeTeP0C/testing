@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { CSSTransition } from "react-transition-group";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
@@ -9,6 +9,7 @@ import { StoreContext } from "../../MainPage";
 
 export const TableGame = observer((props: { game: TGame }) => {
   const { game } = props;
+  const [openInfoStore, setOpenInfoStore] = useState(true)
   const dateCreate = game.lastUpdated
     .split(" ")
     .map((el) => {
@@ -28,6 +29,7 @@ export const TableGame = observer((props: { game: TGame }) => {
       magazineStore.isOpenGameInfo.id === game.id &&
       dropRef.current
     ) {
+      console.log("2")
       dropRef.current.style.height = `${dropRef.current.scrollHeight}px`;
     } else if (dropRef.current) {
       dropRef.current.style.height = "44px";
@@ -53,7 +55,7 @@ export const TableGame = observer((props: { game: TGame }) => {
             type="button"
             className={styles.button}
             onClick={(e) => {
-              magazineStore.handleClickGame(game.id);
+              magazineStore.handleClickGame(game.id, game.funPayItemId);
             }}
           />
         </li>
@@ -69,7 +71,7 @@ export const TableGame = observer((props: { game: TGame }) => {
         unmountOnExit
       >
         <div className={styles.drop}>
-          <TableInfo packages={game.steamItem.packages} />
+          <TableInfo packages={game.steamItem.packages} funpayItems={game.funPayItems} setOpenInfoStore={setOpenInfoStore} openInfoStore={openInfoStore}/>
         </div>
       </CSSTransition>
     </li>

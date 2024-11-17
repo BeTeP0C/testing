@@ -1,7 +1,8 @@
 export type TGame = {
   avitoItem: null,
   avitoItemId: null,
-  funPayItem: null,
+  funPayItem: TFunPayItem | null,
+  funPayItems?: TFunPayItem[],
   funPayItemId: null,
   id: number,
   lastUpdated: string,
@@ -15,6 +16,36 @@ export type TGame = {
   },
   steamItemId: number,
   steamItemPackageId: number
+}
+
+export type TFunPayItem = {
+  genre: string,
+  active?: boolean,
+  packageId?: number,
+  id: number,
+  internalName: string,
+  items: TFunPaySubItem [],
+  lastUpdated: string,
+  longDescriptionEn: string,
+  longDescriptionRu: string,
+  overpaymentPercent: number,
+  shortDescriptionEn: string,
+  shortDescriptionRu: string,
+}
+
+export type TFunPaySubItem = {
+  country: string,
+  funPayItemId: number,
+  isActive: boolean,
+  isDeactivatedAfterSale: boolean,
+  isOwnDescription: boolean,
+  lastUpdated: string,
+  longDescriptionEn: string,
+  longDescriptionRu: string,
+  offerId: number,
+  price: number,
+  shortDescriptionEn: string,
+  shortDescriptionRu: string
 }
 
 export type TGameInfo = {

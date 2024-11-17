@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import styles from "./styles.module.scss";
 import { TEditionsOptions } from "../../../../types/edtitionInfo";
 
@@ -47,6 +47,16 @@ export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
       setAmountSymbol(e.currentTarget.value.length);
     }
   };
+
+  useEffect(() => {
+    editionsOptions
+      .find((el) => el.active)
+      ?.regions.map((el) => {
+        if (el.active) {
+          setAmountSymbol(el.fullDescr.length)
+        }
+      })
+  }, editionsOptions)
 
   return (
     <div className={styles.container}>

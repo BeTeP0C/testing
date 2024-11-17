@@ -11,7 +11,7 @@ export function AddedGameFormTitleEdition(props: {
   const [editionSelect, setEditionSelect]: [string, React.Dispatch<string>] =
     useState(
       editionOptions.length !== 0
-        ? editionOptions.find((el) => el.active).title
+        ? editionOptions.find((el) => el.active)?.title
         : "Нет изданий",
     );
 
@@ -47,9 +47,11 @@ export function AddedGameFormTitleEdition(props: {
   };
 
   useEffect(() => {
+    console.log(editionOptions, "check")
+
     setEditionSelect(
       editionOptions.length !== 0
-        ? editionOptions.find((el) => el.active).title
+        ? editionOptions.find((el) => el.active)?.title
         : "Нет изданий",
     );
   }, [editionOptions]);
@@ -84,7 +86,7 @@ export function AddedGameFormTitleEdition(props: {
                       className={`${styles.item} ${styles.item_posted}`}
                     >
                       {el.title}
-                      <span className={styles.posted} />
+                      <span className={styles.posted}>Добавлен</span>
                     </li>
                   );
                 }
@@ -94,7 +96,7 @@ export function AddedGameFormTitleEdition(props: {
                       role="button"
                       tabIndex={0}
                       onClick={(e) => changeSelectTitle(e)}
-                      className={styles.item}
+                      className={`${styles.item}`}
                     >
                       {el.title}
                     </li>

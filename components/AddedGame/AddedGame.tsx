@@ -21,6 +21,7 @@ import { AddedGameFormButtonBack } from "./AddedGameForm/AddedGameFormButtonBack
 import { AddedGameFormButtonCreate } from "./AddedGameForm/AddedGameFormButtonCreate";
 import { TEditionSteamGame } from "../../types/editionSteamGame";
 import { TEditionTransformSteamGame } from "../../types/editionTransformSteamGame";
+import { TEditionsOptions } from "../../types/edtitionInfo";
 
 export const AddedGame = observer(() => {
   const store: MagazineStore = useContext(StoreContext);
@@ -224,12 +225,14 @@ export const AddedGame = observer(() => {
             <div className={styles.buttons}>
               <AddedGameFormButtonBack setIsNextStep={setIsNextStep} />
               <AddedGameFormButtonCreate
+                setEditionOptions={setEditionOptions}
                 appId={Number(appId)}
-                packageId={Number(packagesSelect[0]?.id)}
+                packageId={Number(editionsOptions.find(el => el.active) ? editionsOptions.find(el => el.active).id : packagesSelect[0]?.id)}
                 title={title}
                 isGlobal={isGlobal}
                 titleGame={steamGame.name}
                 editionsOptions={editionsOptions}
+                setEditionSelect={setEditionOptions}
               />
             </div>
           </div>
