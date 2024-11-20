@@ -37,6 +37,7 @@ export type TFunPaySubItem = {
   country: string,
   funPayItemId: number,
   isActive: boolean,
+  active?: boolean,
   isDeactivatedAfterSale: boolean,
   isOwnDescription: boolean,
   lastUpdated: string,

@@ -37,7 +37,7 @@
       "jsx-a11y/label-has-associated-control": "off",
       "jsx-a11y/no-noninteractive-element-to-interactive-role": "off",
       "jsx-a11y/click-events-have-key-events": "off",
-
+      "array-callback-return": "off",
       "react/jsx-no-useless-fragment": "off",
       "no-unused-vars": "off",
       "import/prefer-default-export": "off",

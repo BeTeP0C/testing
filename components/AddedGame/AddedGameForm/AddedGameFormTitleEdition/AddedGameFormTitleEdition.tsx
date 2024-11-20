@@ -47,8 +47,6 @@ export function AddedGameFormTitleEdition(props: {
   };
 
   useEffect(() => {
-    console.log(editionOptions, "check")
-
     setEditionSelect(
       editionOptions.length !== 0
         ? editionOptions.find((el) => el.active)?.title

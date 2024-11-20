@@ -53,10 +53,10 @@ export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
       .find((el) => el.active)
       ?.regions.map((el) => {
         if (el.active) {
-          setAmountSymbol(el.fullDescr.length)
+          setAmountSymbol(el.fullDescr.length);
         }
-      })
-  }, editionsOptions)
+      }) || null;
+  }, editionsOptions);
 
   return (
     <div className={styles.container}>

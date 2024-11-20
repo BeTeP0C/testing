@@ -227,7 +227,11 @@ export const AddedGame = observer(() => {
               <AddedGameFormButtonCreate
                 setEditionOptions={setEditionOptions}
                 appId={Number(appId)}
-                packageId={Number(editionsOptions.find(el => el.active) ? editionsOptions.find(el => el.active).id : packagesSelect[0]?.id)}
+                packageId={Number(
+                  editionsOptions.find((el) => el.active)
+                    ? editionsOptions.find((el) => el.active).id
+                    : packagesSelect[0]?.id,
+                )}
                 title={title}
                 isGlobal={isGlobal}
                 titleGame={steamGame.name}

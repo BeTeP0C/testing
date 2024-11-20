@@ -1,1 +1,1 @@
-export * from "./TableInfoFunpayItem"
+export * from "./TableInfoFunpayItem";

@@ -16,6 +16,7 @@ export const countriesToUsename = {
   "at": "Австрия",
   "kz": "Казахстан",
   "jo": "Иордания",
+  "ua": "Украина"
 }
 
 export const usenameToCountries = {
@@ -36,4 +37,5 @@ export const usenameToCountries = {
   "Австрия": "at",
   "Казахстан": "kz",
   "Иордания": "jo",
+  "Украина": "ua"
 }

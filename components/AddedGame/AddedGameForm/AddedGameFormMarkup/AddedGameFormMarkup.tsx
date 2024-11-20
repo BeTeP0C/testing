@@ -15,6 +15,7 @@ export function AddedGameFormMarkup(props: {
         if (el.active) {
           return {
             ...el,
+            markup: Number(inputRef.current.value),
             regions: el.regions.map((region) => {
               if (
                 region.region ===
@@ -22,7 +23,7 @@ export function AddedGameFormMarkup(props: {
                   .find((item) => item.active)
                   ?.regions.find((item) => item.active)?.region
               ) {
-                return { ...region, markup: Number(inputRef.current.value) };
+                return { ...region };
               }
               return { ...region };
             }),
@@ -31,6 +32,14 @@ export function AddedGameFormMarkup(props: {
         return { ...el };
       }),
     );
+  };
+
+  const checkNumberInInput = (e: React.FormEvent<HTMLInputElement>) => {
+    const { value } = e.currentTarget;
+
+    if (!/^\d+$/.test(value)) {
+      e.currentTarget.value = value.slice(0, -1);
+    }
   };
 
   return (
@@ -48,12 +57,15 @@ export function AddedGameFormMarkup(props: {
                   <input
                     ref={inputRef}
                     onBlur={(e) => saveInput(e)}
+                    onInput={(e) => checkNumberInInput(e)}
                     className={styles.input}
-                    type="number"
+                    type="text"
                     name="markup"
                     id="markup"
                     placeholder="Введите целое число процентов"
-                    defaultValue={el.markup}
+                    defaultValue={
+                      editionsOptions.find((item) => item.active).markup
+                    }
                   />
                 </>
               ) : (

@@ -11,13 +11,22 @@ type TAddedGameFormButtonCreate = {
   isGlobal: boolean;
   titleGame: string;
   editionsOptions: TEditionsOptions[];
-  setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>,
+  setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
   setEditionSelect: React.Dispatch<React.SetStateAction<any[]>>;
 };
 
 export const AddedGameFormButtonCreate = observer(
   (props: TAddedGameFormButtonCreate) => {
-    const { appId, packageId, title, isGlobal, titleGame, editionsOptions, setEditionSelect, setEditionOptions} = props;
+    const {
+      appId,
+      packageId,
+      title,
+      isGlobal,
+      titleGame,
+      editionsOptions,
+      setEditionSelect,
+      setEditionOptions,
+    } = props;
     const editionSelect = editionsOptions.find((el) => el.active);
     const store = useContext(StoreContext);
 
@@ -29,11 +38,11 @@ export const AddedGameFormButtonCreate = observer(
         titleGame,
         isGlobal,
         editionSelect,
-        editionsOptions
-      )
+        editionsOptions,
+      );
 
-      if (newEditionSelect !== '') {
-        let nextEl: number | null = null
+      if (newEditionSelect !== "") {
+        const nextEl: number | null = null;
 
         const arr1 = editionsOptions.map((el, index) => {
           if (el.id === newEditionSelect.id) {
@@ -42,7 +51,7 @@ export const AddedGameFormButtonCreate = observer(
               regions: el.regions.map((region) => {
                 return { ...region, active: false };
               }),
-            }
+            };
           }
 
           return {
@@ -50,44 +59,56 @@ export const AddedGameFormButtonCreate = observer(
             regions: el.regions.map((region) => {
               return { ...region, active: false };
             }),
+          };
+        });
+
+        const arr3 = arr1.sort((a, b) => {
+          if (Number(a.posted) > Number(b.posted)) {
+            return 1;
           }
-        })
+          return -1;
+        });
 
         const arr2 = arr1.map((el, index) => {
+          if (index === 0 && !el.posted) {
+            return {
+              ...el,
+              active: true,
+            };
+          }
           if (el.posted) {
-            nextEl+=1
             return {
               ...el,
               active: false,
-            }
+            };
           }
 
-          if (nextEl === index) {
-            return {...el, active: true}
-          }
+          return { ...el };
+          // if (el.posted) {
+          //   nextEl+=1
+          //   return {
+          //     ...el,
+          //     active: false,
+          //   }
+          // }
 
-          return {...el}
-        })
+          // if (nextEl === index) {
+          //   return {...el, active: true}
+          // }
 
-        setEditionSelect(arr2.sort((a,b) => {
+          // return {...el}
+        });
 
-          if (Number(a.posted) > Number(b.posted)) {
-            return 1
-          } else {
-            return -1
-          }
-        }))
+        setEditionSelect(arr2);
       } else {
-        setEditionOptions([])
+        setEditionOptions([]);
       }
-    }
+    };
 
     return (
       <button
         type="button"
-        onClick={() =>
-          handlePostGame()
-        }
+        onClick={() => handlePostGame()}
         className={styles.button}
       >
         Создать

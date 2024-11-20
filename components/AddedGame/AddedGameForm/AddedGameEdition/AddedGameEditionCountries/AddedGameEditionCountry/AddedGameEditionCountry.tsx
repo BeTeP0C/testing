@@ -16,7 +16,7 @@ export function AddedGameEditionCountry(props: { country: string }) {
           switch (country) {
             case "ru":
               return <Russia width={10} height={12} />;
-            case "uk":
+            case "ua":
               return <Ukraine width={10} height={12} />;
             case "kz":
               return <Kazahstan width={10} height={12} />;

@@ -45,10 +45,10 @@ export function AddedGameFormButton(props: TAddedGameFormButton) {
             title: el.title,
             id: el.id,
             store: "funpay",
+            markup: 0,
             regions: el.countries.map((country, number) => {
               return {
                 region: country,
-                markup: 0,
                 briefDescr: "",
                 fullDescr: "",
                 active: number === 0,

@@ -1,10 +1,12 @@
 .item {
-  display: flex;
-  align-items: center;
-
   &:not(:last-child) {
     margin-bottom: 20px;
   }
+}
+
+.button_region {
+  display: flex;
+  align-items: center;
 }
 
 .region {

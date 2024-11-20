@@ -101,4 +101,10 @@ export const settingsCountries = [
     code: "400",
     id: 17
   },
+  {
+    title: "Украина",
+    usename: "ua",
+    code: "400",
+    id: 18
+  },
 ]

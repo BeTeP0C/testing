@@ -2,9 +2,9 @@ export type TEditionsOptions = {
   title: string,
   id: number,
   store: string,
+  markup: number,
   regions: {
     region: string,
-    markup: number,
     briefDescr: string,
     fullDescr: string,
     active: boolean

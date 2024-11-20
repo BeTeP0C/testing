@@ -64,3 +64,83 @@
 .list {
   padding-top: 20px;
 }
+
+.info {
+  padding-top: 20px;
+  display: flex;
+  flex-direction: column;
+  max-width: 500px;
+}
+
+.brief_descr {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.full_descr {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.label {
+  margin: 0;
+  margin-bottom: 10px;
+  font-weight: 400;
+  font-size: 14px;
+  color:#26292F;
+}
+
+.input {
+  position: relative;
+  padding: 11px;
+  padding-right: 60px;
+  border-radius: 5px;
+  border: 2px solid #3E68FE;
+  width: 100%;
+  font-weight: 400;
+  font-size: 14px;
+  color:#26292F;
+  background: transparent;
+}
+
+.counter {
+  position: absolute;
+  top: 12px;
+  right: 10px;
+  font-weight: 400;
+  font-size: 12px;
+  color: rgba(#26292F, 0.5);
+
+  &_text {
+    top: auto;
+    bottom: 12px;
+  }
+}
+
+.text {
+  position: relative;
+  padding: 11px;
+  border-radius: 5px;
+  border: 2px solid #3E68FE;
+  width: 100%;
+  min-height: 120px;
+  font-weight: 400;
+  font-size: 14px;
+  color:#26292F;
+  background: transparent;
+}
+
+.button_edit {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  width: 200px;
+  height: 42px;
+  font-weight: 500;
+  font-size: 14px;
+  background: #3E68FE;
+  color: #ffffff;
+}

@@ -9,7 +9,7 @@ import { StoreContext } from "../../MainPage";
 
 export const TableGame = observer((props: { game: TGame }) => {
   const { game } = props;
-  const [openInfoStore, setOpenInfoStore] = useState(true)
+  const [openInfoStore, setOpenInfoStore] = useState(true);
   const dateCreate = game.lastUpdated
     .split(" ")
     .map((el) => {
@@ -29,8 +29,7 @@ export const TableGame = observer((props: { game: TGame }) => {
       magazineStore.isOpenGameInfo.id === game.id &&
       dropRef.current
     ) {
-      console.log("2")
-      dropRef.current.style.height = `${dropRef.current.scrollHeight}px`;
+      dropRef.current.style.height = `${dropRef.current.scrollHeight - magazineStore.negativeHeight}px`;
     } else if (dropRef.current) {
       dropRef.current.style.height = "44px";
     }
@@ -71,7 +70,12 @@ export const TableGame = observer((props: { game: TGame }) => {
         unmountOnExit
       >
         <div className={styles.drop}>
-          <TableInfo packages={game.steamItem.packages} funpayItems={game.funPayItems} setOpenInfoStore={setOpenInfoStore} openInfoStore={openInfoStore}/>
+          <TableInfo
+            packages={game.steamItem.packages}
+            funpayItems={game.funPayItems}
+            setOpenInfoStore={setOpenInfoStore}
+            openInfoStore={openInfoStore}
+          />
         </div>
       </CSSTransition>
     </li>

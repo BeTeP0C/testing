@@ -50,14 +50,16 @@ export function AddedGameFormBriefDescr(props: TAddedGameFormBriefDescr) {
   };
 
   useEffect(() => {
-    editionsOptions
-      .find((el) => el.active)
-      ?.regions.map((el) => {
-        if (el.active) {
-          setAmountSymbol(el.briefDescr.length)
-        }
-      })
-  }, editionsOptions)
+    if (editionsOptions.some((el) => el.active)) {
+      editionsOptions
+        .find((el) => el.active)
+        .regions.map((el) => {
+          if (el.active) {
+            setAmountSymbol(el.briefDescr.length);
+          }
+        }) || null;
+    }
+  }, editionsOptions);
 
   return (
     <div className={styles.container}>
@@ -113,7 +115,7 @@ export function AddedGameFormBriefDescr(props: TAddedGameFormBriefDescr) {
                 )}
               </>
             );
-          })}
+          }) || null}
       </div>
     </div>
   );

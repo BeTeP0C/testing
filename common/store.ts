@@ -6,7 +6,7 @@ import { TSettingsData } from "../types/settingsData";
 import { settingsCountries } from "./settingsCountries";
 import { calendar } from "./calendar";
 import { TEditionsOptions } from "../types/edtitionInfo";
-import { countriesToUsename } from "./countriesToUsename";
+import { countriesToUsename, usenameToCountries } from "./countriesToUsename";
 
 export class MagazineStore {
   @observable games: TGame[] = [];
@@ -15,9 +15,12 @@ export class MagazineStore {
     open: false,
     openStore: false,
     funpayId: null,
+    funpay_active: false,
+    funpayCountry: null,
+    funpayCountryActive: false,
     id: null
   };
-
+  @observable negativeHeight = 0
   @observable isOpenActionsGame: boolean = false
   @observable isOpenAddForm: boolean = false
   @observable isOpenEditForm: boolean = false
@@ -39,14 +42,124 @@ export class MagazineStore {
 
   @observable settingsCountriesChoice = settingsCountries
 
-  @action
-  handleOpenInfoStore () {
-    this.isOpenGameInfo = {...this.isOpenGameInfo, openStore: !this.isOpenGameInfo.openStore}
-  }
-
   constructor() {
     this.restoreTokenFromLocalStorage()
     makeAutoObservable(this);
+  }
+
+  @action
+  changeOpenGameInfo (id: number, height: number) {
+    if (id === this.isOpenGameInfo.funpayId) {
+      this.negativeHeight = !this.isOpenGameInfo.funpay_active ? 0 : height
+    } else {
+      this.negativeHeight = 0
+    }
+
+    const backState = this.isOpenGameInfo.funpay_active
+
+    this.isOpenGameInfo = {
+      ...this.isOpenGameInfo,
+      funpayId: id,
+      funpay_active: id === this.isOpenGameInfo.funpayId ? !this.isOpenGameInfo.funpay_active : true
+    }
+
+    this.handleOpenInfoFunpay(backState)
+  }
+
+  @action
+  changeOpenGameStore (country: string, height: number) {
+    if (country === this.isOpenGameInfo.funpayCountry) {
+      this.negativeHeight = !this.isOpenGameInfo.funpayCountry ? 0 : height
+    } else {
+      this.negativeHeight = 0
+    }
+
+    const backState = this.isOpenGameInfo.funpayCountryActive
+
+    this.isOpenGameInfo = {
+      ...this.isOpenGameInfo,
+      funpayCountry: country,
+      funpayCountryActive: country === this.isOpenGameInfo.funpayCountry ? !this.isOpenGameInfo.funpayCountryActive : true
+    }
+
+    this.handleOpenInfoProduct(backState)
+  }
+
+  @action
+  handleOpenInfoProduct (backState: boolean) {
+    this.games = this.games.map(game => {
+      if (game.id === this.isOpenGameInfo.id) {
+        return {
+          ...game,
+          funPayItems: game.funPayItems.map(el => {
+            if (el.id === this.isOpenGameInfo.funpayId) {
+              return {...el, items: el.items.map(item => {
+                if (item.country === countriesToUsename[this.isOpenGameInfo.funpayCountry]) {
+
+                  return {...item, active: backState ? true : this.isOpenGameInfo.funpayCountryActive}
+                }
+                return {...item, active: false}
+              })}
+            }
+            return {...el, items: el.items.map(item => {
+              return {...item, active: false}
+            })}
+          })
+        }
+      }
+
+      return {
+        ...game,
+        funPayItems: game.funPayItems.map(el => {
+          return {...el, active: false}
+        })
+      }
+    })
+  }
+
+  @action
+  handleOpenInfoFunpay (backState: boolean) {
+    this.games = this.games.map(game => {
+      if (game.id === this.isOpenGameInfo.id) {
+        return {
+          ...game,
+          funPayItems: game.funPayItems.map(el => {
+            if (el.id === this.isOpenGameInfo.funpayId) {
+              return {...el,
+                active: backState ? true : this.isOpenGameInfo.funpay_active,
+                items: el.items.map(item => {
+                  if (item.country === countriesToUsename[this.isOpenGameInfo.funpayCountry]) {
+
+                    return {...item, active: this.isOpenGameInfo.funpayCountryActive}
+                  }
+                  return {...item, active: false}
+                })
+              }
+            }
+            return {...el,
+              active: false,
+              items: el.items.map(item => {
+                return {...item, active: false}
+              })
+            }
+          })
+        }
+      }
+
+      return {
+        ...game,
+        funPayItems: game.funPayItems.map(el => {
+          return {...el, active: false}
+        })
+      }
+    })
+  }
+
+  @action
+  handleOpenInfoStore (height: number) {
+    this.negativeHeight = this.isOpenGameInfo.openStore ? height : 0
+
+    this.isOpenGameInfo = {...this.isOpenGameInfo, openStore: !this.isOpenGameInfo.openStore}
   }
 
   @action
@@ -105,14 +218,29 @@ export class MagazineStore {
 
       runInAction(async () => {
         this.games = await resp.data
-        const reductGames: TGame[] = []
+        let reductGames: TGame[] = []
         this.games.forEach(el => {
           if (!reductGames.some(game => game.steamItemId === el.steamItemId)) {
-            reductGames.push({...el, funPayItems: el.funPayItem ? [...[{...el.funPayItem, packageId: el.steamItemPackageId, active: false}]] : []})
+            reductGames.push({...el, funPayItems: el.funPayItem ? [...[{
+              ...el.funPayItem,
+              packageId: el.steamItemPackageId,
+              active: false,
+              items: el.funPayItem.items.map(item => {
+                return {...item, active: false}
+              })
+            }]] : []})
           } else {
-            reductGames.map(game => {
+            reductGames = reductGames.map(game => {
               if (game.steamItemId === el.steamItemId) {
-                return {...game, funPayItems: [...game.funPayItems, ...[el.funPayItem ? [...[{...el.funPayItem, packageId: el.steamItemPackageId, active: false}]] : []]]}
+                return {
+                  ...game,
+                  funPayItems: [...game.funPayItems, {
+                    ...el.funPayItem,
+                    items: el.funPayItem.items.map(item => {
+                      return {...item, active: false}
+                    })
+                  }]
+                }
               }
             })
           }
@@ -351,10 +479,10 @@ export class MagazineStore {
           longDescriptionRu: `Быстрая и надежная доставка ключа активации для игры ${titleGame} в Steam. Получите ключ мгновенно после оплаты и начните играть!`,
           shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
           longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`,
-          overpaymentPercent: 20,
+          overpaymentPercent: editionSelect.markup,
           items: editionSelect.regions.map(el => {
             return {
-              isOwnDescription: true,
+              isOwnDescription: !isGlobal,
               isActive: true,
               isDeactivatedAfterSale: true,
               country: countriesToUsename[el.region],
@@ -373,12 +501,14 @@ export class MagazineStore {
 
         if (resp2.status === 200) {
           console.log(editionOptions)
-          if (editionOptions.length === editionOptions.filter(el => el.posted).length - 1) {
+          if (editionOptions.length === editionOptions.filter(el => el.posted).length + 1) {
             console.log("dasdasfhasdfhsdjk")
             runInAction(() => {
               this.isOpenAddForm = false
               this.isOpenActionsGame = false
             })
+
+            this.getGames()
 
             return ""
           } else {
@@ -477,6 +607,9 @@ export class MagazineStore {
           open: false,
           funpayId: null,
           openStore: false,
+          funpay_active: false,
+          funpayCountry: null,
+          funpayCountryActive: false
         }
 
         this.isOpenActionsGame = false
@@ -506,7 +639,10 @@ export class MagazineStore {
             funpayId: funpayId === this.isOpenGameInfo.funpayId ? null : funpayId,
             open: this.isOpenGameInfo.id === null ? true :
                   this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true,
-            openStore: false
+            openStore: false,
+            funpayCountry: null,
+            funpayCountryActive: false,
+            funpay_active: false
           }
           // this.isOpenActionsGame = this.isOpenGameInfo.open
         }, 500)
@@ -516,7 +652,10 @@ export class MagazineStore {
           funpayId: funpayId === this.isOpenGameInfo.funpayId ? null : funpayId,
           open: this.isOpenGameInfo.id === null ? true :
                 this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true,
-          openStore: false
+          openStore: false,
+          funpayCountry: null,
+          funpayCountryActive: false,
+          funpay_active: false
         }
 
 
@@ -547,7 +686,10 @@ export class MagazineStore {
         funpayId: null,
         open: false,
         id: null,
-        openStore: false
+        openStore: false,
+        funpay_active: false,
+        funpayCountry: null,
+        funpayCountryActive: false,
       }
 
       this.isOpenActionsGame = false
@@ -563,7 +705,10 @@ export class MagazineStore {
         funpayId: null,
         open: false,
         id: null,
-        openStore: false
+        openStore: false,
+        funpay_active: false,
+        funpayCountry: null,
+        funpayCountryActive: false,
       }
 
       this.isOpenActionsGame = false
