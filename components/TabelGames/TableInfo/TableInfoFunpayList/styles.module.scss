@@ -58,7 +58,6 @@
       transform: rotate(45deg);
     }
   }
-
 }
 
 .list {
@@ -93,7 +92,6 @@
 }
 
 .input {
-  position: relative;
   padding: 11px;
   padding-right: 60px;
   border-radius: 5px;
@@ -105,9 +103,13 @@
   background: transparent;
 }
 
+.input_container {
+  position: relative;
+}
+
 .counter {
   position: absolute;
-  top: 12px;
+  top: 14px;
   right: 10px;
   font-weight: 400;
   font-size: 12px;
@@ -119,17 +121,21 @@
   }
 }
 
-.text {
+.text_container {
   position: relative;
+}
+
+.text {
   padding: 11px;
   border-radius: 5px;
   border: 2px solid #3E68FE;
   width: 100%;
-  min-height: 120px;
+  height: 120px;
   font-weight: 400;
   font-size: 14px;
   color:#26292F;
   background: transparent;
+  resize: none;
 }
 
 .button_edit {
@@ -142,5 +148,36 @@
   font-weight: 500;
   font-size: 14px;
   background: #3E68FE;
+  color: #ffffff;
+}
+
+.buttons {
+  display: flex;
+}
+
+.save {
+  display: inline-flex;
+  margin-right: 20px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  width: 200px;
+  height: 42px;
+  font-weight: 500;
+  font-size: 14px;
+  background: #3E68FE;
+  color: #ffffff;
+}
+
+.delete {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  width: 200px;
+  height: 42px;
+  font-weight: 500;
+  font-size: 14px;
+  background: #AC2E2E;
   color: #ffffff;
 }

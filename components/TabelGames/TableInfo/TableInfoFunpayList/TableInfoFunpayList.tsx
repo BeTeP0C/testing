@@ -17,7 +17,33 @@ export const TableInfoFunpayList = observer(
     const { funpayItem, setOpenInfoStore, openInfoStore } = props;
     const contentRef = useRef(null);
     const infoRef = useRef(null);
+    const briefRef = useRef(null)
+    const fullRef = useRef(null)
+    const [isEdit, setIsEdit] = useState(false)
+    const [amountSymbolText, setAmountSymbolText] = useState(0);
+    const [amountSymbolInput, setAmountSymbolInput] = useState(0);
     const store: MagazineStore = useContext(StoreContext);
+
+    const changeEditForm = () => {
+      setIsEdit(!isEdit)
+    }
+
+    const handleChangeText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+      if (amountSymbolText <= 500) {
+        setAmountSymbolText(e.currentTarget.value.length);
+      }
+    };
+
+    const handleChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (amountSymbolInput <= 100) {
+        setAmountSymbolInput(e.currentTarget.value.length);
+      }
+    };
+
+    useEffect(() => {
+      setAmountSymbolText(funpayItem.items.find(el => el.active)?.longDescriptionRu.length)
+      setAmountSymbolInput(funpayItem.items.find(el => el.active)?.shortDescriptionRu.length)
+    }, [funpayItem]);
 
     return (
       <div className={styles.container}>
@@ -70,30 +96,39 @@ export const TableInfoFunpayList = observer(
                     >
                       <div ref={infoRef} className={styles.info}>
                         <div className={styles.brief_descr}>
-                          <h5 className={styles.label}>Краткое описание</h5>
-                          <div className={styles.input}>
-                            {el.shortDescriptionRu}
+                          <label htmlFor="edit_brief_descr" className={styles.label}>Краткое описание</label>
+                          <div className={styles.input_container}>
+                            <input onChange={handleChangeInput} ref={briefRef} className={styles.input} type="text" maxLength={100} defaultValue={el.shortDescriptionRu} disabled={!isEdit} id="edit_brief_descr"/>
                             <span className={styles.counter}>
-                              {el.shortDescriptionRu.length}/100
+                              {/* {el.shortDescriptionRu.length}/100 */}
+                              {amountSymbolInput}/100
                             </span>
                           </div>
                         </div>
 
                         <div className={styles.full_descr}>
-                          <h5 className={styles.label}>Полное описание</h5>
-                          <div className={styles.text}>
-                            {el.longDescriptionRu}
-                            <span
-                              className={`${styles.counter} ${styles.counter_text}`}
-                            >
-                              {el.longDescriptionRu.length}/500
+                          <label htmlFor="edit_full_descr" className={styles.label}>Полное описание</label>
+                          <div className={styles.text_container}>
+                            <textarea ref={fullRef} id="edit_full_descr" onChange={handleChangeText} className={styles.text} maxLength={500} defaultValue={el.longDescriptionRu} disabled={!isEdit}></textarea>
+                            <span className={`${styles.counter} ${styles.counter_text}`}>
+                              {/* {el.longDescriptionRu.length}/500 */}
+                              {amountSymbolText}/500
                             </span>
                           </div>
                         </div>
 
-                        <button type="button" className={styles.button_edit}>
-                          Редактировать
-                        </button>
+                        {!isEdit ? (
+                          <button onClick={e => changeEditForm()} type="button" className={styles.button_edit}>
+                            Редактировать
+                          </button>
+                        ) : (
+                          <div className={styles.buttons}>
+                            <button type="button" onClick={e => changeEditForm()} className={styles.save}>Сохранить</button>
+                            <button type="button" className={styles.delete}>Удалить</button>
+                          </div>
+                        )}
+
+
                       </div>
                     </CSSTransition>
                   ) : (

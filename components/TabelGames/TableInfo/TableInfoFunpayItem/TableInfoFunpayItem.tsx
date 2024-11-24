@@ -39,7 +39,7 @@ export const TableInfoFunpayItem = observer(
                 switch (usenameToCountries[funpayItem.country]) {
                   case "ru":
                     return <Russia width={21} height={16} />;
-                  case "uk":
+                  case "ua":
                     return <Ukraine width={21} height={16} />;
                   case "kz":
                     return <Kazahstan width={21} height={16} />;
