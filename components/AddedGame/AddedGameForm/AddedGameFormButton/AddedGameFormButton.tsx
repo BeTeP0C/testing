@@ -6,6 +6,7 @@ type TPackagesSelect = {
   title: string;
   countries: string[];
   id: string;
+  price: number
 }[];
 
 type TAddedGameFormButton = {
@@ -45,7 +46,7 @@ export function AddedGameFormButton(props: TAddedGameFormButton) {
             title: el.title,
             id: el.id,
             store: "funpay",
-            markup: 0,
+            markup: null,
             regions: el.countries.map((country, number) => {
               return {
                 region: country,
@@ -54,6 +55,7 @@ export function AddedGameFormButton(props: TAddedGameFormButton) {
                 active: number === 0,
               };
             }),
+            price: el.price,
             active: index === 0,
             posted: false,
           };

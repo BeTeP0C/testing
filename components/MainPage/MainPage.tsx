@@ -15,6 +15,9 @@ import { MainInfo } from "../MainInfo";
 import { ActionsOverGame } from "../ActionsOverGame";
 import { MagazineStore } from "../../common/store";
 import { SettingsPage } from "../SettingsPage";
+import { Modal } from "../Modal";
+import { CSSTransition } from "react-transition-group";
+import { DeleteWindow } from "../DeleteWindow";
 
 export const StoreContext = createContext(null);
 
@@ -71,6 +74,23 @@ export const MainPage = observer(() => {
           </Content>
         </Main>
 
+        <CSSTransition
+          timeout={300}
+          in={magazineStore.isOpenModal}
+          classNames={"drop-animation"}
+          unmountOnExit
+        >
+          <Modal>
+              <CSSTransition
+                  timeout={300}
+                  in={magazineStore.isOpenDelete}
+                  classNames={"drop-animation"}
+                  unmountOnExit
+                >
+                  <DeleteWindow />
+                </CSSTransition>
+            </Modal>
+        </CSSTransition>
         <ActionsOverGame store={magazineStore} />
       </StoreContext.Provider>
     </Page>

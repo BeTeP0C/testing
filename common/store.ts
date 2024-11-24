@@ -1,5 +1,5 @@
 import axios from "axios";
-import { action, autorun, makeAutoObservable, observable, runInAction, toJS } from "mobx";
+import { action, autorun, computed, makeAutoObservable, observable, runInAction, toJS } from "mobx";
 import { countryData } from "./transformCountriesForSettings";
 import { TGame } from "../types/tgames";
 import { TSettingsData } from "../types/settingsData";
@@ -11,16 +11,6 @@ import { countriesToUsename, usenameToCountries } from "./countriesToUsename";
 export class MagazineStore {
   @observable games: TGame[] = [];
   @observable isLoadingGames: boolean = false;
-  @observable isOpenGameInfo = {
-    open: false,
-    openStore: false,
-    funpayId: null,
-    funpay_active: false,
-    funpayCountry: null,
-    funpayCountryActive: false,
-    id: null
-  };
-  @observable negativeHeight = 0
   @observable isOpenActionsGame: boolean = false
   @observable isOpenAddForm: boolean = false
   @observable isOpenEditForm: boolean = false
@@ -31,6 +21,8 @@ export class MagazineStore {
   @observable isLoadingGame: boolean = false
   @observable isSearchGame: boolean = true
   @observable authorizate: boolean = false
+  @observable isOpenModal: boolean = false
+  @observable isOpenDelete: boolean = false
   @observable TOKEN: string =  ""
   @observable currentPage: string = 'main'
   @observable settingsData: TSettingsData = {
@@ -40,11 +32,106 @@ export class MagazineStore {
     countries: []
   }
 
+  @observable isOpenGameInfo = {
+    open: false,
+    openStore: false,
+    funpayId: null,
+    funpay_active: false,
+    funpayCountry: null,
+    funpayCountryActive: false,
+    id: null
+  };
+  endpoint: string = "http://147.45.74.68:35805/api/v2/"
+
+  @observable negativeHeight = 0
   @observable settingsCountriesChoice = settingsCountries
 
   constructor() {
     this.restoreTokenFromLocalStorage()
     makeAutoObservable(this);
+  }
+
+  @action
+  handleDeleteProduct () {
+    this.handleOpenModal()
+    this.openModalDelete()
+  }
+
+  @action
+  handleOpenModal () {
+    this.isOpenModal = true
+  }
+
+  @action
+  openModalDelete () {
+    this.isOpenDelete = true
+  }
+
+  @action
+  handleCloseModal () {
+    this.isOpenModal = false
+    this.isOpenDelete = false
+  }
+
+  getGameLocal (id: number): TGame {
+    const game: TGame = this.games.find(el => el.id === id)
+
+    return game
+  }
+
+  @action
+  async handleDeleteGame() {
+    const game: TGame = this.getGameLocal(this.isOpenGameInfo.id)
+    console.log(game)
+    let flag: boolean = true
+    let move: boolean = true
+    let checkKey: boolean = true
+    try {
+      if (game.funPayItems) {
+        for (let el of game.funPayItems) {
+          if (move) {
+            const resp = await axios.delete(`${this.endpoint}items/funpay/${el.id}`, {
+              headers: {
+                "Authorization": `Bearer ${this.TOKEN}`
+              }
+            })
+
+            console.log(resp.data)
+          } else {
+            break
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error)
+      move = false
+      flag = false
+      return error
+    }
+
+    try {
+      if (flag) {
+        const resp = await axios.delete(`${this.endpoint}items/${game.id}`, {
+          headers: {
+            "Authorization": `Bearer ${this.TOKEN}`
+          }
+        })
+
+        console.log(resp.data)
+      }
+    } catch (error) {
+      console.error(error)
+      flag = false
+      return error
+    }
+
+    if (flag) {
+      runInAction(() => {
+        this.games = this.games.filter(el => el.id !== game.id);
+        this.handleCloseModal()
+      })
+      return 200
+    }
   }
 
   @action
@@ -216,10 +303,13 @@ export class MagazineStore {
         }
       })
 
+      console.log(resp.data)
+
       runInAction(async () => {
         this.games = await resp.data
         let reductGames: TGame[] = []
         this.games.forEach(el => {
+          console.log(reductGames, "1")
           if (!reductGames.some(game => game.steamItemId === el.steamItemId)) {
             reductGames.push({...el, funPayItems: el.funPayItem ? [...[{
               ...el.funPayItem,
@@ -232,19 +322,36 @@ export class MagazineStore {
           } else {
             reductGames = reductGames.map(game => {
               if (game.steamItemId === el.steamItemId) {
-                return {
-                  ...game,
-                  funPayItems: [...game.funPayItems, {
-                    ...el.funPayItem,
-                    items: el.funPayItem.items.map(item => {
-                      return {...item, active: false}
-                    })
-                  }]
+
+                if (el.funPayItems) {
+                  return {
+                    ...game,
+                    funPayItems: [...game.funPayItems, {
+                      ...el.funPayItem,
+                      items: el.funPayItem.items.map(item => {
+                        return {...item, active: false}
+                      })
+                    }]
+                  }
+                } else {
+                  return {
+                    ...game,
+                  }
                 }
+
+
+              }
+              return {
+                ...game
               }
             })
           }
+
+          console.log(reductGames, "2")
         })
+
+        console.log(reductGames)
+
         this.games = reductGames.map((game) => ({...game, lastUpdated: this.transformDate(game.lastUpdated)}))
         console.log(resp.data)
         console.log(toJS(this.games))
@@ -437,18 +544,19 @@ export class MagazineStore {
   @action
   async getSettingsData () {
     try {
-      const resp = await axios.get(`http://147.45.74.68:35805/api/v2/profile/admin`, {
+      const resp = await axios.get(`${this.endpoint}profile/admin`, {
         headers: {
           "Authorization": `Bearer ${this.TOKEN}`
         }
       })
 
-      this.settingsData = {...this.settingsData,
-        titleStore: resp.data.email,
-        funpayKey: resp.data.funPayGoldenKey,
-        countries: resp.data.countries.map((el: string) => countryData[el]).filter(Boolean)
-      }
-
+      runInAction(() => {
+        this.settingsData = {...this.settingsData,
+          titleStore: resp.data.email,
+          funpayKey: resp.data.funPayGoldenKey,
+          countries: resp.data.countries.map((el: string) => countryData[el]).filter(Boolean)
+        }
+      })
     } catch (error) {
       console.error(error)
     }
@@ -472,60 +580,85 @@ export class MagazineStore {
       })
 
       if (resp1.status === 200) {
-        const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
-          internalName: editionSelect.title,
-          genre: "Экшен",
-          shortDescriptionRu: "Steam ключ, дешево!",
-          longDescriptionRu: `Быстрая и надежная доставка ключа активации для игры ${titleGame} в Steam. Получите ключ мгновенно после оплаты и начните играть!`,
-          shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
-          longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`,
-          overpaymentPercent: editionSelect.markup,
-          items: editionSelect.regions.map(el => {
-            return {
-              isOwnDescription: !isGlobal,
-              isActive: true,
-              isDeactivatedAfterSale: true,
-              country: countriesToUsename[el.region],
-              shortDescriptionRu: el.briefDescr,
-              longDescriptionRu: el.fullDescr,
-              shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
-              longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`
+        try {
+          const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+            internalName: editionSelect.title,
+            genre: "Экшен",
+            shortDescriptionRu: "Steam ключ, дешево!",
+            longDescriptionRu: `Быстрая и надежная доставка ключа активации для игры ${titleGame} в Steam. Получите ключ мгновенно после оплаты и начните играть!`,
+            shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
+            longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`,
+            overpaymentPercent: editionSelect.markup,
+            items: editionSelect.regions.map(el => {
+              return {
+                isOwnDescription: !isGlobal,
+                isActive: true,
+                isDeactivatedAfterSale: true,
+                country: countriesToUsename[el.region],
+                shortDescriptionRu: el.briefDescr,
+                longDescriptionRu: el.fullDescr,
+                shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
+                longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`
+              }
+            })
+
+          }, {
+            headers: {
+              "Authorization": `Bearer ${this.TOKEN}`
             }
           })
 
-        }, {
-          headers: {
-            "Authorization": `Bearer ${this.TOKEN}`
+          if (resp2.status === 200) {
+            console.log(editionOptions)
+            if (editionOptions.length === editionOptions.filter(el => el.posted).length + 1) {
+              runInAction(() => {
+                this.isOpenAddForm = false
+                this.isOpenActionsGame = false
+              })
+
+              this.getGames()
+
+              return ""
+            } else {
+              return {
+                ...editionSelect,
+                posted: true,
+                active: false,
+                regions: editionSelect.regions.map((region) => {
+                  return { ...region, active: false };
+                }),
+              }
+            }
           }
-        })
-
-        if (resp2.status === 200) {
-          console.log(editionOptions)
-          if (editionOptions.length === editionOptions.filter(el => el.posted).length + 1) {
-            console.log("dasdasfhasdfhsdjk")
-            runInAction(() => {
-              this.isOpenAddForm = false
-              this.isOpenActionsGame = false
-            })
-
-            this.getGames()
-
-            return ""
-          } else {
+        } catch (error) {
+          if (error.status === 400) {
             return {
-              ...editionSelect,
-              posted: true,
-              active: false,
-              regions: editionSelect.regions.map((region) => {
-                return { ...region, active: false };
-              }),
+              type: "funpay",
+              status: 400
+            }
+          } else if (error.status === 500) {
+            return {
+              type: "funpay",
+              status: 500
             }
           }
         }
       }
+
     } catch (error) {
-      console.log(error)
+      if (error.status === 400) {
+        return {
+          type: "steam",
+          status: 400
+        }
+      } else if (error.status === 500) {
+        return {
+          type: "steam",
+          status: 500
+        }
+      }
     }
+
   }
 
   @action
@@ -644,7 +777,6 @@ export class MagazineStore {
             funpayCountryActive: false,
             funpay_active: false
           }
-          // this.isOpenActionsGame = this.isOpenGameInfo.open
         }, 500)
       } else {
         this.isOpenGameInfo = {
@@ -658,41 +790,12 @@ export class MagazineStore {
           funpay_active: false
         }
 
-
-        // this.isOpenActionsGame = this.isOpenGameInfo.open
-      }
-    })
-  }
-
-  @action
-  async handleDeleteGame(gameId: number, funpayId: number) {
-    if (funpayId) {
-      const resp1 = await axios.delete(`http://147.45.74.68:35805/api/v2/items/funpay/${funpayId}`, {
-        headers: {
-          "Authorization": `Bearer ${this.TOKEN}`
+        if (gameId === this.isOpenGameInfo.id) {
+          this.negativeHeight = 0
+        } else {
+          this.negativeHeight = this.isOpenGameInfo.open ? this.negativeHeight : 0
         }
-      })
-    }
-
-    const resp2 = await axios.delete(`http://147.45.74.68:35805/api/v2/items/${gameId}`, {
-      headers: {
-        "Authorization": `Bearer ${this.TOKEN}`
       }
-    })
-
-    runInAction(() => {
-      this.games = this.games.filter(el => el.id !== gameId);
-      this.isOpenGameInfo = {
-        funpayId: null,
-        open: false,
-        id: null,
-        openStore: false,
-        funpay_active: false,
-        funpayCountry: null,
-        funpayCountryActive: false,
-      }
-
-      this.isOpenActionsGame = false
     })
   }
 

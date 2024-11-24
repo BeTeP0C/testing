@@ -15,10 +15,23 @@
   color: #26292F;
 }
 
+.func {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+}
+
+.error {
+  display: inline-block;
+  margin-bottom: 10px;
+  font-weight: 400;
+  font-size: 12px;
+  color: red;
+}
+
 .buttons {
   display: flex;
   justify-content: center;
-  // margin: 0 auto;
 }
 
 .first_block {

@@ -11,8 +11,13 @@ import { TEditionsOptions } from "../../../../types/edtitionInfo";
 export function AddedGameFormRegion(props: {
   editionsOptions: TEditionsOptions[];
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
+  error: {
+    errorMessage: string,
+    activate: boolean,
+    visible: boolean,
+  }
 }) {
-  const { editionsOptions, setEditionOptions } = props;
+  const { editionsOptions, setEditionOptions, error } = props;
 
   const changeRegion = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEditionOptions(
@@ -35,7 +40,10 @@ export function AddedGameFormRegion(props: {
 
   return (
     <div className={styles.container}>
-      <h3 className={styles.heading}>Регионы</h3>
+      <h3 className={styles.heading}>
+        Регионы
+        {error?.visible ? <span className={styles.error}>{error.errorMessage}</span> : ""}
+      </h3>
 
       <ul className={styles.list}>
         {editionsOptions

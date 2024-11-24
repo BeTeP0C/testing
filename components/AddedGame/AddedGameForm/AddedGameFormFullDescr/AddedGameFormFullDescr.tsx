@@ -6,10 +6,15 @@ type TAddedGameFormFullDescr = {
   editionsOptions: TEditionsOptions[];
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
   isGlobal: boolean;
+  error: {
+    errorMessage: string,
+    activate: boolean,
+    visible: boolean,
+  }
 };
 
 export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
-  const { editionsOptions, setEditionOptions, isGlobal } = props;
+  const { editionsOptions, setEditionOptions, isGlobal, error } = props;
   const inputRef = useRef(null);
   const [amountSymbol, setAmountSymbol] = useState(0);
   const [isShow, setIsShow] = useState(false);
@@ -62,6 +67,7 @@ export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
     <div className={styles.container}>
       <label className={styles.title} htmlFor="full">
         Полное описание
+        {error?.visible ? <span className={styles.error}>{error.errorMessage}</span> : ""}
       </label>
 
       <div className={styles.content}>

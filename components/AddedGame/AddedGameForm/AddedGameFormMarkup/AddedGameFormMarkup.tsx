@@ -5,8 +5,13 @@ import { TEditionsOptions } from "../../../../types/edtitionInfo";
 export function AddedGameFormMarkup(props: {
   editionsOptions: TEditionsOptions[];
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
+  error: {
+    errorMessage: string,
+    activate: boolean,
+    visible: boolean,
+  }
 }) {
-  const { editionsOptions, setEditionOptions } = props;
+  const { editionsOptions, setEditionOptions, error } = props;
   const inputRef = useRef(null);
 
   const saveInput = (e: React.FocusEvent<HTMLInputElement, Element>) => {
@@ -53,6 +58,8 @@ export function AddedGameFormMarkup(props: {
                 <>
                   <label className={styles.title} htmlFor="markup">
                     Наценка
+
+                    {error?.visible ? <span className={styles.error}>{error.errorMessage}</span> : ""}
                   </label>
                   <input
                     ref={inputRef}

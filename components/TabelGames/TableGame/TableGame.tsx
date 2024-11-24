@@ -29,6 +29,7 @@ export const TableGame = observer((props: { game: TGame }) => {
       magazineStore.isOpenGameInfo.id === game.id &&
       dropRef.current
     ) {
+      console.log(magazineStore.negativeHeight)
       dropRef.current.style.height = `${dropRef.current.scrollHeight - magazineStore.negativeHeight}px`;
     } else if (dropRef.current) {
       dropRef.current.style.height = "44px";

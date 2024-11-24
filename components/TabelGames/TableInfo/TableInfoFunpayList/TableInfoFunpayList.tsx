@@ -81,8 +81,7 @@ export const TableInfoFunpayList = observer(
 
                         <div className={styles.full_descr}>
                           <h5 className={styles.label}>
-                            Полное описание {funpayItem.id}
-                            {el.country}
+                            Полное описание
                           </h5>
                           <div className={styles.text}>
                             {el.longDescriptionRu}

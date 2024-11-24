@@ -9,12 +9,15 @@ export function ButtonDeleteProduct(props: { store: MagazineStore }) {
     <button
       type="button"
       className={styles.button}
-      onClick={() =>
-        store.handleDeleteGame(
-          store.isOpenGameInfo.id,
-          store.isOpenGameInfo.funpayId,
-        )
-      }
+      // onClick={() =>
+      //   store.handleDeleteGame(
+      //     store.isOpenGameInfo.id,
+      //     store.isOpenGameInfo.funpayId,
+      //   )
+      // }
+      onClick={() => {
+        store.handleDeleteProduct()
+      }}
     >
       Удалить Товар
     </button>

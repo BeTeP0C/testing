@@ -13,10 +13,6 @@ export const Auth = observer(() => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
-  // useEffect(() => {
-  //   console.log(store.TOKEN)
-  // }, [])
-
   return (
     <div className={styles.container}>
       <h1 className={styles.heading}>Авторизация</h1>
