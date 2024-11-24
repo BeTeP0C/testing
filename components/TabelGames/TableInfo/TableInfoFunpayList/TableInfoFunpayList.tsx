@@ -80,9 +80,7 @@ export const TableInfoFunpayList = observer(
                         </div>
 
                         <div className={styles.full_descr}>
-                          <h5 className={styles.label}>
-                            Полное описание
-                          </h5>
+                          <h5 className={styles.label}>Полное описание</h5>
                           <div className={styles.text}>
                             {el.longDescriptionRu}
                             <span
@@ -101,18 +99,11 @@ export const TableInfoFunpayList = observer(
                   ) : (
                     ""
                   )}
-                  {/* {el.active ? (
-
-                  ): ""} */}
                 </>
               );
             })}
           </div>
         </CSSTransition>
-
-        {/* {store.isOpenGameInfo.openStore ? (
-
-      ): ""} */}
       </div>
     );
   },

@@ -6,7 +6,7 @@ type TPackagesSelect = {
   title: string;
   countries: string[];
   id: string;
-  price: number
+  price: number;
 }[];
 
 type TAddedGameFormButton = {

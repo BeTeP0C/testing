@@ -7,10 +7,10 @@ type TAddedGameFormFullDescr = {
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
   isGlobal: boolean;
   error: {
-    errorMessage: string,
-    activate: boolean,
-    visible: boolean,
-  }
+    errorMessage: string;
+    activate: boolean;
+    visible: boolean;
+  };
 };
 
 export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
@@ -67,7 +67,11 @@ export function AddedGameFormFullDescr(props: TAddedGameFormFullDescr) {
     <div className={styles.container}>
       <label className={styles.title} htmlFor="full">
         Полное описание
-        {error?.visible ? <span className={styles.error}>{error.errorMessage}</span> : ""}
+        {error?.visible ? (
+          <span className={styles.error}>{error.errorMessage}</span>
+        ) : (
+          ""
+        )}
       </label>
 
       <div className={styles.content}>

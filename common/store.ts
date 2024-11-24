@@ -82,10 +82,9 @@ export class MagazineStore {
   @action
   async handleDeleteGame() {
     const game: TGame = this.getGameLocal(this.isOpenGameInfo.id)
-    console.log(game)
     let flag: boolean = true
     let move: boolean = true
-    let checkKey: boolean = true
+
     try {
       if (game.funPayItems) {
         for (let el of game.funPayItems) {
@@ -96,31 +95,56 @@ export class MagazineStore {
               }
             })
 
-            console.log(resp.data)
           } else {
             break
           }
         }
       }
     } catch (error) {
-      console.error(error)
-      move = false
-      flag = false
-      return error
+
+      const status = await this.checkFunpayKey(this.settingsData.funpayKey)
+
+      if (status === 200) {
+        try {
+          if (game.funPayItems) {
+            for (let el of game.funPayItems) {
+              if (move) {
+                const resp = await axios.delete(`${this.endpoint}items/funpay/${el.id}`, {
+                  headers: {
+                    "Authorization": `Bearer ${this.TOKEN}`
+                  }
+                })
+
+              } else {
+                break
+              }
+            }
+          }
+        } catch(er) {
+
+          move = false
+          flag = false
+          return error
+        }
+      } else {
+        move = false
+        flag = false
+        return error
+      }
     }
 
     try {
       if (flag) {
-        const resp = await axios.delete(`${this.endpoint}items/${game.id}`, {
-          headers: {
-            "Authorization": `Bearer ${this.TOKEN}`
-          }
-        })
+        for (let el of game.ides) {
+          const resp = await axios.delete(`${this.endpoint}items/${el}`, {
+            headers: {
+              "Authorization": `Bearer ${this.TOKEN}`
+            }
+          })
 
-        console.log(resp.data)
+        }
       }
     } catch (error) {
-      console.error(error)
       flag = false
       return error
     }
@@ -285,9 +309,7 @@ export class MagazineStore {
           }
         })
 
-        console.log(resp.data)
       } catch (error) {
-        console.log(error)
       }
 
     })
@@ -303,15 +325,13 @@ export class MagazineStore {
         }
       })
 
-      console.log(resp.data)
 
       runInAction(async () => {
         this.games = await resp.data
         let reductGames: TGame[] = []
         this.games.forEach(el => {
-          console.log(reductGames, "1")
           if (!reductGames.some(game => game.steamItemId === el.steamItemId)) {
-            reductGames.push({...el, funPayItems: el.funPayItem ? [...[{
+            reductGames.push({...el, ides: [...[el.id]],funPayItems: el.funPayItem !== null ? [...[{
               ...el.funPayItem,
               packageId: el.steamItemPackageId,
               active: false,
@@ -323,12 +343,13 @@ export class MagazineStore {
             reductGames = reductGames.map(game => {
               if (game.steamItemId === el.steamItemId) {
 
-                if (el.funPayItems) {
+                if (game.funPayItems) {
                   return {
                     ...game,
+                    ides: [...game.ides, ...[el.id]],
                     funPayItems: [...game.funPayItems, {
                       ...el.funPayItem,
-                      items: el.funPayItem.items.map(item => {
+                      items: el.funPayItem?.items.map(item => {
                         return {...item, active: false}
                       })
                     }]
@@ -336,6 +357,8 @@ export class MagazineStore {
                 } else {
                   return {
                     ...game,
+                    ides: [...game.ides, ...[el.id]],
+                    funPayItems: [...game.funPayItems]
                   }
                 }
 
@@ -347,14 +370,10 @@ export class MagazineStore {
             })
           }
 
-          console.log(reductGames, "2")
         })
 
-        console.log(reductGames)
 
         this.games = reductGames.map((game) => ({...game, lastUpdated: this.transformDate(game.lastUpdated)}))
-        console.log(resp.data)
-        console.log(toJS(this.games))
         this.sortGameForDate("bottom")
         this.isLoadingGames = false
       })
@@ -402,7 +421,6 @@ export class MagazineStore {
 
       return resp.status
     } catch(error) {
-      console.error(error)
     }
   }
 
@@ -423,7 +441,6 @@ export class MagazineStore {
         this.connectToSteam()
       }
     } else if (statusAuth === 401) {
-      console.log("Авторизация")
       this.authorizate = false
     }
   }
@@ -495,7 +512,6 @@ export class MagazineStore {
       if (error.status === 401) {
         return error.status
       } else {
-        console.error('Ошибка при получении данных:', error);
       }
     }
   }
@@ -516,7 +532,6 @@ export class MagazineStore {
         this.isConnectSteam = false
       }
     } catch (error) {
-      console.error(error)
     }
 
     this.isLoadingConnectSteam = false
@@ -537,7 +552,6 @@ export class MagazineStore {
         this.settingsData = {...this.settingsData, funpayActivate: false}
       }
     } catch (error) {
-      console.error(error)
     }
   }
 
@@ -558,7 +572,6 @@ export class MagazineStore {
         }
       })
     } catch (error) {
-      console.error(error)
     }
   }
 
@@ -609,7 +622,6 @@ export class MagazineStore {
           })
 
           if (resp2.status === 200) {
-            console.log(editionOptions)
             if (editionOptions.length === editionOptions.filter(el => el.posted).length + 1) {
               runInAction(() => {
                 this.isOpenAddForm = false
@@ -637,9 +649,70 @@ export class MagazineStore {
               status: 400
             }
           } else if (error.status === 500) {
-            return {
-              type: "funpay",
-              status: 500
+            const status = await this.checkFunpayKey(this.settingsData.funpayKey)
+
+            if (status === 200) {
+              try {
+                const resp3 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+                  internalName: editionSelect.title,
+                  genre: "Экшен",
+                  shortDescriptionRu: "Steam ключ, дешево!",
+                  longDescriptionRu: `Быстрая и надежная доставка ключа активации для игры ${titleGame} в Steam. Получите ключ мгновенно после оплаты и начните играть!`,
+                  shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
+                  longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`,
+                  overpaymentPercent: editionSelect.markup,
+                  items: editionSelect.regions.map(el => {
+                    return {
+                      isOwnDescription: !isGlobal,
+                      isActive: true,
+                      isDeactivatedAfterSale: true,
+                      country: countriesToUsename[el.region],
+                      shortDescriptionRu: el.briefDescr,
+                      longDescriptionRu: el.fullDescr,
+                      shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
+                      longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`
+                    }
+                  })
+
+                }, {
+                  headers: {
+                    "Authorization": `Bearer ${this.TOKEN}`
+                  }
+                })
+
+                if (resp3.status === 200) {
+                  if (editionOptions.length === editionOptions.filter(el => el.posted).length + 1) {
+                    runInAction(() => {
+                      this.isOpenAddForm = false
+                      this.isOpenActionsGame = false
+                    })
+
+                    this.getGames()
+
+                    return ""
+                  } else {
+                    return {
+                      ...editionSelect,
+                      posted: true,
+                      active: false,
+                      regions: editionSelect.regions.map((region) => {
+                        return { ...region, active: false };
+                      }),
+                    }
+                  }
+                }
+              } catch (er) {
+                const resp = await axios.delete(`${this.endpoint}items/${resp1.data.id}`, {
+                  headers: {
+                    "Authorization": `Bearer ${this.TOKEN}`
+                  }
+                })
+
+                return {
+                  type: "funpay",
+                  status: 500
+                }
+              }
             }
           }
         }
@@ -672,7 +745,6 @@ export class MagazineStore {
 
       return resp.status
     } catch (error) {
-      console.error(error)
     }
   }
 
@@ -686,7 +758,6 @@ export class MagazineStore {
         },
       })
     } catch (error) {
-      console.error(error)
     }
 
     this.isConnectSteam = true
@@ -717,7 +788,6 @@ export class MagazineStore {
 
       }
     } catch (error) {
-      console.log(error)
       this.isLoadingGame = false
       this.connectToSteam()
       return {
@@ -801,7 +871,6 @@ export class MagazineStore {
 
   @action
   handleSaveGame(gameId: number, value: number) {
-    console.log(gameId, value)
     runInAction(() => {
       this.games = this.games.map(el => el.id === gameId ? {...el, id: value} : el);
       this.isOpenGameInfo = {

@@ -1,1 +1,1 @@
-export * from "./DeleteWindow"
+export * from "./DeleteWindow";

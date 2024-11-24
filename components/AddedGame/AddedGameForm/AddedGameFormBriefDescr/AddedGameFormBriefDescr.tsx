@@ -7,10 +7,10 @@ type TAddedGameFormBriefDescr = {
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
   isGlobal: boolean;
   error: {
-    errorMessage: string,
-    activate: boolean,
-    visible: boolean,
-  }
+    errorMessage: string;
+    activate: boolean;
+    visible: boolean;
+  };
 };
 
 export function AddedGameFormBriefDescr(props: TAddedGameFormBriefDescr) {
@@ -70,7 +70,11 @@ export function AddedGameFormBriefDescr(props: TAddedGameFormBriefDescr) {
     <div className={styles.container}>
       <label className={styles.title} htmlFor="brief">
         Краткое описание
-        {error?.visible ? <span className={styles.error}>{error.errorMessage}</span> : ""}
+        {error?.visible ? (
+          <span className={styles.error}>{error.errorMessage}</span>
+        ) : (
+          ""
+        )}
       </label>
 
       <div className={styles.content}>

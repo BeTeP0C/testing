@@ -12,10 +12,10 @@ export function AddedGameFormRegion(props: {
   editionsOptions: TEditionsOptions[];
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
   error: {
-    errorMessage: string,
-    activate: boolean,
-    visible: boolean,
-  }
+    errorMessage: string;
+    activate: boolean;
+    visible: boolean;
+  };
 }) {
   const { editionsOptions, setEditionOptions, error } = props;
 
@@ -42,7 +42,11 @@ export function AddedGameFormRegion(props: {
     <div className={styles.container}>
       <h3 className={styles.heading}>
         Регионы
-        {error?.visible ? <span className={styles.error}>{error.errorMessage}</span> : ""}
+        {error?.visible ? (
+          <span className={styles.error}>{error.errorMessage}</span>
+        ) : (
+          ""
+        )}
       </h3>
 
       <ul className={styles.list}>

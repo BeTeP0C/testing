@@ -3,6 +3,7 @@ export type TGame = {
   avitoItemId: null,
   funPayItem: TFunPayItem | null,
   funPayItems?: TFunPayItem[],
+  ides?: number[],
   funPayItemId: null,
   id: number,
   lastUpdated: string,

@@ -32,7 +32,7 @@ export const AddedGame = observer(() => {
   const [isNextStep, setIsNextStep] = useState(false);
   const [title, setTitle] = useState("");
   const [appId, setAppId] = useState(null);
-  const [price, setPrice] = useState(null)
+  const [price, setPrice] = useState(null);
   const [editionsOptions, setEditionOptions] = useState([]);
   const [isGlobal, setIsGlobal] = useState(false);
   const [steamGame, setSteamGame] = useState({
@@ -43,8 +43,8 @@ export const AddedGame = observer(() => {
 
   const [isError, setIsError] = useState({
     errorMessage: "",
-    active: false
-  })
+    active: false,
+  });
 
   const [firstPageErrors, setFirstPageErrors] = useState([
     {
@@ -69,10 +69,6 @@ export const AddedGame = observer(() => {
       errorMessage: "Выберите регион",
       visible: false,
       activate: false,
-    }, {
-      errorMessage: "Поле обязательно для заполнения",
-      visible: false,
-      activate: false,
     },
     {
       errorMessage: "Поле обязательно для заполнения",
@@ -83,8 +79,13 @@ export const AddedGame = observer(() => {
       errorMessage: "Поле обязательно для заполнения",
       visible: false,
       activate: false,
-    }
-  ])
+    },
+    {
+      errorMessage: "Поле обязательно для заполнения",
+      visible: false,
+      activate: false,
+    },
+  ]);
 
   useEffect(() => {
     const newErrors = firstPageErrors.map((el, index) => {
@@ -105,42 +106,45 @@ export const AddedGame = observer(() => {
   }, [title, appId, packagesSelect]);
 
   useEffect(() => {
-    const item: TEditionsOptions = editionsOptions.find(e => e.active)
+    const item: TEditionsOptions = editionsOptions.find((e) => e.active);
 
     if (item) {
-      const newError = secondPageErrors.map((el,index) => {
+      const newError = secondPageErrors.map((el, index) => {
         if (index === 0) {
           return {
-            ...el, activate: !item.regions.some(e => e.active)
-          }
+            ...el,
+            activate: !item.regions.some((e) => e.active),
+          };
         }
 
         if (index === 1) {
           return {
-            ...el, activate: item.markup ? false : true
-          }
+            ...el,
+            activate: !item.markup,
+          };
         }
 
-        if (item.regions.some(e => e.active)) {
-          const itemInfo = item.regions.find(e => e.active)
+        if (item.regions.some((e) => e.active)) {
+          const itemInfo = item.regions.find((e) => e.active);
           if (index === 2) {
             if (itemInfo.briefDescr === "") {
               return {
                 errorMessage: "Поле обязательно для заполнения",
                 visible: isGlobal ? false : el?.visible,
-                activate: isGlobal ? false : true
-              }
-            } else if (itemInfo.briefDescr.length < 15) {
+                activate: !isGlobal,
+              };
+            }
+            if (itemInfo.briefDescr.length < 15) {
               return {
                 errorMessage: "Напишите еще",
                 visible: isGlobal ? false : el?.visible,
-                activate: isGlobal ? false : true
-              }
+                activate: !isGlobal,
+              };
             }
             return {
               ...el,
-              activate: false
-            }
+              activate: false,
+            };
           }
 
           if (index === 3) {
@@ -148,25 +152,28 @@ export const AddedGame = observer(() => {
               return {
                 errorMessage: "Поле обязательно для заполнения",
                 visible: isGlobal ? false : el?.visible,
-                activate: isGlobal ? false : true
-              }
-            } else if (itemInfo.fullDescr.length < 15) {
+                activate: !isGlobal,
+              };
+            }
+            if (itemInfo.fullDescr.length < 15) {
               return {
                 errorMessage: "Напишите еще",
                 visible: isGlobal ? false : el?.visible,
-                activate: isGlobal ? false : true
-              }
+                activate: !isGlobal,
+              };
             }
             return {
               ...el,
-              activate: false
-            }
+              activate: false,
+            };
           }
         }
-      })
-      setSecondPageErrors(newError)
+
+        return null;
+      });
+      setSecondPageErrors(newError);
     }
-  }, [editionsOptions, isGlobal])
+  }, [editionsOptions, isGlobal]);
 
   const filterUniqueByField = (arr: any[], field: string) => {
     const uniqueIds = new Set();
@@ -200,7 +207,7 @@ export const AddedGame = observer(() => {
             title: el.name,
             id: el.id,
             countries: uniqueCountries,
-            price: Math.floor(el.finalPrice / 1000)
+            price: Math.floor(el.finalPrice / 1000),
           };
         }),
         "id",
@@ -303,39 +310,45 @@ export const AddedGame = observer(() => {
               setEditionOptions={setEditionOptions}
             />
             {editionsOptions
-              .find(el => el.active)
+              .find((el) => el.active)
               ?.regions.map((el) => {
                 return (
                   <>
                     {el.active ? (
                       <>
-                      <AddedGameFormGlobal setIsGlobal={setIsGlobal} />
-                      <AddedGameFormMarkup
-                        editionsOptions={editionsOptions}
-                        setEditionOptions={setEditionOptions}
-                        error={secondPageErrors[1]}
-                      />
-                      <AddedGameFormBriefDescr
-                        isGlobal={isGlobal}
-                        editionsOptions={editionsOptions}
-                        setEditionOptions={setEditionOptions}
-                        error={secondPageErrors[2]}
-                      />
-                      <AddedGameFormFullDescr
-                        isGlobal={isGlobal}
-                        editionsOptions={editionsOptions}
-                        setEditionOptions={setEditionOptions}
-                        error={secondPageErrors[3]}
-                      />
-                      <AddedGameFormPrices editionOptions={editionsOptions}/>
-                    </>
-                    ): ""}
+                        <AddedGameFormGlobal setIsGlobal={setIsGlobal} />
+                        <AddedGameFormMarkup
+                          editionsOptions={editionsOptions}
+                          setEditionOptions={setEditionOptions}
+                          error={secondPageErrors[1]}
+                        />
+                        <AddedGameFormBriefDescr
+                          isGlobal={isGlobal}
+                          editionsOptions={editionsOptions}
+                          setEditionOptions={setEditionOptions}
+                          error={secondPageErrors[2]}
+                        />
+                        <AddedGameFormFullDescr
+                          isGlobal={isGlobal}
+                          editionsOptions={editionsOptions}
+                          setEditionOptions={setEditionOptions}
+                          error={secondPageErrors[3]}
+                        />
+                        <AddedGameFormPrices editionOptions={editionsOptions} />
+                      </>
+                    ) : (
+                      ""
+                    )}
                   </>
-                )
+                );
               })}
 
             <div className={styles.func}>
-              {isError.active ? <span className={styles.error}>{isError.errorMessage}</span> : ""}
+              {isError.active ? (
+                <span className={styles.error}>{isError.errorMessage}</span>
+              ) : (
+                ""
+              )}
               <div className={styles.buttons}>
                 <AddedGameFormButtonBack setIsNextStep={setIsNextStep} />
                 <AddedGameFormButtonCreate

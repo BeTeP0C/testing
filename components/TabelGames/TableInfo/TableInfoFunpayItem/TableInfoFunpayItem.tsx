@@ -32,7 +32,7 @@ export const TableInfoFunpayItem = observer(
                 item.current ? item.current.offsetHeight : 0,
               )
             }
-            className={`${styles.button_region}`}
+            className={`${styles.button_region} ${funpayItem.active ? styles.button_region_active : ""}`}
           >
             <span className={styles.region}>
               {(() => {

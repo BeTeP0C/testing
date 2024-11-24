@@ -15,15 +15,15 @@ export function AddedGameEditionCountry(props: { country: string }) {
         {(() => {
           switch (country) {
             case "ru":
-              return <Russia width={10} height={12} />;
+              return <Russia width={14} height={16} />;
             case "ua":
-              return <Ukraine width={10} height={12} />;
+              return <Ukraine width={14} height={16} />;
             case "kz":
-              return <Kazahstan width={10} height={12} />;
+              return <Kazahstan width={14} height={16} />;
             case "by":
-              return <Belarus width={10} height={12} />;
+              return <Belarus width={14} height={16} />;
             case "us":
-              return <USA width={10} height={12} />;
+              return <USA width={14} height={16} />;
             default:
               return "";
           }

@@ -6,10 +6,10 @@ export function AddedGameFormMarkup(props: {
   editionsOptions: TEditionsOptions[];
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
   error: {
-    errorMessage: string,
-    activate: boolean,
-    visible: boolean,
-  }
+    errorMessage: string;
+    activate: boolean;
+    visible: boolean;
+  };
 }) {
   const { editionsOptions, setEditionOptions, error } = props;
   const inputRef = useRef(null);
@@ -58,8 +58,11 @@ export function AddedGameFormMarkup(props: {
                 <>
                   <label className={styles.title} htmlFor="markup">
                     Наценка
-
-                    {error?.visible ? <span className={styles.error}>{error.errorMessage}</span> : ""}
+                    {error?.visible ? (
+                      <span className={styles.error}>{error.errorMessage}</span>
+                    ) : (
+                      ""
+                    )}
                   </label>
                   <input
                     ref={inputRef}

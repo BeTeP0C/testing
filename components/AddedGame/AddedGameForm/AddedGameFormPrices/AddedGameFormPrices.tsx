@@ -3,14 +3,13 @@ import styles from "./styles.module.scss";
 import { TEditionsOptions } from "../../../../types/edtitionInfo";
 
 type TAddedGameFormPrices = {
-  editionOptions: TEditionsOptions[]
-}
+  editionOptions: TEditionsOptions[];
+};
 
-export function AddedGameFormPrices({editionOptions}: TAddedGameFormPrices) {
-
+export function AddedGameFormPrices({ editionOptions }: TAddedGameFormPrices) {
   return (
     <div className={styles.container}>
-      {editionOptions.map(el => {
+      {editionOptions.map((el) => {
         if (el.active) {
           return (
             <>
@@ -20,13 +19,16 @@ export function AddedGameFormPrices({editionOptions}: TAddedGameFormPrices) {
               </div>
               <div className={styles.with_markup}>
                 <h3 className={styles.title}>Стоимость с наценкой</h3>
-                <span className={styles.price}>{Math.floor(el.price * (1 + el.markup/100))} руб.</span>
+                <span className={styles.price}>
+                  {Math.floor(el.price * (1 + el.markup / 100))} руб.
+                </span>
               </div>
             </>
-          )
+          );
         }
-      })
-      }
+
+        return null;
+      })}
     </div>
   );
 }

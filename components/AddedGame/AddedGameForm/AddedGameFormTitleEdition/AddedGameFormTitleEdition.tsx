@@ -6,21 +6,28 @@ export function AddedGameFormTitleEdition(props: {
   editionOptions: TEditionsOptions[] | any[];
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
   errors: {
-    errorMessage: string,
-    visible: boolean,
-    activate: boolean
-  }[],
-  setErrors: React.Dispatch<React.SetStateAction<{
     errorMessage: string;
     visible: boolean;
     activate: boolean;
-  }[]>>,
-  setIsError: React.Dispatch<React.SetStateAction<{
-    errorMessage: string;
-    active: boolean;
-  }>>
+  }[];
+  setErrors: React.Dispatch<
+    React.SetStateAction<
+      {
+        errorMessage: string;
+        visible: boolean;
+        activate: boolean;
+      }[]
+    >
+  >;
+  setIsError: React.Dispatch<
+    React.SetStateAction<{
+      errorMessage: string;
+      active: boolean;
+    }>
+  >;
 }) {
-  const { editionOptions, setEditionOptions, errors, setErrors, setIsError } = props;
+  const { editionOptions, setEditionOptions, errors, setErrors, setIsError } =
+    props;
   const [showList, setShowList] = useState(false);
   const [editionSelect, setEditionSelect]: [string, React.Dispatch<string>] =
     useState(
@@ -53,17 +60,19 @@ export function AddedGameFormTitleEdition(props: {
       }),
     );
 
-    setErrors(errors.map(el => {
-      return {
-        ...el,
-        visible: false
-      }
-    }))
+    setErrors(
+      errors.map((el) => {
+        return {
+          ...el,
+          visible: false,
+        };
+      }),
+    );
 
     setIsError({
       errorMessage: "",
-      active: false
-    })
+      active: false,
+    });
 
     setShowList(false);
   };

@@ -14,19 +14,25 @@ type TAddedGameFormButtonCreate = {
   setEditionOptions: React.Dispatch<React.SetStateAction<any[]>>;
   setEditionSelect: React.Dispatch<React.SetStateAction<any[]>>;
   errors: {
-    errorMessage: string,
-    visible: boolean,
-    activate: boolean
-  }[],
-  setErrors: React.Dispatch<React.SetStateAction<{
     errorMessage: string;
     visible: boolean;
     activate: boolean;
-  }[]>>,
-  setIsError: React.Dispatch<React.SetStateAction<{
-    errorMessage: string;
-    active: boolean;
-  }>>
+  }[];
+  setErrors: React.Dispatch<
+    React.SetStateAction<
+      {
+        errorMessage: string;
+        visible: boolean;
+        activate: boolean;
+      }[]
+    >
+  >;
+  setIsError: React.Dispatch<
+    React.SetStateAction<{
+      errorMessage: string;
+      active: boolean;
+    }>
+  >;
 };
 
 export const AddedGameFormButtonCreate = observer(
@@ -42,13 +48,13 @@ export const AddedGameFormButtonCreate = observer(
       setEditionOptions,
       errors,
       setErrors,
-      setIsError
+      setIsError,
     } = props;
     const editionSelect = editionsOptions.find((el) => el.active);
     const store = useContext(StoreContext);
 
     const handlePostGame = async () => {
-      if (!errors.some(el => el.activate)) {
+      if (!errors.some((el) => el.activate)) {
         const newEditionSelect = await store.postGame(
           appId,
           packageId,
@@ -63,33 +69,33 @@ export const AddedGameFormButtonCreate = observer(
           if (newEditionSelect?.status === 400) {
             setIsError({
               errorMessage: "Это издание уже Добавлено",
-              active: true
-            })
+              active: true,
+            });
           } else if (newEditionSelect?.status === 500) {
             setIsError({
               errorMessage: "Попробуйте позже",
-              active: true
-            })
+              active: true,
+            });
           }
         } else if (newEditionSelect?.type === "funpay") {
           if (newEditionSelect?.status === 400) {
             setIsError({
               errorMessage: "Этот товар уже был добавлен",
-              active: true
-            })
+              active: true,
+            });
           } else if (newEditionSelect.status === 500) {
             setIsError({
               errorMessage: "Проверьте поля и попробуйте еще раз",
-              active: true
-            })
+              active: true,
+            });
           }
         } else if (newEditionSelect !== "") {
           const nextEl: number | null = null;
 
           setIsError({
             errorMessage: "",
-            active: false
-          })
+            active: false,
+          });
 
           const arr1 = editionsOptions.map((el, index) => {
             if (el.id === newEditionSelect?.id) {
@@ -137,29 +143,29 @@ export const AddedGameFormButtonCreate = observer(
         } else {
           setIsError({
             errorMessage: "",
-            active: false
-          })
+            active: false,
+          });
           setEditionOptions([]);
         }
-
-
       } else {
-        setErrors(errors.map((el, index) => {
-          if (errors[0].activate) {
-            if (index === 0) {
-              return {
-                ...el,
-                visible: true
+        setErrors(
+          errors.map((el, index) => {
+            if (errors[0].activate) {
+              if (index === 0) {
+                return {
+                  ...el,
+                  visible: true,
+                };
               }
+              return { ...el, visible: false };
             }
-            return {...el, visible: false}
-          }
 
-          return {
-            ...el,
-            visible: el?.activate
-          }
-        }))
+            return {
+              ...el,
+              visible: el?.activate,
+            };
+          }),
+        );
       }
     };
 

@@ -16,7 +16,7 @@ export function ButtonDeleteProduct(props: { store: MagazineStore }) {
       //   )
       // }
       onClick={() => {
-        store.handleDeleteProduct()
+        store.handleDeleteProduct();
       }}
     >
       Удалить Товар
