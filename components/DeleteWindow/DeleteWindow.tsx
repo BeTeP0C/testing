@@ -24,6 +24,10 @@ export const DeleteWindow = observer(() => {
     }
   };
 
+  // const handleDeleteTable = async () => {
+  //   const resp = await store.handleDeleteProd()
+  // }
+
   return (
     <div
       className={`${styles.container} ${store.isOpenDelete ? styles.container_active : ""}`}

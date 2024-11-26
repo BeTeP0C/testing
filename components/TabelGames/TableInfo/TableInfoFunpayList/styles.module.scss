@@ -83,7 +83,7 @@
 .full_descr {
   display: flex;
   flex-direction: column;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
 }
 
 .label {
@@ -156,6 +156,11 @@
 
 .buttons {
   display: flex;
+
+  &_showBlock {
+    position: relative;
+    flex-direction: column;
+  }
 }
 
 .save {
@@ -173,6 +178,40 @@
 }
 
 .delete {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  width: 200px;
+  height: 42px;
+  font-weight: 500;
+  font-size: 14px;
+  background: #AC2E2E;
+  color: #ffffff;
+}
+
+.quation {
+  position: absolute;
+  top: -23px;
+  left: 50%;
+  transform: translateX(-65%);
+}
+
+.yes {
+  display: inline-flex;
+  margin-right: 20px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  width: 200px;
+  height: 42px;
+  font-weight: 500;
+  font-size: 14px;
+  background: #1B8F3C;
+  color: #ffffff;
+}
+
+.close {
   display: inline-flex;
   justify-content: center;
   align-items: center;

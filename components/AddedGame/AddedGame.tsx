@@ -37,6 +37,8 @@ export const AddedGame = observer(() => {
   const [isGlobal, setIsGlobal] = useState(false);
   const [steamGame, setSteamGame] = useState({
     name: "",
+    iconUrl: "",
+    countryRestricted: false,
     packages: [],
     steamId: null,
   });
@@ -201,6 +203,8 @@ export const AddedGame = observer(() => {
     return {
       name: game.name,
       steamId: game.id,
+      iconUrl: game.iconUrl,
+      countryRestricted: game.countryRestricted,
       packages: filterUniqueByField(
         game.purchaseOptions.map((el) => {
           return {
@@ -275,6 +279,8 @@ export const AddedGame = observer(() => {
             <AddedGameInputId
               setAppId={setAppId}
               title={steamGame.name}
+              url={steamGame.iconUrl}
+              steamGame={steamGame}
               idError={firstPageErrors[1]}
             />
             <AddedGameEdition

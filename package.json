@@ -1,6 +1,6 @@
 {
-  "name": "base_pack",
-  "version": "1.0.1",
+  "name": "steam_bot",
+  "version": "1.0.16",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -38,6 +38,7 @@
     "react-transition-group": "^4.4.5",
     "sass": "^1.71.0",
     "swr": "^2.2.5",
+    "translate": "^3.0.1",
     "uuid": "^11.0.0"
   },
   "devDependencies": {

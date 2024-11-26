@@ -1,5 +1,7 @@
 import axios from "axios";
 import { action, autorun, computed, makeAutoObservable, observable, runInAction, toJS } from "mobx";
+
+import translate from "translate"
 import { countryData } from "./transformCountriesForSettings";
 import { TFunPayItem, TGame } from "../types/tgames";
 import { TSettingsData } from "../types/settingsData";
@@ -821,7 +823,7 @@ export class MagazineStore {
 
       if (resp1.status === 200) {
         try {
-          const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+          const data = {
             internalName: editionSelect.title,
             genre: "Экшен",
             shortDescriptionRu: "Steam ключ, дешево!",
@@ -829,20 +831,21 @@ export class MagazineStore {
             shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
             longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`,
             overpaymentPercent: editionSelect.markup,
-            items: editionSelect.regions.map(el => {
+            items: await Promise.all( editionSelect.regions.map(async (el) => {
               return {
                 isOwnDescription: !isGlobal,
                 isActive: true,
                 isDeactivatedAfterSale: true,
-                country: countriesToUsename[el.region],
+                country: countriesToUsename[el.region] === "Беларусь" ? "СНГ" : countriesToUsename[el.region],
                 shortDescriptionRu: el.briefDescr,
                 longDescriptionRu: el.fullDescr,
-                shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
-                longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`
+                shortDescriptionEn: await translate(el.briefDescr, {from: "ru", to: "en"}),
+                longDescriptionEn: await translate(el.fullDescr, {from: "ru", to: "en"})
               }
-            })
+            }))
+          }
 
-          }, {
+          const resp2 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, data, {
             headers: {
               "Authorization": `Bearer ${this.TOKEN}`
             }
@@ -880,7 +883,7 @@ export class MagazineStore {
 
             if (status === 200) {
               try {
-                const resp3 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, {
+                const data = {
                   internalName: editionSelect.title,
                   genre: "Экшен",
                   shortDescriptionRu: "Steam ключ, дешево!",
@@ -888,20 +891,21 @@ export class MagazineStore {
                   shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
                   longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`,
                   overpaymentPercent: editionSelect.markup,
-                  items: editionSelect.regions.map(el => {
+                  items: await Promise.all( editionSelect.regions.map(async (el) => {
                     return {
                       isOwnDescription: !isGlobal,
                       isActive: true,
                       isDeactivatedAfterSale: true,
-                      country: countriesToUsename[el.region],
+                      country: countriesToUsename[el.region] === "Беларусь" ? "СНГ" : countriesToUsename[el.region],
                       shortDescriptionRu: el.briefDescr,
                       longDescriptionRu: el.fullDescr,
-                      shortDescriptionEn: "Steam key, cheap! Steam key, cheap!",
-                      longDescriptionEn: `Fast and reliable delivery of the activation key for the game ${titleGame} on Steam. Get your key instantly after payment and start playing!`
+                      shortDescriptionEn: await translate(el.briefDescr, {from: "ru", to: "en"}),
+                      longDescriptionEn: await translate(el.fullDescr, {from: "ru", to: "en"})
                     }
-                  })
+                  }))
+                }
 
-                }, {
+                const resp3 = await axios.post(`http://147.45.74.68:35805/api/v2/items/funpay?storeItemId=${resp1.data.id}`, data, {
                   headers: {
                     "Authorization": `Bearer ${this.TOKEN}`
                   }
@@ -1012,7 +1016,6 @@ export class MagazineStore {
           this.isLoadingGame = false
           return resp.data.apps[0]
         }
-
       }
     } catch (error) {
       this.isLoadingGame = false

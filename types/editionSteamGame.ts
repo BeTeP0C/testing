@@ -2,6 +2,7 @@ export type TEditionSteamGame = {
   countryRestricted: boolean,
   id: number,
   name: string,
+  iconUrl: string | null,
   visible: boolean,
   purchaseOptions: {
     country: string,

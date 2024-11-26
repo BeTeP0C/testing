@@ -1,22 +1,34 @@
-import React, { useContext, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 import img from "../../../../public/assassin's_creed_valhala.png";
 import { MagazineStore } from "../../../../common/store";
 import { TGameError } from "../../../../types/tgames";
 import { StoreContext } from "../../../MainPage";
+import { TEditionTransformSteamGame } from "../../../../types/editionTransformSteamGame";
 
 type TAddedGameInputId = {
   setAppId: React.Dispatch<any>;
+  steamGame: TEditionTransformSteamGame;
   title: string;
+  url: string | null;
   idError: TGameError;
 };
 
 export const AddedGameInputId = observer(
-  ({ setAppId, title, idError }: TAddedGameInputId) => {
+  ({ setAppId, title, idError, url, steamGame }: TAddedGameInputId) => {
     const inputRef = useRef(null);
     const timeoutRef = useRef(null);
+    const [isErImg, setIsErImg] = useState(false);
     const store: MagazineStore = useContext(StoreContext);
+
+    useEffect(() => {
+      setIsErImg(false);
+    }, [title]);
+
+    const unvisibleImg = () => {
+      setIsErImg(true);
+    };
 
     const changeAppId = (e: React.ChangeEvent<HTMLInputElement>) => {
       clearTimeout(timeoutRef.current);
@@ -69,10 +81,34 @@ export const AddedGameInputId = observer(
                 return <span>Ищем игру...</span>;
               }
               if (store.isSearchGame) {
+                if (
+                  steamGame.countryRestricted &&
+                  steamGame.packages.length === 0
+                ) {
+                  return (
+                    <span>
+                      {steamGame.name} недоступна в{" "}
+                      {store.settingsData.countries
+                        .map((el) => el.title)
+                        .join(", ")}
+                    </span>
+                  );
+                }
                 return (
                   <>
                     {title ? (
-                      <img className={styles.img} src={img.src} alt="" />
+                      <>
+                        {url !== null && !isErImg ? (
+                          <img
+                            className={styles.img}
+                            src={url}
+                            alt=""
+                            onError={unvisibleImg}
+                          />
+                        ) : (
+                          ""
+                        )}
+                      </>
                     ) : (
                       ""
                     )}

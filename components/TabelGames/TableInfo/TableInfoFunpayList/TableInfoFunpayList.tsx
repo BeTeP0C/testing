@@ -25,6 +25,7 @@ export const TableInfoFunpayList = observer(
     const [isError, setIsError] = useState(false);
     const [amountSymbolText, setAmountSymbolText] = useState(0);
     const [amountSymbolInput, setAmountSymbolInput] = useState(0);
+    const [isShowQuationBlock, setIsShowQuationBlock] = useState(false);
     const store: MagazineStore = useContext(StoreContext);
 
     const changeEditForm = () => {
@@ -55,6 +56,14 @@ export const TableInfoFunpayList = observer(
       } else {
         setIsError(true);
       }
+    };
+
+    const showQuationBlock = () => {
+      setIsShowQuationBlock(true);
+    };
+
+    const closeQuationBlock = () => {
+      setIsShowQuationBlock(false);
     };
 
     const handleDeleteProduct = async () => {
@@ -195,21 +204,50 @@ export const TableInfoFunpayList = observer(
                               ""
                             )}
 
-                            <div className={styles.buttons}>
-                              <button
-                                type="button"
-                                onClick={(e) => handleUpdateProduct()}
-                                className={styles.save}
-                              >
-                                Сохранить
-                              </button>
-                              <button
-                                type="button"
-                                onClick={(e) => handleDeleteProduct()}
-                                className={styles.delete}
-                              >
-                                Удалить
-                              </button>
+                            <div
+                              className={`${styles.buttons} ${isShowQuationBlock ? styles.buttons_showBlock : ""}`}
+                            >
+                              {!isShowQuationBlock ? (
+                                <>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => handleUpdateProduct()}
+                                    className={styles.save}
+                                  >
+                                    Сохранить
+                                  </button>
+                                  <button
+                                    type="button"
+                                    onClick={(e) => showQuationBlock()}
+                                    className={styles.delete}
+                                  >
+                                    Удалить
+                                  </button>
+                                </>
+                              ) : (
+                                <>
+                                  <span className={styles.quation}>
+                                    Вы точно хотите удалить?
+                                  </span>
+
+                                  <div>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => handleDeleteProduct()}
+                                      className={styles.yes}
+                                    >
+                                      Да
+                                    </button>
+                                    <button
+                                      type="button"
+                                      onClick={(e) => closeQuationBlock()}
+                                      className={styles.close}
+                                    >
+                                      Отменить
+                                    </button>
+                                  </div>
+                                </>
+                              )}
                             </div>
                           </>
                         )}
