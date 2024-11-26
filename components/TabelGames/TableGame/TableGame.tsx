@@ -33,7 +33,7 @@ export const TableGame = observer((props: { game: TGame }) => {
     } else if (dropRef.current) {
       dropRef.current.style.height = "44px";
     }
-  }, [magazineStore.isOpenGameInfo, game.id]);
+  }, [magazineStore.isOpenGameInfo, game.id, game.funPayItems]);
 
   return (
     <li

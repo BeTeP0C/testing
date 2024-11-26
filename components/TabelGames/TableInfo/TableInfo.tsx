@@ -19,13 +19,21 @@ export const TableInfo = observer(
     const { packages, funpayItems, setOpenInfoStore, openInfoStore } = props;
     const storeRef = useRef(null);
     const store: MagazineStore = useContext(StoreContext);
+    const infoRef = useRef(null);
 
     return (
       <div className={styles.content}>
-        <TableInfoPackage funpayItems={funpayItems} item={storeRef} />
+        <TableInfoPackage
+          funpayItems={funpayItems}
+          item={storeRef}
+          infoRef={infoRef}
+        />
 
         <CSSTransition
-          in={funpayItems.length !== 0 && store.isOpenGameInfo.funpay_active}
+          in={
+            funpayItems.length !== 0 && store.isOpenGameInfo.funpay_active
+            // && funpayItems.some(el => el.active)
+          }
           timeout={500}
           classNames="drop-animation"
           unmountOnExit
@@ -47,6 +55,8 @@ export const TableInfo = observer(
                       funpayItem={el}
                       setOpenInfoStore={setOpenInfoStore}
                       openInfoStore={openInfoStore}
+                      container={storeRef}
+                      infoRef={infoRef}
                     />
                   </CSSTransition>
                 );

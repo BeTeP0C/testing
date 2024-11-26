@@ -5,19 +5,31 @@ import styles from "./styles.module.scss";
 import { TGameInfoPackage, TFunPayItem } from "../../../../types/tgames";
 import { StoreContext } from "../../../MainPage";
 import { MagazineStore } from "../../../../common/store";
+import { usenameToCountries } from "../../../../common/countriesToUsename";
 
 export const TableInfoPackage = observer(
   (props: {
     funpayItems: TFunPayItem[];
     item: React.MutableRefObject<any>;
+    infoRef: React.MutableRefObject<any>;
   }) => {
-    const { funpayItems, item } = props;
+    const { funpayItems, item, infoRef } = props;
     const store: MagazineStore = useContext(StoreContext);
 
     const handleOpenInfoFunpay = (id: number) => {
       store.changeOpenGameInfo(
         id,
         item.current ? item.current.offsetHeight : 0,
+        funpayItems.some((el) => el.active)
+          ? funpayItems.find((el) => el.active).items.some((el) => el.active)
+            ? usenameToCountries[
+                funpayItems
+                  .find((el) => el.active)
+                  .items.find((el) => el.active).country
+              ]
+            : null
+          : null,
+        infoRef.current ? infoRef.current.offsetHeight : 0,
       );
     };
 

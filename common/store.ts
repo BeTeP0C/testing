@@ -1,7 +1,7 @@
 import axios from "axios";
 import { action, autorun, computed, makeAutoObservable, observable, runInAction, toJS } from "mobx";
 import { countryData } from "./transformCountriesForSettings";
-import { TGame } from "../types/tgames";
+import { TFunPayItem, TGame } from "../types/tgames";
 import { TSettingsData } from "../types/settingsData";
 import { settingsCountries } from "./settingsCountries";
 import { calendar } from "./calendar";
@@ -77,6 +77,216 @@ export class MagazineStore {
     const game: TGame = this.games.find(el => el.id === id)
 
     return game
+  }
+
+  @action
+  async handleDeleteProd (funpayItem: TFunPayItem, heightEl: number, heightCont: number) {
+    try {
+      const status = await this.checkFunpayKey(this.settingsData.funpayKey)
+
+      if (status === 200) {
+        if (this.games.find(el => el.id === this.isOpenGameInfo.id).funPayItems.length === 1 && funpayItem.items.length === 1) {
+          const resp1 = await axios.delete(`${this.endpoint}items/funpay/${funpayItem.id}`, {
+            headers: {
+              "Authorization": `Bearer ${this.TOKEN}`
+            }
+          })
+
+          if (resp1.status === 204) {
+            const resp2 = await axios.delete(`${this.endpoint}items/${this.isOpenGameInfo.id}`, {
+              headers: {
+                "Authorization": `Bearer ${this.TOKEN}`
+              }
+            })
+
+            if (resp2.status === 204) {
+              runInAction(() => {
+                this.games = this.games.filter(el => el.id !== this.isOpenGameInfo.id)
+              })
+
+              return resp2.status
+            }
+
+            return resp1.status
+          }
+        } else if (funpayItem.items.length === 1) {
+          const resp = await axios.delete(`${this.endpoint}items/funpay/${funpayItem.id}`, {
+            headers: {
+              "Authorization": `Bearer ${this.TOKEN}`
+            }
+          })
+
+          if (resp.status === 204) {
+            runInAction(() => {
+              this.games = this.games.map(game => {
+                if (game.id === this.isOpenGameInfo.id) {
+                  return {
+                    ...game,
+                    funPayItems: game.funPayItems.filter(el => !el.active)
+                  }
+                }
+
+                return {
+                  ...game
+                }
+              })
+
+              this.negativeHeight = heightCont
+            })
+          }
+
+          return resp.status
+        } else {
+          const resp = await axios.patch(`${this.endpoint}items/funpay/${funpayItem.id}`,
+            {
+              "internalName": funpayItem.internalName,
+              "genre": funpayItem.genre,
+              "shortDescriptionRu": funpayItem.shortDescriptionRu,
+              "longDescriptionRu": funpayItem.shortDescriptionRu,
+              "shortDescriptionEn": funpayItem.shortDescriptionEn,
+              "longDescriptionEn": funpayItem.longDescriptionEn,
+              "overpaymentPercent": funpayItem.overpaymentPercent,
+              "items": funpayItem.items.map(el => {
+                if (!el.active) {
+                  return {
+                    "offerId": el.offerId,
+                    "isOwnDescription": el.isOwnDescription,
+                    "isActive": el.isActive,
+                    "isDeactivatedAfterSale": el.isDeactivatedAfterSale,
+                    "country": el.country,
+                    "shortDescriptionRu": el.shortDescriptionRu,
+                    "longDescriptionRu": el.longDescriptionRu,
+                    "shortDescriptionEn": el.shortDescriptionEn,
+                    "longDescriptionEn": el.longDescriptionEn
+                  }
+                }
+                return false
+              }).filter(Boolean)
+            }, {
+            headers: {
+              "Authorization": `Bearer ${this.TOKEN}`
+            }
+          })
+
+          if (resp.status === 204) {
+            runInAction(() => {
+              this.games = this.games.map(game => {
+                if (game.id === this.isOpenGameInfo.id) {
+                  return {
+                    ...game,
+                    funPayItems: game.funPayItems.map(item => {
+                      if (item.id === funpayItem.id) {
+                        return {
+                          ...item,
+                          items: item.items.filter(el => !el.active)
+                        }
+                      }
+
+                      return {...item}
+                    })
+                  }
+                }
+
+                return {
+                  ...game
+                }
+              })
+
+              this.negativeHeight = heightEl
+            })
+          }
+          return resp.status
+        }
+      }
+    } catch (error) {
+      console.error(error)
+      return error.status
+    }
+  }
+
+  @action
+  async handleUpdateFunpay (funpayItem: TFunPayItem, shortDescr: string, longDescr: string) {
+    try {
+      const resp = await axios.patch(`${this.endpoint}items/funpay/${funpayItem.id}`,
+        {
+          "internalName": funpayItem.internalName,
+          "genre": funpayItem.genre,
+          "shortDescriptionRu": funpayItem.shortDescriptionRu,
+          "longDescriptionRu": funpayItem.shortDescriptionRu,
+          "shortDescriptionEn": funpayItem.shortDescriptionEn,
+          "longDescriptionEn": funpayItem.longDescriptionEn,
+          "overpaymentPercent": funpayItem.overpaymentPercent,
+          "items": funpayItem.items.map(el => {
+            if (el.active) {
+              return {
+                "offerId": el.offerId,
+                "isOwnDescription": el.isOwnDescription,
+                "isActive": el.isActive,
+                "isDeactivatedAfterSale": el.isDeactivatedAfterSale,
+                "country": el.country,
+                "shortDescriptionRu": shortDescr,
+                "longDescriptionRu": longDescr,
+                "shortDescriptionEn": el.shortDescriptionEn,
+                "longDescriptionEn": el.longDescriptionEn
+              }
+            }
+
+            return {
+              "offerId": el.offerId,
+                "isOwnDescription": el.isOwnDescription,
+                "isActive": el.isActive,
+                "isDeactivatedAfterSale": el.isDeactivatedAfterSale,
+                "country": el.country,
+                "shortDescriptionRu": el.shortDescriptionRu,
+                "longDescriptionRu": el.longDescriptionRu,
+                "shortDescriptionEn": el.shortDescriptionEn,
+                "longDescriptionEn": el.longDescriptionEn
+            }
+          })
+        }, {
+        headers: {
+          "Authorization": `Bearer ${this.TOKEN}`
+        }
+      })
+
+      runInAction(() => {
+        this.games = this.games.map(el => {
+          if (el.id === this.isOpenGameInfo.id) {
+            return {
+              ...el,
+              funPayItems: el.funPayItems.map(item => {
+                if (item.id === funpayItem.id) {
+                  return {
+                    ...item,
+                    items: item.items.map(e => {
+                      if (e.active) {
+                        return {
+                          ...e,
+                          shortDescriptionRu: shortDescr,
+                          longDescriptionRu: longDescr
+                        }
+                      }
+                      return {
+                        ...e
+                      }
+                    })
+                  }
+                }
+                return {...item}
+              })
+            }
+          }
+
+          return {...el}
+        })
+
+      })
+
+      return resp.status
+    } catch (error) {
+      console.error(error)
+      return error.status
+    }
   }
 
   @action
@@ -159,14 +369,17 @@ export class MagazineStore {
   }
 
   @action
-  changeOpenGameInfo (id: number, height: number) {
+  changeOpenGameInfo (id: number, height: number, country: string, heightInfo: number) {
+    let flag = true
     if (id === this.isOpenGameInfo.funpayId) {
       this.negativeHeight = !this.isOpenGameInfo.funpay_active ? 0 : height
+      flag = false
     } else {
       this.negativeHeight = 0
     }
 
     const backState = this.isOpenGameInfo.funpay_active
+
 
     this.isOpenGameInfo = {
       ...this.isOpenGameInfo,
@@ -174,7 +387,17 @@ export class MagazineStore {
       funpay_active: id === this.isOpenGameInfo.funpayId ? !this.isOpenGameInfo.funpay_active : true
     }
 
+
     this.handleOpenInfoFunpay(backState)
+
+    if (this.isOpenGameInfo.funpayCountryActive && !this.games.find(el => el.id === this.isOpenGameInfo.id).funPayItems.find(el => el.active).items.some(el => el.country === countriesToUsename[this.isOpenGameInfo.funpayCountry])) {
+      this.changeOpenGameStore(country, heightInfo)
+    } else {
+
+      if (flag) {
+        this.negativeHeight = 0
+      }
+    }
   }
 
   @action
@@ -385,6 +608,10 @@ export class MagazineStore {
 
   @action
   changePage (page: string) {
+    if (page === "settings") {
+      this.isOpenActionsGame = false
+    }
+
     runInAction(() => {
       this.currentPage = page
     })
@@ -802,6 +1029,14 @@ export class MagazineStore {
   }
 
   @action
+  closeAllActive (e: KeyboardEvent) {
+    if (e.code === "Escape") {
+      window.removeEventListener("keydown", this.closeAllActive)
+      this.isOpenActionsGame = false
+    }
+  }
+
+  @action
   handleClickAddGame () {
     runInAction(() => {
       if (this.isOpenGameInfo.open) {
@@ -824,6 +1059,17 @@ export class MagazineStore {
       } else {
         this.isOpenActionsGame = true
         this.isOpenAddForm = true
+
+        if (typeof window !== "undefined") {
+          // const closeAddForm = (e:  KeyboardEvent) => {
+          //   if (e.code === "Escape") {
+          //     window.removeEventListener("keydown", closeAddForm)
+          //     this.isOpenActionsGame = false
+          //   }
+          // }
+
+          window.addEventListener("keydown", this.closeAllActive)
+        }
       }
     })
 
@@ -849,15 +1095,24 @@ export class MagazineStore {
           }
         }, 500)
       } else {
-        this.isOpenGameInfo = {
-          id: gameId === this.isOpenGameInfo.id ? null : gameId,
-          funpayId: funpayId === this.isOpenGameInfo.funpayId ? null : funpayId,
-          open: this.isOpenGameInfo.id === null ? true :
-                this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true,
-          openStore: false,
-          funpayCountry: null,
-          funpayCountryActive: false,
-          funpay_active: false
+        if (gameId === this.isOpenGameInfo.id) {
+          this.isOpenGameInfo = {
+            ...this.isOpenGameInfo,
+            id: gameId,
+            open: this.isOpenGameInfo.id === null ? true :
+                  this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true,
+          }
+        } else {
+          this.isOpenGameInfo = {
+            id: gameId === this.isOpenGameInfo.id ? null : gameId,
+            funpayId: funpayId === this.isOpenGameInfo.funpayId ? null : funpayId,
+            open: this.isOpenGameInfo.id === null ? true :
+                  this.isOpenGameInfo.id === gameId ? !this.isOpenGameInfo.open : true,
+            openStore: false,
+            funpayCountry: null,
+            funpayCountryActive: false,
+            funpay_active: false
+          }
         }
 
         if (gameId === this.isOpenGameInfo.id) {

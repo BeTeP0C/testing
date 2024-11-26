@@ -13,20 +13,23 @@ export const TableInfoFunpayList = observer(
     funpayItem: TFunPayItem;
     setOpenInfoStore: React.Dispatch<React.SetStateAction<boolean>>;
     openInfoStore: boolean;
+    container: React.MutableRefObject<any>;
+    infoRef: React.MutableRefObject<any>;
   }) => {
-    const { funpayItem, setOpenInfoStore, openInfoStore } = props;
+    const { funpayItem, setOpenInfoStore, openInfoStore, container, infoRef } =
+      props;
     const contentRef = useRef(null);
-    const infoRef = useRef(null);
-    const briefRef = useRef(null)
-    const fullRef = useRef(null)
-    const [isEdit, setIsEdit] = useState(false)
+    const briefRef = useRef(null);
+    const fullRef = useRef(null);
+    const [isEdit, setIsEdit] = useState(false);
+    const [isError, setIsError] = useState(false);
     const [amountSymbolText, setAmountSymbolText] = useState(0);
     const [amountSymbolInput, setAmountSymbolInput] = useState(0);
     const store: MagazineStore = useContext(StoreContext);
 
     const changeEditForm = () => {
-      setIsEdit(!isEdit)
-    }
+      setIsEdit(!isEdit);
+    };
 
     const handleChangeText = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
       if (amountSymbolText <= 500) {
@@ -40,19 +43,49 @@ export const TableInfoFunpayList = observer(
       }
     };
 
+    const handleUpdateProduct = async () => {
+      const status = await store.handleUpdateFunpay(
+        funpayItem,
+        briefRef.current.value,
+        fullRef.current.value,
+      );
+      if (status === 204) {
+        setIsEdit(false);
+        setIsError(false);
+      } else {
+        setIsError(true);
+      }
+    };
+
+    const handleDeleteProduct = async () => {
+      const status = await store.handleDeleteProd(
+        funpayItem,
+        infoRef.current.offsetHeight + 39.39,
+        container.current.offsetHeight,
+      );
+      if (status === 204) {
+        setIsEdit(false);
+        setIsError(false);
+      } else {
+        setIsError(true);
+      }
+    };
+
     useEffect(() => {
-      setAmountSymbolText(funpayItem.items.find(el => el.active)?.longDescriptionRu.length)
-      setAmountSymbolInput(funpayItem.items.find(el => el.active)?.shortDescriptionRu.length)
+      setAmountSymbolText(
+        funpayItem.items.find((el) => el.active)?.longDescriptionRu.length,
+      );
+      setAmountSymbolInput(
+        funpayItem.items.find((el) => el.active)?.shortDescriptionRu.length,
+      );
     }, [funpayItem]);
 
     return (
       <div className={styles.container}>
-        <h4
-          className={`${styles.title} ${store.isOpenGameInfo.openStore ? styles.title_open : ""}`}
-        >
+        <h4 className={`${styles.title}`}>
           <button
             type="button"
-            className={styles.button}
+            className={`${styles.button} ${store.isOpenGameInfo.openStore ? styles.button_open : ""}`}
             onClick={() =>
               store.handleOpenInfoStore(
                 contentRef.current ? contentRef.current.offsetHeight : 0,
@@ -96,39 +129,90 @@ export const TableInfoFunpayList = observer(
                     >
                       <div ref={infoRef} className={styles.info}>
                         <div className={styles.brief_descr}>
-                          <label htmlFor="edit_brief_descr" className={styles.label}>Краткое описание</label>
+                          <label
+                            htmlFor="edit_brief_descr"
+                            className={styles.label}
+                          >
+                            Краткое описание
+                          </label>
                           <div className={styles.input_container}>
-                            <input onChange={handleChangeInput} ref={briefRef} className={styles.input} type="text" maxLength={100} defaultValue={el.shortDescriptionRu} disabled={!isEdit} id="edit_brief_descr"/>
+                            <input
+                              onChange={handleChangeInput}
+                              ref={briefRef}
+                              className={styles.input}
+                              type="text"
+                              maxLength={100}
+                              defaultValue={el.shortDescriptionRu}
+                              disabled={!isEdit}
+                              id="edit_brief_descr"
+                            />
                             <span className={styles.counter}>
-                              {/* {el.shortDescriptionRu.length}/100 */}
                               {amountSymbolInput}/100
                             </span>
                           </div>
                         </div>
 
                         <div className={styles.full_descr}>
-                          <label htmlFor="edit_full_descr" className={styles.label}>Полное описание</label>
+                          <label
+                            htmlFor="edit_full_descr"
+                            className={styles.label}
+                          >
+                            Полное описание
+                          </label>
                           <div className={styles.text_container}>
-                            <textarea ref={fullRef} id="edit_full_descr" onChange={handleChangeText} className={styles.text} maxLength={500} defaultValue={el.longDescriptionRu} disabled={!isEdit}></textarea>
-                            <span className={`${styles.counter} ${styles.counter_text}`}>
-                              {/* {el.longDescriptionRu.length}/500 */}
+                            <textarea
+                              ref={fullRef}
+                              id="edit_full_descr"
+                              onChange={handleChangeText}
+                              className={styles.text}
+                              maxLength={500}
+                              defaultValue={el.longDescriptionRu}
+                              disabled={!isEdit}
+                            />
+                            <span
+                              className={`${styles.counter} ${styles.counter_text}`}
+                            >
                               {amountSymbolText}/500
                             </span>
                           </div>
                         </div>
 
                         {!isEdit ? (
-                          <button onClick={e => changeEditForm()} type="button" className={styles.button_edit}>
+                          <button
+                            onClick={(e) => changeEditForm()}
+                            type="button"
+                            className={styles.button_edit}
+                          >
                             Редактировать
                           </button>
                         ) : (
-                          <div className={styles.buttons}>
-                            <button type="button" onClick={e => changeEditForm()} className={styles.save}>Сохранить</button>
-                            <button type="button" className={styles.delete}>Удалить</button>
-                          </div>
+                          <>
+                            {isError ? (
+                              <span className={styles.error}>
+                                Попробуйте позже
+                              </span>
+                            ) : (
+                              ""
+                            )}
+
+                            <div className={styles.buttons}>
+                              <button
+                                type="button"
+                                onClick={(e) => handleUpdateProduct()}
+                                className={styles.save}
+                              >
+                                Сохранить
+                              </button>
+                              <button
+                                type="button"
+                                onClick={(e) => handleDeleteProduct()}
+                                className={styles.delete}
+                              >
+                                Удалить
+                              </button>
+                            </div>
+                          </>
                         )}
-
-
                       </div>
                     </CSSTransition>
                   ) : (

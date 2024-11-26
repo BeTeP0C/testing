@@ -18,9 +18,12 @@
 }
 
 .title {
+  margin: 0;
+}
+
+.button {
   position: relative;
   width: max-content;
-  margin: 0;
   padding-right: 28px;
   font-weight: 500;
   font-size: 20px;

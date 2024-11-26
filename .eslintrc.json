@@ -43,6 +43,7 @@
       "import/prefer-default-export": "off",
       "@typescript-eslint/no-unused-vars": "off",
       "react/require-default-props": "off",
+      "no-nested-ternary": "off",
 
       // Custom rules "warn"
       "react/jsx-curly-brace-presence": "warn",
