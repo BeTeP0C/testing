@@ -1,7 +1,8 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 
-export function SettingsForm(props: { children: React.ReactNode }) {
+export const SettingsForm = observer((props: { children: React.ReactNode }) => {
   const { children } = props;
 
   return (
@@ -9,4 +10,4 @@ export function SettingsForm(props: { children: React.ReactNode }) {
       {children}
     </form>
   );
-}
+});

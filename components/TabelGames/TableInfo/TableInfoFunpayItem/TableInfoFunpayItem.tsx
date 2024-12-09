@@ -7,31 +7,47 @@ import { Ukraine } from "../../../Icons/CoutryFlags/Ukraine";
 import { Kazahstan } from "../../../Icons/CoutryFlags/Kazahstan";
 import { Belarus } from "../../../Icons/CoutryFlags/Belarus";
 import { USA } from "../../../Icons/CoutryFlags/USA";
+import { TFunPaySubItem } from "../../../../types/global";
+import { TableStore } from "../../../../common/stores/tableStore";
+import { RootStoreContext } from "../../../../pages/_app";
+import { countryData } from "../../../../common/transformCountriesForSettings";
 
-import { TFunPayItem, TFunPaySubItem } from "../../../../types/tgames";
-import { StoreContext } from "../../../MainPage";
-import { MagazineStore } from "../../../../common/store";
+type TTableInfoFunpayItem = {
+  funpayItem: TFunPaySubItem;
+  title: string;
+  editRef: React.MutableRefObject<HTMLDivElement>;
+  setIsAnimating: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
 export const TableInfoFunpayItem = observer(
-  (props: {
-    funpayItem: TFunPaySubItem;
-    title: string;
-    item: React.MutableRefObject<any>;
-  }) => {
-    const { funpayItem, title, item } = props;
-    const store: MagazineStore = useContext(StoreContext);
+  ({ funpayItem, title, editRef, setIsAnimating }: TTableInfoFunpayItem) => {
+    const { tableStore } = useContext(RootStoreContext);
+
+    const handleItemClick = () => {
+      if (funpayItem.active) {
+        setIsAnimating(false);
+        tableStore.setHeight(editRef.current?.offsetHeight);
+        setTimeout(() => {
+          tableStore.handleOpenCountry(
+            funpayItem.country,
+            editRef.current?.offsetHeight,
+          );
+        }, 500);
+      } else {
+        setIsAnimating(true);
+        tableStore.handleOpenCountry(
+          funpayItem.country,
+          editRef.current?.offsetHeight,
+        );
+      }
+    };
 
     return (
       <li className={styles.item}>
         <div className={styles.title_region}>
           <button
             type="button"
-            onClick={(e) =>
-              store.changeOpenGameStore(
-                usenameToCountries[funpayItem.country],
-                item.current ? item.current.offsetHeight : 0,
-              )
-            }
+            onClick={handleItemClick}
             className={`${styles.button_region} ${funpayItem.active ? styles.button_region_active : ""}`}
           >
             <span className={styles.region}>
@@ -56,7 +72,9 @@ export const TableInfoFunpayItem = observer(
               </span>
             </span>
             <span className={styles.title}>{title}</span>
-            <span className={styles.prices}>{funpayItem.price} RUB</span>
+            <span className={styles.prices}>
+              {Math.round(funpayItem.price * 100) / 100} RUB
+            </span>
           </button>
         </div>
       </li>

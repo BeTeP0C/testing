@@ -1,4 +1,4 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState, createContext, useContext } from "react";
 import { useRouter } from "next/router";
 import { observer } from "mobx-react-lite";
 import { CSSTransition } from "react-transition-group";
@@ -14,85 +14,86 @@ import { ButtonDeleteProduct } from "../ButtonDeleteProduct";
 import { TableGames } from "../TabelGames";
 import { MainInfo } from "../MainInfo";
 import { ActionsOverGame } from "../ActionsOverGame";
-import { MagazineStore } from "../../common/store";
 import { SettingsPage } from "../SettingsPage";
 import { Modal } from "../Modal";
 import { DeleteWindow } from "../DeleteWindow";
+import { RootStoreContext } from "../../pages/_app";
+import { GlobalStore } from "../../common/stores/globalStore";
+import { AddStore } from "../../common/stores/addStore";
 
-export const StoreContext = createContext(null);
+type TMainPageStores = {
+  globalStore: GlobalStore;
+};
 
 export const MainPage = observer(() => {
-  const [magazineStore, setMagazineStore] = useState(new MagazineStore());
-  const [redirectToHome, setRedirectToHome] = useState(false);
+  const { globalStore }: TMainPageStores = useContext(RootStoreContext)
   const router = useRouter();
+
   useEffect(() => {
     (async () => {
-      await magazineStore.startLoadingPage();
+      await globalStore.startLoadingPage();
 
-      if (!magazineStore.authorizate) {
+      if (!globalStore.isAuthorizate) {
         router.push("/auth");
       }
     })();
-  }, [magazineStore.authorizate]);
+  }, [globalStore.isAuthorizate]);
 
   return (
     <Page>
-      <StoreContext.Provider value={magazineStore}>
-        <Header />
-        <Menu />
-        <Main>
-          <Content>
-            {magazineStore.currentPage === "main" ? (
-              <>
-                <ButtonsStateProduct>
-                  <ButtonAddProduct />
-                  {magazineStore.isOpenGameInfo.open ? (
-                    <ButtonDeleteProduct store={magazineStore} />
-                  ) : (
-                    ""
-                  )}
-                </ButtonsStateProduct>
+      <Header />
+      <Menu />
+      <Main>
+        <Content>
+          {globalStore.currentPage === "main" ? (
+            <>
+              <ButtonsStateProduct>
+                <ButtonAddProduct />
+                {globalStore.products.some((el) => el.active) ? (
+                  <ButtonDeleteProduct />
+                ) : ""}
+              </ButtonsStateProduct>
 
-                {magazineStore.authorizate ? <TableGames /> : ""}
-              </>
-            ) : (
-              ""
-            )}
+              {globalStore.isAuthorizate ? <TableGames /> : ""}
+            </>
+          ) : (
+            ""
+          )}
 
-            {magazineStore.currentPage === "settings" ? (
-              <>
-                <h2 className={styles.heading}>Настройки</h2>
-                <SettingsPage />
-              </>
-            ) : (
-              ""
-            )}
+          {globalStore.currentPage === "settings" ? (
+            <>
+              <h2 className={styles.heading}>Настройки</h2>
+              <SettingsPage />
+            </>
+          ) : (
+            ""
+          )}
 
-            <MainInfo
-              funpayActivate={magazineStore.settingsData.funpayActivate}
-            />
-          </Content>
-        </Main>
+          {/* <MainInfo
+            funpayActivate={magazineStore.settingsData.funpayActivate}
+          /> */}
+        </Content>
+      </Main>
 
-        <CSSTransition
-          timeout={300}
-          in={magazineStore.isOpenModal}
-          classNames="drop-animation"
-          unmountOnExit
-        >
-          <Modal>
-            <CSSTransition
-              timeout={300}
-              in={magazineStore.isOpenDelete}
-              classNames="drop-animation"
-              unmountOnExit
-            >
-              <DeleteWindow />
-            </CSSTransition>
-          </Modal>
-        </CSSTransition>
-        <ActionsOverGame store={magazineStore} />
-      </StoreContext.Provider>
+      <CSSTransition
+        timeout={300}
+        in={globalStore.isOpenModal}
+        classNames="drop-animation"
+        unmountOnExit
+      >
+        <Modal>
+          <CSSTransition
+            timeout={300}
+            in={globalStore.isOpenDeleteForm}
+            classNames="drop-animation"
+            unmountOnExit
+          >
+            <DeleteWindow />
+          </CSSTransition>
+        </Modal>
+      </CSSTransition>
+
+      <ActionsOverGame />
     </Page>
   );
 });

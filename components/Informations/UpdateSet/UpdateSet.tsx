@@ -2,11 +2,10 @@ import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 import mainStyles from "../informations.module.scss";
-import { MagazineStore } from "../../../common/store";
-import { StoreContext } from "../../MainPage";
+import { RootStoreContext } from "../../../pages/_app";
 
 export const UpdateSet = observer(() => {
-  const store: MagazineStore = useContext(StoreContext);
+  const {globalStore} = useContext(RootStoreContext)
 
   return (
     <li className={`${mainStyles.info} ${styles.info}`}>
@@ -14,12 +13,12 @@ export const UpdateSet = observer(() => {
         <h2 className={styles.heading}>Обновите настройки</h2>
 
         <ul className={styles.list}>
-          {store.settingsData.funpayActivate ? (
+          {globalStore.userProfile.funPayGoldenKey ? (
             ""
           ) : (
             <li className={styles.item}>- Введите ключ для FunPay;</li>
           )}
-          {store.settingsData.countries.length === 0 ? (
+          {globalStore.userProfile.countries.length === 0 ? (
             <li className={styles.item}>
               - Введите список стран с которыми вы работаете;
             </li>

@@ -43,11 +43,15 @@
 }
 
 .funpay {
-  color: #ffffff;
-  background: #AC2E2E;
-  transition: background 0.3s ease;
+  &_loading {
+    background: #f5d103;
+  }
 
-  &_active {
+  &_unconnect {
+    background: #AC2E2E;
+  }
+
+  &_connect {
     background: #1B8F3C;
   }
 }

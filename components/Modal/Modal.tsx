@@ -1,28 +1,21 @@
 import React, { useContext } from "react";
-import { CSSTransition } from "react-transition-group";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
-import { StoreContext } from "../MainPage";
+import { GlobalStore } from "../../common/stores/globalStore";
+import { RootStoreContext } from "../../pages/_app";
 
 type TModal = {
   children: React.ReactNode;
 };
 
 export const Modal = observer(({ children }: TModal) => {
-  const store = useContext(StoreContext);
+  const { globalStore } = useContext(RootStoreContext);
 
   return (
-    <CSSTransition
-      timeout={300}
-      in={store.isOpenModal}
-      classNames="drop-animation"
-      unmountOnExit
+    <div
+      className={`${styles.modal} ${globalStore.isOpenModal ? styles.modal_active : ""}`}
     >
-      <div
-        className={`${styles.modal} ${store.isOpenModal ? styles.modal_active : ""}`}
-      >
-        {children}
-      </div>
-    </CSSTransition>
+      {children}
+    </div>
   );
 });

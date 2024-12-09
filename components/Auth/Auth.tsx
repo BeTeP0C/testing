@@ -1,15 +1,12 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
-import { StoreContext } from "../AuthPage";
 import styles from "./styles.module.scss";
 import { AuthForm } from "./AuthForm";
 import { AuthFormInputLogin } from "./AuthForm/AuthFormInputLogin";
 import { AuthFormInputPassword } from "./AuthForm/AuthFormInputPassword";
 import { AuthFormButton } from "./AuthForm/AuthFormButton";
-import { MagazineStore } from "../../common/store";
 
 export const Auth = observer(() => {
-  const store: MagazineStore = useContext(StoreContext);
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
 
@@ -17,10 +14,10 @@ export const Auth = observer(() => {
     <div className={styles.container}>
       <h1 className={styles.heading}>Авторизация</h1>
 
-      <AuthForm>
+      <AuthForm login={login} password={password}>
         <AuthFormInputLogin setLogin={setLogin} />
         <AuthFormInputPassword setPassword={setPassword} />
-        <AuthFormButton login={login} password={password} />
+        <AuthFormButton />
       </AuthForm>
     </div>
   );

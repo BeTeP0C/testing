@@ -1,6 +1,5 @@
-import React, { useEffect } from "react";
+import React from "react";
+import { observer } from "mobx-react-lite";
 import { MainPage } from "../components/MainPage";
 
-export default function Page() {
-  return <MainPage />;
-}
+export default observer(() => <MainPage />);

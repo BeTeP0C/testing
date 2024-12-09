@@ -1,27 +1,38 @@
 import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
-import { StoreContext } from "../../../MainPage";
+import { GlobalStore } from "../../../../common/stores/globalStore";
+import { RootStoreContext } from "../../../../pages/_app";
 
 type TSettingsFormButton = {
   titleStore: string;
   funpayKey: string;
-  countriesSelect: string[];
+  countriesSelect: {
+    title: string;
+    usename: string;
+    id: number;
+  }[];
 };
 
 export const SettingsFormButton = observer((props: TSettingsFormButton) => {
-  const store = useContext(StoreContext);
+  const { globalStore } = useContext(RootStoreContext);
+
   const { titleStore, funpayKey, countriesSelect } = props;
 
   return (
     <button
       type="button"
       onClick={() =>
-        store.handleSaveSettings(titleStore, funpayKey, countriesSelect)
+        globalStore.saveUserProfile(titleStore, funpayKey, countriesSelect)
       }
       className={styles.button}
     >
-      Сохранить
+      Сохранить{" "}
+      {globalStore.isSuccessfullySaveProfile === "alive"
+        ? "Успешно сохранено"
+        : globalStore.isSuccessfullySaveProfile === "loading"
+          ? "Сохраняем..."
+          : ""}
     </button>
   );
 });

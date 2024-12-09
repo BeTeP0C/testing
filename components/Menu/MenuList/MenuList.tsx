@@ -1,9 +1,10 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 import { MenuItem } from "../MenuItem";
 import { menu } from "../../../common/menu";
 
-export function MenuList() {
+export const MenuList = observer(() => {
   return (
     <ul className={styles.list}>
       {menu.map((el) => {
@@ -19,4 +20,4 @@ export function MenuList() {
       })}
     </ul>
   );
-}
+});

@@ -1,24 +1,31 @@
 import React, { useContext, useEffect, useState } from "react";
 import { observer } from "mobx-react-lite";
-import { createContext } from "vm";
 import styles from "./styles.module.scss";
 import { SettingsForm } from "./SettingsForm";
 import { SettingsFormInputStore } from "./SettingsForm/SettingsFormInputStore";
 import { SettingsFormInputKey } from "./SettingsForm/SettingsFormInputKey";
 import { SettingsFormInputCountries } from "./SettingsForm/SettingsFormInputCountries";
 import { SettingsFormButton } from "./SettingsForm/SettingsFormButton";
-import { StoreContext } from "../MainPage";
+import { GlobalStore } from "../../common/stores/globalStore";
+import { RootStoreContext } from "../../pages/_app";
 
 export const SettingsPage = observer(() => {
-  const store = useContext(StoreContext);
+  const { globalStore } = useContext(RootStoreContext);
+
   const [countriesSelect, setCountriesSelect] = useState(
-    store.settingsData.countries,
+    globalStore.userProfile.countries,
   );
+
   const [countriesChoice, setCountriesChoice] = useState(
-    store.settingsCountriesChoice,
+    globalStore.settingsCountriesChoice,
   );
-  const [titleStore, setTitleStore] = useState(store.settingsData.titleStore);
-  const [funpayKey, setFunpayKey] = useState(store.settingsData.funpayKey);
+
+  const [titleStore, setTitleStore] = useState<string | null>(
+    globalStore.userProfile.storeName,
+  );
+  const [funpayKey, setFunpayKey] = useState<string>(
+    globalStore.userProfile.funPayGoldenKey,
+  );
 
   const addPack = (id: number) => {
     setCountriesSelect([
@@ -46,7 +53,7 @@ export const SettingsPage = observer(() => {
         <SettingsFormInputKey
           funpayKey={funpayKey}
           setFunpayKey={setFunpayKey}
-          activate={store.settingsData.funpayActivate}
+          activate={globalStore.isStateFunPay}
         />
         <SettingsFormInputCountries
           countriesChoice={countriesChoice}

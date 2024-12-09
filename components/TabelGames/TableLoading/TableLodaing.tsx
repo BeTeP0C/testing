@@ -1,6 +1,7 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 
-export function TableLoading() {
+export const TableLoading = observer(() => {
   return <div className={styles.spinner} />;
-}
+});

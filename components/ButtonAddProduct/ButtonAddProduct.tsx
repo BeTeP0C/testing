@@ -1,16 +1,16 @@
 import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
-import { MagazineStore } from "../../common/store";
-import { StoreContext } from "../MainPage";
+import { AddStore } from "../../common/stores/addStore";
+import { RootStoreContext } from "../../pages/_app";
 
 export const ButtonAddProduct = observer(() => {
-  const store: MagazineStore = useContext(StoreContext);
+  const { addStore } = useContext(RootStoreContext);
 
   return (
     <button
       type="button"
-      onClick={() => store.handleClickAddGame()}
+      onClick={() => addStore.handleOpenAddForm()}
       className={styles.button}
     >
       Добавить товар

@@ -1,0 +1,25 @@
+.item {
+  min-width: 160px;
+  max-width: 240px;
+}
+
+.button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  padding: 5px 10px;
+  text-align: center;
+  width: 100%;
+  min-height: 32px;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 100%;
+  color: #ffffff;
+  background: rgba(#26292F, 0.6);
+  color: #ffffff;
+
+  &_active {
+    background: #3E68FE;
+  }
+}

@@ -1,8 +1,9 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 import mainStyles from "../informations.module.scss";
 
-export function ExchangeRate() {
+export const ExchangeRate = observer(() => {
   return (
     <li className={`${mainStyles.info} ${styles.info}`}>
       <div className={styles.content}>
@@ -24,4 +25,4 @@ export function ExchangeRate() {
       <span className={styles.bg} />
     </li>
   );
-}
+});

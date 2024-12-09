@@ -1,34 +1,56 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
+import { TStateData } from "../../../../types/global";
 
-export function SettingsFormInputKey(props: {
-  funpayKey: string;
-  setFunpayKey: React.Dispatch<any>;
-  activate: boolean;
-}) {
-  const { funpayKey, setFunpayKey, activate } = props;
+export const SettingsFormInputKey = observer(
+  (props: {
+    funpayKey: string;
+    setFunpayKey: React.Dispatch<string>;
+    activate: TStateData;
+  }) => {
+    const { funpayKey, setFunpayKey, activate } = props;
 
-  const changeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFunpayKey(e.currentTarget.value);
-  };
+    const changeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFunpayKey(e.currentTarget.value);
+    };
 
-  return (
-    <div className={styles.container}>
-      <label htmlFor="key" className={styles.title} />
-      <div className={styles.key}>
-        <input
-          onChange={(e) => changeInput(e)}
-          className={styles.input}
-          type="text"
-          id="key"
-          value={funpayKey}
-        />
-        <span
-          className={`${styles.activate} ${activate ? styles.activate_active : ""}`}
-        >
-          {activate ? "Активен" : "Не активен"}
-        </span>
+    return (
+      <div className={styles.container}>
+        <label htmlFor="key" className={styles.title}>
+          FunPay ключ
+        </label>
+
+        <div className={styles.key}>
+          <input
+            onChange={(e) => changeInput(e)}
+            className={styles.input}
+            type="text"
+            id="key"
+            value={funpayKey}
+            placeholder="Введите ключ"
+          />
+          <span
+            className={`${styles.activate} ${
+              activate === "alive"
+                ? styles.activate_active
+                : activate === "loading"
+                  ? styles.activate_loading
+                  : activate === "dead"
+                    ? styles.activate_unactive
+                    : ""
+            }`}
+          >
+            {activate === "alive"
+              ? "Активен"
+              : activate === "loading"
+                ? "Подключение..."
+                : activate === "dead"
+                  ? "Не активен"
+                  : ""}
+          </span>
+        </div>
       </div>
-    </div>
-  );
-}
+    );
+  },
+);

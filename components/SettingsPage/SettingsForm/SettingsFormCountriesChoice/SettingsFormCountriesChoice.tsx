@@ -1,4 +1,5 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 import { SettingsFormCountriesList } from "../SettingsFormCountriesList";
 
@@ -6,7 +7,6 @@ type TSettingsFormCountriesChoice = {
   countries: {
     title: string;
     usename: string;
-    code: string;
     id: number;
   }[];
   funcs: {
@@ -15,17 +15,16 @@ type TSettingsFormCountriesChoice = {
   };
 };
 
-export function SettingsFormCountriesChoice({
-  countries,
-  funcs,
-}: TSettingsFormCountriesChoice) {
-  return (
-    <div className={styles.container}>
-      <SettingsFormCountriesList
-        countries={countries}
-        funcs={funcs}
-        type="choice"
-      />
-    </div>
-  );
-}
+export const SettingsFormCountriesChoice = observer(
+  ({ countries, funcs }: TSettingsFormCountriesChoice) => {
+    return (
+      <div className={styles.container}>
+        <SettingsFormCountriesList
+          countries={countries}
+          funcs={funcs}
+          type="choice"
+        />
+      </div>
+    );
+  },
+);

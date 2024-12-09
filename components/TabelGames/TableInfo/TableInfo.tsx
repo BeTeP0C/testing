@@ -1,71 +1,59 @@
-import React, { memo, useContext, useEffect, useRef } from "react";
+import React, {
+  createContext,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { CSSTransition } from "react-transition-group";
 import { observer } from "mobx-react-lite";
 import { toJS } from "mobx";
 import styles from "./styles.module.scss";
-import { TableInfoPackage } from "./TableInfoPackage";
-import { TGameInfoPackage, TFunPayItem } from "../../../types/tgames";
+import { TableInfoPackages } from "./TableInfoPackages";
 import { TableInfoFunpayList } from "./TableInfoFunpayList";
-import { StoreContext } from "../../MainPage";
-import { MagazineStore } from "../../../common/store";
+import { TProduct } from "../../../types/global";
+import { TableStore } from "../../../common/stores/tableStore";
+import { RootStoreContext } from "../../../pages/_app";
+import { TableInfoStores } from "./TableInfoStores";
 
-export const TableInfo = observer(
-  (props: {
-    packages: TGameInfoPackage[];
-    funpayItems: TFunPayItem[];
-    setOpenInfoStore: React.Dispatch<React.SetStateAction<boolean>>;
-    openInfoStore: boolean;
-  }) => {
-    const { packages, funpayItems, setOpenInfoStore, openInfoStore } = props;
-    const storeRef = useRef(null);
-    const store: MagazineStore = useContext(StoreContext);
-    const infoRef = useRef(null);
+export const EditContext = createContext<number | null>(null);
 
-    return (
-      <div className={styles.content}>
-        <TableInfoPackage
-          funpayItems={funpayItems}
-          item={storeRef}
-          infoRef={infoRef}
-        />
+export const TableInfo = observer((props: { product: TProduct }) => {
+  const { product } = props;
+  const storeRef = useRef(null);
+  const { tableStore } = useContext(RootStoreContext);
+  const editRef = useRef<HTMLDivElement | null>(null);
+  const infoRef = useRef<HTMLDivElement | null>(null);
+  const [animation, setAnimation] = useState<boolean>(
+    product.funPayItems.some((item) => item.active),
+  );
 
+  return (
+    <div className={styles.content}>
+      <TableInfoPackages
+        funpayItems={product.funPayItems}
+        item={storeRef}
+        infoRef={infoRef}
+        setAnimation={setAnimation}
+      />
+
+      <div className={styles.drop}>
         <CSSTransition
-          in={
-            funpayItems.length !== 0 && store.isOpenGameInfo.funpay_active
-            // && funpayItems.some(el => el.active)
-          }
+          in={product.funPayItems.some((item) => item.active)}
           timeout={500}
           classNames="drop-animation"
           unmountOnExit
         >
-          <div ref={storeRef} className={styles.stores}>
-            <h3 className={styles.heading}>Объявления</h3>
-
-            {funpayItems.map((el) => {
-              if (el.active) {
-                return (
-                  <CSSTransition
-                    key={el.id}
-                    in={el.active && store.isOpenGameInfo.funpayId === el.id}
-                    timeout={500}
-                    classNames="drop-animation"
-                    unmountOnExit
-                  >
-                    <TableInfoFunpayList
-                      funpayItem={el}
-                      setOpenInfoStore={setOpenInfoStore}
-                      openInfoStore={openInfoStore}
-                      container={storeRef}
-                      infoRef={infoRef}
-                    />
-                  </CSSTransition>
-                );
-              }
-              return "";
-            })}
-          </div>
+          <EditContext.Provider value={editRef.current?.offsetHeight}>
+            <TableInfoStores
+              infoRef={infoRef}
+              product={product}
+              animation={animation}
+              editRef={editRef}
+            />
+          </EditContext.Provider>
         </CSSTransition>
       </div>
-    );
-  },
-);
+    </div>
+  );
+});

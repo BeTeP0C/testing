@@ -34,6 +34,13 @@ export type TFunPayItem = {
   shortDescriptionRu: string,
 }
 
+export type TFunPayEditionRegion = {
+  region: string;
+  briefDescr: string;
+  fullDescr: string;
+  active: boolean;
+}
+
 export type TFunPaySubItem = {
   country: string,
   funPayItemId: number,

@@ -1,19 +1,27 @@
-import React from "react";
+import React, { useContext } from "react";
 import { CSSTransition } from "react-transition-group";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
+import { RootStoreContext } from "../../pages/_app";
+import { GlobalStore } from "../../common/stores/globalStore";
+import { AddStore } from "../../common/stores/addStore";
 import { AddedGame } from "../AddedGame";
-import { MagazineStore } from "../../common/store";
 
-export const ActionsOverGame = observer((props: { store: MagazineStore }) => {
-  const { store } = props;
+type TActionsOverGameStores = {
+  globalStore: GlobalStore;
+  addStore: AddStore;
+};
+
+export const ActionsOverGame = observer(() => {
+  const { globalStore, addStore }: TActionsOverGameStores =
+    useContext(RootStoreContext);
 
   return (
     <div
-      className={`${styles.content} ${store.isOpenActionsGame ? styles.content_active : ""}`}
+      className={`${styles.content} ${globalStore.isOpenActionsGame ? styles.content_active : ""}`}
     >
       <CSSTransition
-        in={store.isOpenAddForm}
+        in={addStore.isOpenAddForm}
         timeout={500}
         classNames="fade-out"
         unmountOnExit

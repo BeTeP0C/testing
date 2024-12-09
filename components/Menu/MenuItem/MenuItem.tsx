@@ -2,7 +2,8 @@ import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 import { IconProps } from "../../../types/icons";
-import { StoreContext } from "../../MainPage";
+import { GlobalStore } from "../../../common/stores/globalStore";
+import { RootStoreContext } from "../../../pages/_app";
 
 type TMenuItemProps = {
   page: string;
@@ -12,23 +13,23 @@ type TMenuItemProps = {
 };
 
 export const MenuItem = observer(({ Icon, page, type }: TMenuItemProps) => {
-  const store = useContext(StoreContext);
+  const { globalStore } = useContext(RootStoreContext);
 
   return (
     <li className={styles.item}>
       <button
         type="button"
         onClick={() => {
-          store.changePage(page);
+          globalStore.changePage(page);
         }}
         className={
           `${styles.link} ` +
-          `${page === store.currentPage ? styles.link_active : ""}
+          `${page === globalStore.currentPage ? styles.link_active : ""}
           ${(() => {
-            if (type === "fill" && page === store.currentPage) {
+            if (type === "fill" && page === globalStore.currentPage) {
               return styles.link_active_fill;
             }
-            if (type === "stroke" && page === store.currentPage) {
+            if (type === "stroke" && page === globalStore.currentPage) {
               return styles.link_active_stroke;
             }
             return "";

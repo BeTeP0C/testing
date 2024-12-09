@@ -1,17 +1,18 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { observer } from "mobx-react-lite";
+import { toJS } from "mobx";
 import styles from "./styles.module.scss";
 import { TableGame } from "../TableGame";
-import { MagazineStore } from "../../../common/store";
-import { StoreContext } from "../../MainPage";
+import { GlobalStore } from "../../../common/stores/globalStore";
+import { RootStoreContext } from "../../../pages/_app";
 
 export const TableListRow = observer(() => {
-  const magazineStore: MagazineStore = useContext(StoreContext);
+  const { globalStore } = useContext(RootStoreContext);
 
   return (
     <ul className={styles.listRow}>
-      {magazineStore.games.map((el) => {
-        return <TableGame key={el.id} game={el} />;
+      {globalStore.products.map((el) => {
+        return <TableGame key={el.id} product={el} />;
       })}
     </ul>
   );

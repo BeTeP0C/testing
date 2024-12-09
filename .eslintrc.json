@@ -9,7 +9,8 @@
       "plugin:@typescript-eslint/recommended",
       "plugin:react/recommended",
       "airbnb",
-      "prettier"
+      "prettier",
+      "plugin:mobx/recommended"
     ],
     "parser": "@typescript-eslint/parser",
     "parserOptions": {
@@ -19,7 +20,7 @@
       "ecmaVersion": 2021,
       "sourceType": "module"
     },
-    "plugins": ["@typescript-eslint", "react", "prettier"],
+    "plugins": ["@typescript-eslint", "react", "prettier", "mobx"],
     "rules": {
       "prettier/prettier": "warn",
       "react/react-in-jsx-scope": "off",
@@ -44,6 +45,18 @@
       "@typescript-eslint/no-unused-vars": "off",
       "react/require-default-props": "off",
       "no-nested-ternary": "off",
+
+
+      // потом исправить
+      "consistent-return": "off",
+      "no-return-await": "off",
+      "no-param-reassign": "off",
+      // //mobx
+
+      // "mobx/enforce-actions": "error",
+      // "mobx/computed-requires-reaction": "warn",
+      // "mobx/reaction-requires-observable": "warn",
+      // "mobx/observable-requires-reaction": "warn",
 
       // Custom rules "warn"
       "react/jsx-curly-brace-presence": "warn",

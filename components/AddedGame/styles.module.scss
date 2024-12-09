@@ -29,30 +29,7 @@
   color: red;
 }
 
-.buttons {
-  display: flex;
-  justify-content: center;
-}
 
-.first_block {
-  position: absolute;
-  top: 0;
-  right: 0;
-  left: 0;
-  bottom: 0;
-  height: max-content;
-  transition: transform 0.3s ease;
-}
-
-.second_block {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: max-content;
-  bottom: 0;
-  transition: transform 0.3s ease;
-}
 
 .form {
   position: relative;

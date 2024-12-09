@@ -1,8 +1,9 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 import mainStyles from "../informations.module.scss";
 
-export function Profit() {
+export const Profit = observer(() => {
   return (
     <li className={`${mainStyles.info} ${styles.info}`}>
       <div className={styles.content}>
@@ -14,4 +15,4 @@ export function Profit() {
       <span className={styles.bg} />
     </li>
   );
-}
+});

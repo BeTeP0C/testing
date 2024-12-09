@@ -1,25 +1,21 @@
-import React from "react";
+import React, { useContext } from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
-import { MagazineStore } from "../../common/store";
+import { GlobalStore } from "../../common/stores/globalStore";
+import { RootStoreContext } from "../../pages/_app";
 
-export function ButtonDeleteProduct(props: { store: MagazineStore }) {
-  const { store } = props;
+export const ButtonDeleteProduct = observer(() => {
+  const { globalStore } = useContext(RootStoreContext);
 
   return (
     <button
       type="button"
       className={styles.button}
-      // onClick={() =>
-      //   store.handleDeleteGame(
-      //     store.isOpenGameInfo.id,
-      //     store.isOpenGameInfo.funpayId,
-      //   )
-      // }
       onClick={() => {
-        store.handleDeleteProduct();
+        globalStore.handleOpenDeleteForm();
       }}
     >
       Удалить Товар
     </button>
   );
-}
+});

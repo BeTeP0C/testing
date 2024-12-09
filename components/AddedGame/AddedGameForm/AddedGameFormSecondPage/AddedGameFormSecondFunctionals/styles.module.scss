@@ -1,0 +1,15 @@
+.buttons {
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.error {
+  position: absolute;
+  top: -17px;
+  left: 50%;
+  font-weight: 400;
+  font-size: 12px;
+  transform: translateX(-50%);
+  color: red
+}

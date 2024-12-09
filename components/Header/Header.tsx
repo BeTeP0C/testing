@@ -1,36 +1,23 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
-import { MagazineStore } from "../../common/store";
-import { StoreContext } from "../MainPage";
+import { GlobalStore } from "../../common/stores/globalStore";
+import { RootStoreContext } from "../../pages/_app";
 
 export const Header = observer(() => {
-  const store: MagazineStore = useContext(StoreContext);
-  const [statusShow, setStatusShow] = useState(false);
+  const { globalStore } = useContext(RootStoreContext);
   const steamRef = useRef(null);
-
-  useEffect(() => {
-    let flag = true;
-
-    if (flag) {
-      setTimeout(() => {
-        setStatusShow(true);
-      }, 250);
-    }
-
-    return () => {
-      flag = false;
-    };
-  }, []);
 
   return (
     <header className={styles.header}>
       <div className={styles.container}>
-        <h1 className={styles.heading}>{store.settingsData.titleStore}</h1>
+        {globalStore.isAuthorizate ? (
+          <>
+            <h1 className={styles.heading}>
+              {globalStore.userProfile.storeName}
+            </h1>
 
-        <div className={styles.info}>
-          {statusShow ? (
-            <>
+            <div className={styles.info}>
               <span
                 ref={steamRef}
                 data-testid="status"
@@ -38,10 +25,13 @@ export const Header = observer(() => {
                     ${styles.status}
                     ${styles.steam}
                     ${(() => {
-                      if (store.isLoadingConnectSteam) {
+                      if (
+                        globalStore.isStateSteam === "loading" ||
+                        globalStore.isStateSteam === "initializing"
+                      ) {
                         return styles.steam_loading;
                       }
-                      if (store.isConnectSteam) {
+                      if (globalStore.isStateSteam === "alive") {
                         return styles.steam_connect;
                       }
                       return styles.steam_unconnect;
@@ -50,10 +40,13 @@ export const Header = observer(() => {
               >
                 {"Steam: "}
                 {(() => {
-                  if (store.isLoadingConnectSteam) {
+                  if (
+                    globalStore.isStateSteam === "loading" ||
+                    globalStore.isStateSteam === "initializing"
+                  ) {
                     return "Подключение...";
                   }
-                  if (store.isConnectSteam) {
+                  if (globalStore.isStateSteam === "alive") {
                     return "Подключен";
                   }
                   return "Не подключен";
@@ -61,16 +54,42 @@ export const Header = observer(() => {
               </span>
               <span
                 data-testid="status"
-                className={`${styles.status} ${styles.funpay} ${store.settingsData.funpayActivate ? styles.funpay_active : ""}`}
+                className={`
+                  ${styles.status}
+                  ${styles.funpay}
+                  ${(() => {
+                    if (
+                      globalStore.isStateFunPay === "loading" ||
+                      globalStore.isStateFunPay === "initializing"
+                    ) {
+                      return styles.funpay_loading;
+                    }
+                    if (globalStore.isStateFunPay === "alive") {
+                      return styles.funpay_connect;
+                    }
+                    return styles.funpay_unconnect;
+                  })()}
+                `}
               >
                 {"FunPay: "}
-                {store.settingsData.funpayActivate ? "Активен" : "Не активен"}
+                {(() => {
+                  if (
+                    globalStore.isStateFunPay === "loading" ||
+                    globalStore.isStateFunPay === "initializing"
+                  ) {
+                    return "Подключение...";
+                  }
+                  if (globalStore.isStateFunPay === "alive") {
+                    return "Подключен";
+                  }
+                  return "Не подключен";
+                })()}
               </span>
-            </>
-          ) : (
-            ""
-          )}
-        </div>
+            </div>
+          </>
+        ) : (
+          ""
+        )}
       </div>
     </header>
   );

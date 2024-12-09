@@ -1,4 +1,5 @@
 import React from "react";
+import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
 
 type TSettingsFormCountriesItem = {
@@ -11,39 +12,36 @@ type TSettingsFormCountriesItem = {
   };
 };
 
-export function SettingsFormCountriesItem({
-  title,
-  id,
-  type = "choice",
-  funcs,
-}: TSettingsFormCountriesItem) {
-  return (
-    <li
-      className={`${styles.item} ${type === "select" ? styles.item_select : ""}`}
-    >
-      <span className={styles.title}>{title}</span>
-      {(() => {
-        switch (type) {
-          case "select":
-            return (
-              <button
-                type="button"
-                onClick={() => funcs.deletePack(id)}
-                className={styles.close}
-              />
-            );
-          case "choice":
-            return (
-              <button
-                type="button"
-                onClick={() => funcs.addPack(id)}
-                className={styles.add}
-              />
-            );
-          default:
-            return "";
-        }
-      })()}
-    </li>
-  );
-}
+export const SettingsFormCountriesItem = observer(
+  ({ title, id, type = "choice", funcs }: TSettingsFormCountriesItem) => {
+    return (
+      <li
+        className={`${styles.item} ${type === "select" ? styles.item_select : ""}`}
+      >
+        <span className={styles.title}>{title}</span>
+        {(() => {
+          switch (type) {
+            case "select":
+              return (
+                <button
+                  type="button"
+                  onClick={() => funcs.deletePack(id)}
+                  className={styles.close}
+                />
+              );
+            case "choice":
+              return (
+                <button
+                  type="button"
+                  onClick={() => funcs.addPack(id)}
+                  className={styles.add}
+                />
+              );
+            default:
+              return "";
+          }
+        })()}
+      </li>
+    );
+  },
+);

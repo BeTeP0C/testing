@@ -1,57 +1,61 @@
 import React, { useContext, useState } from "react";
 import { observer } from "mobx-react-lite";
 import styles from "./styles.module.scss";
-import { StoreContext } from "../MainPage";
-import { MagazineStore } from "../../common/store";
+import { GlobalStore } from "../../common/stores/globalStore";
+import { RootStoreContext } from "../../pages/_app";
+import { EditorStore } from "../../common/stores/editorStore";
+import { ErrorsStore } from "../../common/stores/errorsStore";
+
+type TDeleteWindow = {
+  globalStore: GlobalStore;
+  editorStore: EditorStore;
+  errorsStore: ErrorsStore;
+};
 
 export const DeleteWindow = observer(() => {
-  const store: MagazineStore = useContext(StoreContext);
-  const [isError, setIsError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-
-  const handleDeleteProduct = async () => {
-    const resp = await store.handleDeleteGame();
-
-    if (resp.status === 200) {
-      setIsError(false);
-      setErrorMessage("");
-    } else if (resp.status === 400) {
-      setIsError(true);
-      setErrorMessage("Попробуйте обновить ключ фанпея");
-    } else if (resp.status === 500) {
-      setIsError(true);
-      setErrorMessage("Попробуйте позже");
-    }
-  };
-
-  // const handleDeleteTable = async () => {
-  //   const resp = await store.handleDeleteProd()
-  // }
+  const { globalStore, editorStore, errorsStore }: TDeleteWindow =
+    useContext(RootStoreContext);
 
   return (
     <div
-      className={`${styles.container} ${store.isOpenDelete ? styles.container_active : ""}`}
+      className={`${styles.container} ${globalStore.isOpenDeleteForm ? styles.container_active : ""}`}
     >
       <div className={styles.content}>
         <h2 className={styles.heading}>
           Вы действительно хотите удалить товар целиком?
         </h2>
 
-        {isError ? <span className={styles.error}>{errorMessage}</span> : ""}
+        {errorsStore.deleteFormErrors.active ? (
+          <span className={styles.error}>
+            {errorsStore.deleteFormErrors.message}
+          </span>
+        ) : (
+          ""
+        )}
 
         <button
           type="button"
           className={styles.delete}
-          onClick={() => handleDeleteProduct()}
+          onClick={() => {
+            if (globalStore.isTypeDeleting === "prod") {
+              globalStore.deleteProductData();
+            } else if (globalStore.isTypeDeleting === "table") {
+              editorStore.deleteFunpayCountry();
+            }
+          }}
         >
-          Удалить
+          {globalStore.isDeleteState === "loading"
+            ? "Удаляем..."
+            : globalStore.isDeleteState === "dead"
+              ? "Удалить"
+              : ""}
         </button>
       </div>
 
       <button
         type="button"
         className={styles.close}
-        onClick={() => store.handleCloseModal()}
+        onClick={() => globalStore.handleCloseDeleteForm()}
       />
     </div>
   );

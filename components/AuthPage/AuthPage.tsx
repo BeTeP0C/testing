@@ -1,29 +1,24 @@
-import React, { useState, useEffect, createContext } from "react";
+import React, { useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import { observer } from "mobx-react-lite";
 import { Page } from "../Page";
-import { MagazineStore } from "../../common/store";
 import { Auth } from "../Auth/Auth";
-
-export const StoreContext = createContext(null);
-const store: MagazineStore = new MagazineStore();
+import { GlobalStore } from "../../common/stores/globalStore";
+import { RootStoreContext } from "../../pages/_app";
 
 export const AuthPage = observer(() => {
-  const [redirectToHome, setRedirectToHome] = useState(false);
+  const { globalStore } = useContext(RootStoreContext);
   const router = useRouter();
 
   useEffect(() => {
-    if (store.authorizate) {
+    if (globalStore.isAuthorizate) {
       router.push("/");
-      setRedirectToHome(true);
     }
-  }, [store.authorizate]);
+  }, [globalStore.isAuthorizate]);
 
   return (
     <Page>
-      <StoreContext.Provider value={store}>
-        <Auth />
-      </StoreContext.Provider>
+      <Auth />
     </Page>
   );
 });
