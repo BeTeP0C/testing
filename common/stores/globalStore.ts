@@ -24,7 +24,7 @@ export class GlobalStore {
 
   TOKEN: string | null =  null
   currentPage: string = 'main'
-  endpoint: string = "http://147.45.74.68:45805/api/v2/"
+  endpoint: string = "http://147.45.74.68:35805/api/v2/"
 
   isAuthorizate: boolean = false
   isOpenActionsGame: boolean = false
@@ -292,7 +292,7 @@ export class GlobalStore {
 
   async postAuth (login: string, password: string): Promise<number> {
     try {
-      const resp = await axios.post(`http://147.45.74.68:45805/api/auth`, {
+      const resp = await axios.post(`http://147.45.74.68:35805/api/auth`, {
         username: login,
         password: password
       })
